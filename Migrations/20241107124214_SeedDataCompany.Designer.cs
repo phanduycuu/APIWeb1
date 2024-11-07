@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIWeb1.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241106030954_identity")]
-    partial class identity
+    [Migration("20241107124214_SeedDataCompany")]
+    partial class SeedDataCompany
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace APIWeb1.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -43,6 +46,10 @@ namespace APIWeb1.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Fullname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -79,6 +86,8 @@ namespace APIWeb1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -88,6 +97,211 @@ namespace APIWeb1.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("Create")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Industry")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Logo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("Update")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Website")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companys");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Create = new DateTime(2024, 11, 7, 19, 42, 14, 314, DateTimeKind.Local).AddTicks(5565),
+                            Description = "Công ti về công nghệ hàng đầu thế giới",
+                            Email = "FPT@gmail.com",
+                            Industry = "Information technology",
+                            Location = "HCM",
+                            Logo = "/abc.png",
+                            Name = "FPT",
+                            Phone = "0368166471",
+                            Status = true,
+                            Update = new DateTime(2024, 11, 7, 19, 42, 14, 314, DateTimeKind.Local).AddTicks(5576),
+                            Website = "FPT.com"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Create = new DateTime(2024, 11, 7, 19, 42, 14, 314, DateTimeKind.Local).AddTicks(5578),
+                            Description = "Đa lĩnh vực",
+                            Email = "BOSCH@gmail.com",
+                            Industry = "Information technology",
+                            Location = "HCM",
+                            Logo = "/xyz.png",
+                            Name = "BOSCH",
+                            Phone = "0368166471",
+                            Status = true,
+                            Update = new DateTime(2024, 11, 7, 19, 42, 14, 314, DateTimeKind.Local).AddTicks(5579),
+                            Website = "BOSCH.com"
+                        });
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.Job", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Benefits")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ExpiredDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JobLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JobStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JobType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Requirements")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Salary")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployerId");
+
+                    b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.JobSkill", b =>
+                {
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("JobId", "SkillId");
+
+                    b.HasIndex("SkillId");
+
+                    b.ToTable("JobSkills");
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.Skill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("Skills");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 8,
+                            IsDeleted = false,
+                            Name = ".Net"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsDeleted = false,
+                            Name = "Java"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IsDeleted = false,
+                            Name = "Spring boot"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -119,19 +333,19 @@ namespace APIWeb1.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "df112524-ef67-4650-a689-079d1bb6520b",
+                            Id = "4666d5a6-7a8a-412c-93b0-0bd300635ae1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4fb2073d-91e6-454e-bd3c-6a77abe05c74",
+                            Id = "83dc3b87-d2e4-4d8c-9389-dae710cc3a7f",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "46956796-5391-4163-8e3d-1b6662dae76a",
+                            Id = "3d54364d-b558-4fcc-8eb4-8fe4c4b8c1c2",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });
@@ -243,6 +457,52 @@ namespace APIWeb1.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("APIWeb1.Models.AppUser", b =>
+                {
+                    b.HasOne("APIWeb1.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.Job", b =>
+                {
+                    b.HasOne("APIWeb1.Models.AppUser", "Employer")
+                        .WithMany()
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employer");
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.JobSkill", b =>
+                {
+                    b.HasOne("APIWeb1.Models.Job", "Job")
+                        .WithMany("JobSkills")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APIWeb1.Models.Skill", "Skill")
+                        .WithMany("JobSkills")
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Skill");
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.Skill", b =>
+                {
+                    b.HasOne("APIWeb1.Models.Job", null)
+                        .WithMany("Skills")
+                        .HasForeignKey("JobId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -292,6 +552,18 @@ namespace APIWeb1.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.Job", b =>
+                {
+                    b.Navigation("JobSkills");
+
+                    b.Navigation("Skills");
+                });
+
+            modelBuilder.Entity("APIWeb1.Models.Skill", b =>
+                {
+                    b.Navigation("JobSkills");
                 });
 #pragma warning restore 612, 618
         }

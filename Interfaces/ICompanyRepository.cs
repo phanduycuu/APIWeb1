@@ -2,8 +2,8 @@
 
 namespace APIWeb1.Interfaces
 {
-    public interface ICompanyRepository: IRepository<Company>
+    public interface ICompanyRepository
     {
-        Task UpdateAsync(Company company);
+        Task<List<Company>> GetAllAsync();
     }
 }

@@ -11,10 +11,25 @@ namespace APIWeb1.Data
         {
 
         }
-      /*  public DbSet<Course> Courses { get; set; }*/
+        public DbSet<Company> Companys { get; set; }
+        public DbSet<Job> Jobs { get; set; }
+        public DbSet<JobSkill> JobSkills { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        //public DbSet<Skill> Skills { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<JobSkill>(x => x.HasKey(p => new { p.JobId, p.SkillId }));
+
+            modelBuilder.Entity<JobSkill>()
+                .HasOne(u => u.Job)
+                .WithMany(u => u.JobSkills)
+                .HasForeignKey(p => p.JobId);
+
+            modelBuilder.Entity<JobSkill>()
+                .HasOne(u => u.Skill)
+                .WithMany(u => u.JobSkills)
+                .HasForeignKey(p => p.SkillId);
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole
@@ -34,48 +49,60 @@ namespace APIWeb1.Data
                 },
             };
             modelBuilder.Entity<IdentityRole>().HasData(roles);
-            /* modelBuilder.Entity<Course>().HasData(
-                 new Course
-                 {
-                     Id = 1,
-                     Title = "IELTS Preparation",
-                     Description = "A comprehensive course designed to prepare students for the IELTS exam.",
-                     UrlImg = "",
-                     TeacherId = 106,
-                     DateCreate = DateTime.Now,
-                     DateStart = new DateTime(2024, 11, 1),
-                     DateUpdate = DateTime.Now,
-                     Price = 99.99,
-                     Status = true
-                 },
-                 new Course
-                 {
-                     Id = 2,
-                     Title = "TOEIC Mastery",
-                     Description = "Achieve your desired TOEIC score with in-depth lessons and practice tests.",
-                     UrlImg = "",
-                     TeacherId = 107,
-                     DateCreate = DateTime.Now,
-                     DateStart = new DateTime(2024, 11, 5),
-                     DateUpdate = DateTime.Now,
-                     Price = 89.99,
-                     Status = true
-                 },
-                 new Course
-                 {
-                     Id = 3,
-                     Title = "TOEFL Success",
-                     Description = "Prepare for the TOEFL exam with strategies and practice exams.",
-                     UrlImg = "",
-                     TeacherId = 108,
-                     DateCreate = DateTime.Now,
-                     DateStart = new DateTime(2024, 11, 10),
-                     DateUpdate = DateTime.Now,
-                     Price = 95.99,
-                     Status = true
-                 }
-             );
- */
+            modelBuilder.Entity<Skill>().HasData(
+                new Skill
+                {
+                    Id = 8,
+                    Name= ".Net",
+                     
+                },
+                new Skill
+                {
+                    Id = 9,
+                    Name = "Java",
+                     
+                },
+                new Skill
+                {
+                    Id = 10,
+                    Name = "Spring boot",
+                     
+                }
+            );
+            modelBuilder.Entity<Company>().HasData(
+                new Company
+                {
+                    Id = 1,
+                    Name = "FPT",
+                    Description="Công ti về công nghệ hàng đầu thế giới",
+                    Email="FPT@gmail.com",
+                    Phone="0368166471",
+                    Logo="/abc.png",
+                    Website="FPT.com",
+                    Create= DateTime.Now,
+                    Industry="Information technology",
+                    Location="HCM",
+                    Update= DateTime.Now,
+                    Status= true
+
+                },
+                new Company
+                {
+                    Id = 2,
+                    Name = "BOSCH",
+                    Description = "Đa lĩnh vực",
+                    Email = "BOSCH@gmail.com",
+                    Phone = "0368166471",
+                    Logo = "/xyz.png",
+                    Website = "BOSCH.com",
+                    Create = DateTime.Now,
+                    Industry = "Information technology",
+                    Location = "HCM",
+                    Update = DateTime.Now,
+                    Status = true
+                }
+            );
+
         }
 
     }

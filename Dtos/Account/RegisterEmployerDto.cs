@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace APIWeb1.Dtos.Account
 {
-    public class RegisterDto
+    public class RegisterEmployerDto
     {
         [Required]
         public string? Fullname { get; set; }
@@ -16,6 +12,7 @@ namespace APIWeb1.Dtos.Account
         public string? Email { get; set; }
         [Required]
         public string? Password { get; set; }
-
+        [Required]
+        public int CompanyId { get; set; }
     }
 }

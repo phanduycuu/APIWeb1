@@ -1,40 +1,31 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace APIWeb1.Models
+namespace APIWeb1.Dtos.Company
 {
-    public class Company
+    public class CreateCompanyRequestDto
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
-
         public string Name { get; set; }
 
-
+        [Required]
         public string Industry { get; set; }
 
-
+        [Required]
         public string Description { get; set; }
 
+        [Required]
         public string? Logo { get; set; }
 
-
+        [Required]
         public string Website { get; set; }
 
-
+        [Required]
         public string Email { get; set; }
 
-
+        [Required]
         public string Phone { get; set; }
+        [Required]
         public string Location { get; set; }
 
-
-        public DateTime? Create { get; set; }
-
-
-        public DateTime? Update { get; set; }
-
-
-        public bool Status { get; set; }
     }
 }

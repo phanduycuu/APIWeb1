@@ -4,6 +4,7 @@ using APIWeb1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIWeb1.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241107042627_JobSkillManyToMany")]
+    partial class JobSkillManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +76,6 @@ namespace APIWeb1.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -150,38 +150,6 @@ namespace APIWeb1.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companys");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Create = new DateTime(2024, 11, 7, 21, 26, 47, 742, DateTimeKind.Local).AddTicks(1620),
-                            Description = "Công ti về công nghệ hàng đầu thế giới",
-                            Email = "FPT@gmail.com",
-                            Industry = "Information technology",
-                            Location = "HCM",
-                            Logo = "/abc.png",
-                            Name = "FPT",
-                            Phone = "0368166471",
-                            Status = true,
-                            Update = new DateTime(2024, 11, 7, 21, 26, 47, 742, DateTimeKind.Local).AddTicks(1636),
-                            Website = "FPT.com"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Create = new DateTime(2024, 11, 7, 21, 26, 47, 742, DateTimeKind.Local).AddTicks(1638),
-                            Description = "Đa lĩnh vực",
-                            Email = "BOSCH@gmail.com",
-                            Industry = "Information technology",
-                            Location = "HCM",
-                            Logo = "/xyz.png",
-                            Name = "BOSCH",
-                            Phone = "0368166471",
-                            Status = true,
-                            Update = new DateTime(2024, 11, 7, 21, 26, 47, 742, DateTimeKind.Local).AddTicks(1639),
-                            Website = "BOSCH.com"
-                        });
                 });
 
             modelBuilder.Entity("APIWeb1.Models.Job", b =>
@@ -270,16 +238,11 @@ namespace APIWeb1.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("JobId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("JobId");
 
                     b.ToTable("Skills");
 
@@ -333,19 +296,19 @@ namespace APIWeb1.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f20400f0-4fb4-4d48-bd21-ee2da4e0baa3",
+                            Id = "d7764146-7e6d-4a47-b82e-767e26fdc629",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f1a21713-d2a0-4045-93d8-5301a41b8ac3",
+                            Id = "0ba05325-66a7-480b-ad80-ebe883f06475",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "795b7d7e-0978-45d0-9e2a-bc3861ebcc8f",
+                            Id = "125da457-77fc-4f5b-86a3-431d728f5403",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });
@@ -496,13 +459,6 @@ namespace APIWeb1.Migrations
                     b.Navigation("Skill");
                 });
 
-            modelBuilder.Entity("APIWeb1.Models.Skill", b =>
-                {
-                    b.HasOne("APIWeb1.Models.Job", null)
-                        .WithMany("Skills")
-                        .HasForeignKey("JobId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -557,8 +513,6 @@ namespace APIWeb1.Migrations
             modelBuilder.Entity("APIWeb1.Models.Job", b =>
                 {
                     b.Navigation("JobSkills");
-
-                    b.Navigation("Skills");
                 });
 
             modelBuilder.Entity("APIWeb1.Models.Skill", b =>
