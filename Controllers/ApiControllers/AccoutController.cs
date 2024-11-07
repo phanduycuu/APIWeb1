@@ -29,7 +29,7 @@ namespace APIWeb1.Controllers.ApiControllers
 
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
             
-            if (user == null || user.Status==false) return Unauthorized("Invalid username!");
+            if (user == null || user.Status==false) return Unauthorized("Account does not exist!");
 
             var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -40,7 +40,7 @@ namespace APIWeb1.Controllers.ApiControllers
                 {
                     UserName = user.UserName,
                     Email = user.Email,
-                    Token = _tokenRepository.CreateToken(user)
+                    Token = await _tokenRepository.CreateToken(user)
                 }
             );
         }
@@ -52,8 +52,11 @@ namespace APIWeb1.Controllers.ApiControllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
-                var user= await _userManager.Users.FirstOrDefaultAsync(x => x.Email == registerDto.Email.ToLower());
+                var user= await _userManager.Users.FirstOrDefaultAsync(x => x.Email == registerDto.Email.ToLower().Trim());
                 if(user!=null) return Unauthorized("Invalid email!");
+
+                user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == registerDto.Username.ToLower().Trim());
+                if (user != null) return Unauthorized("The username you set is duplicated!");
 
                 var appUser = new AppUser
                 {
@@ -76,7 +79,7 @@ namespace APIWeb1.Controllers.ApiControllers
                             {
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
-                                Token = _tokenRepository.CreateToken(appUser)
+                                Token = await _tokenRepository.CreateToken(appUser)
                             }
                         );
                     }
@@ -110,7 +113,8 @@ namespace APIWeb1.Controllers.ApiControllers
                     Email = registerEmployerDto.Email,
                     Fullname = registerEmployerDto.Fullname,
                     CompanyId = registerEmployerDto.CompanyId,
-                    Status=false
+                    Status=false,
+
                 };
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerEmployerDto.Password);
