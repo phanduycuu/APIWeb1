@@ -101,6 +101,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Đăng ký CORS và cho phép truy cập từ http://localhost:3000
 builder.Services.AddCors(options =>

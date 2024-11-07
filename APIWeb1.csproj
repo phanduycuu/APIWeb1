@@ -7,21 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Extensions\**" />
-    <Compile Remove="Helpers\**" />
-    <Compile Remove="Mappers\**" />
     <Compile Remove="Service\**" />
-    <Content Remove="Extensions\**" />
-    <Content Remove="Helpers\**" />
-    <Content Remove="Mappers\**" />
     <Content Remove="Service\**" />
-    <EmbeddedResource Remove="Extensions\**" />
-    <EmbeddedResource Remove="Helpers\**" />
-    <EmbeddedResource Remove="Mappers\**" />
     <EmbeddedResource Remove="Service\**" />
-    <None Remove="Extensions\**" />
-    <None Remove="Helpers\**" />
-    <None Remove="Mappers\**" />
     <None Remove="Service\**" />
   </ItemGroup>
 

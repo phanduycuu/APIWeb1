@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Backend.Controllers.AdminControllers
+namespace APIWeb1.Controllers.AdminControllers
 {
     public class HomeController : Controller
     {
