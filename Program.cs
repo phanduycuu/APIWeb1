@@ -62,11 +62,19 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;
+    // Đặt độ dài yêu cầu tối thiểu cho mật khẩu
+    options.Password.RequiredLength = 6;
+
+    // Yêu cầu có ít nhất một chữ cái thường
     options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 12;
+
+    // Yêu cầu có ít nhất một số
+    options.Password.RequireDigit = true;
+
+    // Không yêu cầu chữ cái hoa hoặc ký tự đặc biệt nữa (nếu bạn không muốn)
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+
 })
 .AddEntityFrameworkStores<ApplicationDBContext>();
 
