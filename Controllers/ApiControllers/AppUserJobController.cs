@@ -1,5 +1,6 @@
 ﻿using APIWeb1.Dtos.Job;
 using APIWeb1.Extensions;
+using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Mappers;
 using APIWeb1.Models;
@@ -25,11 +26,11 @@ namespace APIWeb1.Controllers.ApiControllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetUserjob()
+        public async Task<IActionResult> GetUserjob([FromQuery] JobQueryObject query)
         {
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
-            var userJob = await _unitOfWork.JobRepo.GetUserJob(appUser);
+            var userJob = await _unitOfWork.JobRepo.GetUserJob(appUser, query);
             return Ok(userJob);
         }
 

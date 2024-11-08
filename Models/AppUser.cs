@@ -13,6 +13,7 @@ namespace APIWeb1.Models
         [ValidateNever]
         public Company? Company { get; set; }
         public bool Status { get; set; }
+        public List<Application> Applications { get; set; } = new List<Application>();
 
     }
 }

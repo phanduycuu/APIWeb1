@@ -4,6 +4,7 @@ using APIWeb1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIWeb1.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241108091256_update-location-job")]
+    partial class updatelocationjob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,34 +102,6 @@ namespace APIWeb1.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("APIWeb1.Models.Application", b =>
-                {
-                    b.Property<int>("JobId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Cv")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateApply")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsSale")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("JobId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Applications");
-                });
-
             modelBuilder.Entity("APIWeb1.Models.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -183,7 +158,7 @@ namespace APIWeb1.Migrations
                         new
                         {
                             Id = 1,
-                            Create = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2827),
+                            Create = new DateTime(2024, 11, 8, 16, 12, 55, 97, DateTimeKind.Local).AddTicks(2166),
                             Description = "Công ti về công nghệ hàng đầu thế giới",
                             Email = "FPT@gmail.com",
                             Industry = "Information technology",
@@ -192,13 +167,13 @@ namespace APIWeb1.Migrations
                             Name = "FPT",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2839),
+                            Update = new DateTime(2024, 11, 8, 16, 12, 55, 97, DateTimeKind.Local).AddTicks(2182),
                             Website = "FPT.com"
                         },
                         new
                         {
                             Id = 2,
-                            Create = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2842),
+                            Create = new DateTime(2024, 11, 8, 16, 12, 55, 97, DateTimeKind.Local).AddTicks(2184),
                             Description = "Đa lĩnh vực",
                             Email = "BOSCH@gmail.com",
                             Industry = "Information technology",
@@ -207,7 +182,7 @@ namespace APIWeb1.Migrations
                             Name = "BOSCH",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2842),
+                            Update = new DateTime(2024, 11, 8, 16, 12, 55, 97, DateTimeKind.Local).AddTicks(2185),
                             Website = "BOSCH.com"
                         });
                 });
@@ -365,19 +340,19 @@ namespace APIWeb1.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "02b42119-76e3-4e9c-9f08-534f5aa38d63",
+                            Id = "58e90dff-77a2-4ffb-9390-447581048825",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "dae2c740-d75e-4826-8fe0-0e64a41e3037",
+                            Id = "fd807f66-e6c0-4724-8a18-5fdcbe877df0",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "858744de-f1bd-48dd-8f84-75ea96c46b0b",
+                            Id = "28d65ec2-da93-4d8a-a689-d3f0954a1646",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });
@@ -498,25 +473,6 @@ namespace APIWeb1.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("APIWeb1.Models.Application", b =>
-                {
-                    b.HasOne("APIWeb1.Models.Job", "Job")
-                        .WithMany("Applications")
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("APIWeb1.Models.AppUser", "User")
-                        .WithMany("Applications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Job");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("APIWeb1.Models.Job", b =>
                 {
                     b.HasOne("APIWeb1.Models.AppUser", "Employer")
@@ -605,15 +561,8 @@ namespace APIWeb1.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("APIWeb1.Models.AppUser", b =>
-                {
-                    b.Navigation("Applications");
-                });
-
             modelBuilder.Entity("APIWeb1.Models.Job", b =>
                 {
-                    b.Navigation("Applications");
-
                     b.Navigation("JobSkills");
 
                     b.Navigation("Skills");
