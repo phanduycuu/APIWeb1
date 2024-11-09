@@ -101,11 +101,11 @@ namespace APIWeb1.Migrations
 
             modelBuilder.Entity("APIWeb1.Models.Application", b =>
                 {
-                    b.Property<int>("JobId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Cv")
                         .IsRequired()
@@ -117,10 +117,19 @@ namespace APIWeb1.Migrations
                     b.Property<bool>("IsSale")
                         .HasColumnType("bit");
 
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("JobId", "UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobId");
 
                     b.HasIndex("UserId");
 
@@ -183,7 +192,7 @@ namespace APIWeb1.Migrations
                         new
                         {
                             Id = 1,
-                            Create = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2827),
+                            Create = new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5925),
                             Description = "Công ti về công nghệ hàng đầu thế giới",
                             Email = "FPT@gmail.com",
                             Industry = "Information technology",
@@ -192,13 +201,13 @@ namespace APIWeb1.Migrations
                             Name = "FPT",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2839),
+                            Update = new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5946),
                             Website = "FPT.com"
                         },
                         new
                         {
                             Id = 2,
-                            Create = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2842),
+                            Create = new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5993),
                             Description = "Đa lĩnh vực",
                             Email = "BOSCH@gmail.com",
                             Industry = "Information technology",
@@ -207,7 +216,7 @@ namespace APIWeb1.Migrations
                             Name = "BOSCH",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2842),
+                            Update = new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5994),
                             Website = "BOSCH.com"
                         });
                 });
@@ -365,19 +374,19 @@ namespace APIWeb1.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "02b42119-76e3-4e9c-9f08-534f5aa38d63",
+                            Id = "8ce987ad-4dec-4303-98fa-a2b8cbc5fc24",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "dae2c740-d75e-4826-8fe0-0e64a41e3037",
+                            Id = "43f4ed1a-013f-42a9-af03-8bde15b4f6bb",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "858744de-f1bd-48dd-8f84-75ea96c46b0b",
+                            Id = "8373e7ae-8fe6-43cd-a48d-5cb8b7948c76",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });
@@ -503,7 +512,7 @@ namespace APIWeb1.Migrations
                     b.HasOne("APIWeb1.Models.Job", "Job")
                         .WithMany("Applications")
                         .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("APIWeb1.Models.AppUser", "User")

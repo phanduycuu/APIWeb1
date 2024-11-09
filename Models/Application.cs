@@ -6,6 +6,9 @@ namespace APIWeb1.Models
 {
     public class Application
     {
+        [Key]
+        public int Id { get; set; }
+        [Required]
         public int JobId { get; set; }
         [ForeignKey("JobId")]
         [ValidateNever]
@@ -17,8 +20,8 @@ namespace APIWeb1.Models
         public DateTime? DateApply { get; set; }
 
         public string Cv { get; set; }
-        public int Status { get; set; }
-        public bool IsSale  { get; set; }
+        public int Status { get; set; }  //0 chua gui,1 dang duyet,2 da duyet,3 tu choi
+        public bool IsSale  { get; set; } 
 
     }
 }

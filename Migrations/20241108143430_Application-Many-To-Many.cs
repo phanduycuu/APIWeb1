@@ -32,6 +32,8 @@ namespace APIWeb1.Migrations
                 name: "Applications",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     JobId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DateApply = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -41,7 +43,7 @@ namespace APIWeb1.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Applications", x => new { x.JobId, x.UserId });
+                    table.PrimaryKey("PK_Applications", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Applications_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -53,7 +55,7 @@ namespace APIWeb1.Migrations
                         column: x => x.JobId,
                         principalTable: "Jobs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -61,9 +63,9 @@ namespace APIWeb1.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "02b42119-76e3-4e9c-9f08-534f5aa38d63", null, "Admin", "ADMIN" },
-                    { "858744de-f1bd-48dd-8f84-75ea96c46b0b", null, "Employer", "EMPLOYER" },
-                    { "dae2c740-d75e-4826-8fe0-0e64a41e3037", null, "User", "USER" }
+                    { "43f4ed1a-013f-42a9-af03-8bde15b4f6bb", null, "User", "USER" },
+                    { "8373e7ae-8fe6-43cd-a48d-5cb8b7948c76", null, "Employer", "EMPLOYER" },
+                    { "8ce987ad-4dec-4303-98fa-a2b8cbc5fc24", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.UpdateData(
@@ -71,14 +73,19 @@ namespace APIWeb1.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "Create", "Update" },
-                values: new object[] { new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2827), new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2839) });
+                values: new object[] { new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5925), new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5946) });
 
             migrationBuilder.UpdateData(
                 table: "Companys",
                 keyColumn: "Id",
                 keyValue: 2,
                 columns: new[] { "Create", "Update" },
-                values: new object[] { new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2842), new DateTime(2024, 11, 8, 21, 7, 49, 63, DateTimeKind.Local).AddTicks(2842) });
+                values: new object[] { new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5993), new DateTime(2024, 11, 8, 21, 34, 29, 712, DateTimeKind.Local).AddTicks(5994) });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_JobId",
+                table: "Applications",
+                column: "JobId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Applications_UserId",
@@ -95,17 +102,17 @@ namespace APIWeb1.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "02b42119-76e3-4e9c-9f08-534f5aa38d63");
+                keyValue: "43f4ed1a-013f-42a9-af03-8bde15b4f6bb");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "858744de-f1bd-48dd-8f84-75ea96c46b0b");
+                keyValue: "8373e7ae-8fe6-43cd-a48d-5cb8b7948c76");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "dae2c740-d75e-4826-8fe0-0e64a41e3037");
+                keyValue: "8ce987ad-4dec-4303-98fa-a2b8cbc5fc24");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",

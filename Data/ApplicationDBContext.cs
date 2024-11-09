@@ -15,7 +15,7 @@ namespace APIWeb1.Data
         public DbSet<Job> Jobs { get; set; }
         public DbSet<JobSkill> JobSkills { get; set; }
         public DbSet<Skill> Skills { get; set; }
-        //public DbSet<Application> Applications { get; set; }
+        public DbSet<Application> Applications { get; set; }
 
         //public DbSet<Skill> Skills { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,15 +32,17 @@ namespace APIWeb1.Data
                 .WithMany(u => u.JobSkills)
                 .HasForeignKey(p => p.SkillId);
 
-            //modelBuilder.Entity<Application>(x => x.HasKey(p => new { p.JobId, p.UserId }));
-            //modelBuilder.Entity<Application>()
-            //    .HasOne(u => u.Job)
-            //    .WithMany(u => u.Applications)
-            //    .HasForeignKey(p => p.JobId);
-            //modelBuilder.Entity<Application>()
-            //    .HasOne(u => u.User)
-            //    .WithMany(u => u.Applications)
-            //    .HasForeignKey(p => p.UserId);
+            modelBuilder.Entity<Application>().HasKey(a => a.Id);
+            modelBuilder.Entity<Application>()
+                .HasOne(u => u.Job)
+                .WithMany(u => u.Applications)
+                .HasForeignKey(p => p.JobId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Application>()
+                .HasOne(u => u.User)
+                .WithMany(u => u.Applications)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole

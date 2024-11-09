@@ -13,6 +13,8 @@ namespace APIWeb1.Repository
 
         public ISkillRepository SkillRepo { get; private set; }
 
+        public IApplicationRepository ApplicationRepo { get; private set; }
+
         public UnitOfWork(ApplicationDBContext context)
         {
             _context = context;
@@ -20,6 +22,7 @@ namespace APIWeb1.Repository
             JobRepo = new JobRepository(_context);
             JobSkillRepo = new JobSkillRepository(_context);
             SkillRepo = new SkillRepository(_context);
+            ApplicationRepo = new ApplicationRepository(_context);
 
         }
     }
