@@ -1,6 +1,12 @@
 ﻿using APIWeb1.Data;
+using APIWeb1.Dtos.Application;
+using APIWeb1.Dtos.Job;
+using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using APIWeb1.Models.Enum;
+using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace APIWeb1.Repository
 {
@@ -16,6 +22,81 @@ namespace APIWeb1.Repository
             await _context.Applications.AddAsync(application);
             await _context.SaveChangesAsync();
             return application;
+        }
+
+        public Task<List<GetAppDto>> GetJobById(int JobId)
+        {
+            var job = _context.Jobs.Include(job => job.JobSkills)
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.Id == JobId);
+
+            
+        }
+
+        public async Task<List<GetAppDto>> GetUserJob(AppUser user, JobQueryObject query)
+        {
+            var applications = _context.Applications.Include(a => a.Job).ThenInclude(a => a.Employer).ThenInclude(b => b.Company).Include(a => a.Job).ThenInclude(job => job.JobSkills)
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.UserId == user.Id);
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                applications = applications.Where(s => s.Job.Title.Contains(query.Title));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Location))
+            {
+                applications = applications.Where(s => s.Job.Location.Contains(query.Location));
+            }
+            if (!string.IsNullOrWhiteSpace(query.JobLevel))
+            {
+                var level = EnumHelper.GetEnumValueFromDescription<JobLevel>(query.JobLevel);
+                applications = applications.Where(s => s.Job.JobLevel == level);
+            }
+            if (!string.IsNullOrWhiteSpace(query.JobStatus))
+            {
+                var Status = EnumHelper.GetEnumValueFromDescription<JobStatus>(query.JobStatus);
+                applications = applications.Where(s => s.Job.JobStatus == Status);
+            }
+            if (!string.IsNullOrWhiteSpace(query.JobType))
+            {
+                var Type = EnumHelper.GetEnumValueFromDescription<JobType>(query.JobType);
+                applications = applications.Where(s => s.Job.JobType == Type);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
+                {
+                    applications = query.IsDecsending ? applications.OrderByDescending(s => s.Job.Title) : applications.OrderBy(s => s.Job.Title);
+                }
+            }
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return await applications.Skip(skipNumber).Take(query.PageSize).Select(app => new GetAppDto
+            {
+                Id = app.Job.Id,
+                Title = app.Job.Title,
+                Description = app.Job.Description,
+                Requirements = app.Job.Requirements,
+                Benefits = app.Job.Benefits,
+                ExpiredDate = app.Job.ExpiredDate,
+                CreateOn = app.Job.CreateOn,
+                UpdatedOn = app.Job.UpdatedOn,
+                Employer = app.Job.Employer,
+                JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
+                JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
+                JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
+                Location = app.Job.Location,
+                CV = app.Cv,
+                Skills = app.Job.JobSkills.Select(js => new Skill
+                {
+
+
+                    Id = js.Skill.Id,
+                    Name = js.Skill.Name
+                    // Include other properties of Skill as needed
+
+                }).ToList()
+            })
+        .ToListAsync();
         }
     }
 }

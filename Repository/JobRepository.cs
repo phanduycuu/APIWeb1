@@ -90,7 +90,7 @@ namespace APIWeb1.Repository
         .ToListAsync(); 
         }
 
-        public async Task<List<JobDto>> GetUserJob(AppUser user, JobQueryObject query)
+        public async Task<List<JobDto>> GetEmployerJob(AppUser user, JobQueryObject query)
         {
             var job =  _context.Jobs
                         .Where(job => job.EmployerId == user.Id).Include(job => job.JobSkills)

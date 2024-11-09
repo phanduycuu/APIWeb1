@@ -25,13 +25,22 @@ namespace APIWeb1.Controllers.ApiControllers
 
 
         }
-        [HttpGet]
+        [HttpGet("employer-job")]
+        [Authorize]
+        public async Task<IActionResult> GetEmployerjob([FromQuery] JobQueryObject query)
+        {
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var userJob = await _unitOfWork.JobRepo.GetEmployerJob(appUser, query);
+            return Ok(userJob);
+        }
+        [HttpGet("user-job")]
         [Authorize]
         public async Task<IActionResult> GetUserjob([FromQuery] JobQueryObject query)
         {
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
-            var userJob = await _unitOfWork.JobRepo.GetUserJob(appUser, query);
+            var userJob = await _unitOfWork.ApplicationRepo.GetUserJob(appUser, query);
             return Ok(userJob);
         }
 
@@ -46,7 +55,7 @@ namespace APIWeb1.Controllers.ApiControllers
 
             var jobModel = JobDto.ToJobFromCreate(appUser.Id);
             await _unitOfWork.JobRepo.CreateAsync(jobModel);
-            return CreatedAtAction(nameof(GetUserjob), new { id = jobModel.Id }, jobModel);
+            return Created();
         }
 
         [HttpPost("create-application")]

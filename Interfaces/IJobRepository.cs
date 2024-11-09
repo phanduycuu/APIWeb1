@@ -6,7 +6,7 @@ namespace APIWeb1.Interfaces
 {
     public interface IJobRepository
     {
-        Task<List<JobDto>> GetUserJob(AppUser user, JobQueryObject query);
+        Task<List<JobDto>> GetEmployerJob(AppUser user, JobQueryObject query);
         Task<Job> CreateAsync(Job job);
         Task<List<JobDto>> GetAllAsync(JobQueryObject query);
     }
