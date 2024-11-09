@@ -1,5 +1,7 @@
 ﻿using APIWeb1.Data;
+using APIWeb1.Dtos.AppUsers;
 using APIWeb1.Dtos.Job;
+using APIWeb1.Dtos.SkillDtos;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
@@ -72,16 +74,20 @@ namespace APIWeb1.Repository
                 ExpiredDate = job.ExpiredDate,
                 CreateOn = job.CreateOn,
                 UpdatedOn = job.UpdatedOn,
-                Employer = job.Employer,
+                Employer = new EmployerDto
+                {
+                    Id = job.Employer.Id,
+                    FullName = job.Employer.Fullname,
+                    Email = job.Employer.Email,
+                    Company = job.Employer.Company
+                },
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
                 Location=job.Location,
-                Skills = job.JobSkills.Select(js => new Skill
+                Skills = job.JobSkills.Select(js => new SkillDto
                 {
 
-
-                    Id = js.Skill.Id,
                     Name = js.Skill.Name
                     // Include other properties of Skill as needed
 
@@ -145,6 +151,42 @@ namespace APIWeb1.Repository
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
                 Location = job.Location,
+                Skills = job.JobSkills.Select(js => new SkillDto
+                {
+
+                    Name = js.Skill.Name
+                }).ToList()
+            })
+        .ToListAsync();
+        }
+        public Task<List<GetJobByIdDto>> GetJobById(int JobId)
+        {
+            var jobModel = _context.Jobs.Include(job => job.JobSkills)
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.Id == JobId);
+
+            return jobModel.Select(job => new GetJobByIdDto
+            {
+                Id = job.Id,
+                Title = job.Title,
+                Description = job.Description,
+                Requirements = job.Requirements,
+                Benefits = job.Benefits,
+                ExpiredDate = job.ExpiredDate,
+                CreateOn = job.CreateOn,
+                UpdatedOn = job.UpdatedOn,
+                Users = job.Applications.Select(user => new AppUserDto
+                {
+
+                    FullName = user.User.Fullname,
+                    Email = user.User.Email,
+                    CV = user.Cv
+                    // Include other properties of Skill as needed
+
+                }).ToList(),
+                JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                JobType = EnumHelper.GetEnumDescription(job.JobType),
+                JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                Location = job.Location,
                 Skills = job.JobSkills.Select(js => new Skill
                 {
 
@@ -154,8 +196,8 @@ namespace APIWeb1.Repository
                     // Include other properties of Skill as needed
 
                 }).ToList()
-            })
-        .ToListAsync();
+            }).ToListAsync();
         }
     }
+
 }

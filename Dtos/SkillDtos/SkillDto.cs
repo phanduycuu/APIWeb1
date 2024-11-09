@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace APIWeb1.Dtos.SkillDto
+namespace APIWeb1.Dtos.SkillDtos
 {
     public class SkillDto
     {
