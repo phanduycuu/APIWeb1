@@ -174,7 +174,7 @@ namespace APIWeb1.Repository
                 ExpiredDate = job.ExpiredDate,
                 CreateOn = job.CreateOn,
                 UpdatedOn = job.UpdatedOn,
-                Users = job.Applications.Select(user => new AppUserDto
+                Users = job.Applications.Where(u=>u.Status !=0).Select(user => new AppUserDto
                 {
 
                     FullName = user.User.Fullname,

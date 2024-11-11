@@ -61,31 +61,45 @@ namespace APIWeb1.Controllers.ApiControllers
 
         [HttpPost("create-application")]
         [Authorize]
-        public async Task<IActionResult> CreateApplication(int JobId,  IFormFile cvFile)
+        public async Task<IActionResult> CreateApplication(int JobId,int status,  IFormFile? cvFile)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
-            if (cvFile == null || cvFile.Length == 0)
-                return BadRequest("File không hợp lệ.");
-
-            var filePath = Path.Combine("wwwroot/uploads", $"{appUser.Id}_{cvFile.FileName}");
-
-            // Lưu file vào hệ thống file
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            var filePath = "";
+            if (cvFile != null)
             {
-                await cvFile.CopyToAsync(stream);
-            }
-            Application appModel = new Application();
-            appModel.JobId = JobId;
-            appModel.UserId = appUser.Id;
-            appModel.Status = 1;   
-            appModel.IsSale = true;
-            appModel.Cv = filePath;
+                filePath = Path.Combine("wwwroot/uploads", $"{appUser.Id}_{cvFile.FileName}");
 
-            await _unitOfWork.ApplicationRepo.CreateAsync(appModel);
-            return Created();
+                // Lưu file vào hệ thống file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await cvFile.CopyToAsync(stream);
+                }
+            }
+            var app = await _unitOfWork.ApplicationRepo.GetAppUserJob(JobId, appUser.Id);
+
+            if (app != null)
+            {
+                app.Status = status;
+                app.Cv = filePath;
+                await _unitOfWork.ApplicationRepo.UpdateAppUserJob(app);
+                return Ok();
+
+            }
+            else
+            {
+                Application appModel = new Application();
+                appModel.JobId = JobId;
+                appModel.UserId = appUser.Id;
+                appModel.Status = status;
+                appModel.IsSale = true;
+                appModel.Cv = filePath;
+
+                await _unitOfWork.ApplicationRepo.CreateAsync(appModel);
+                return Created();
+            }
         }
 
         [HttpGet("employer-jobById")]

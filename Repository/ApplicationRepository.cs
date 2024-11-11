@@ -24,7 +24,13 @@ namespace APIWeb1.Repository
             await _context.Applications.AddAsync(application);
             await _context.SaveChangesAsync();
             return application;
-        }        
+        }
+
+        public async Task<Application> GetAppUserJob(int JobId, string userId)
+        {
+           
+            return await _context.Applications.Where(a=>a.JobId==JobId && a.UserId==userId).FirstOrDefaultAsync();
+        }
 
         public async Task<List<GetAppDto>> GetUserJob(AppUser user, JobQueryObject query)
         {
@@ -92,6 +98,14 @@ namespace APIWeb1.Repository
                 }).ToList()
             })
         .ToListAsync();
+        }
+
+        public async Task<Application> UpdateAppUserJob(Application app)
+        {
+            var exitstapp = await _context.Applications.FirstOrDefaultAsync(x => x.Id == app.Id);
+            exitstapp = app;
+            await _context.SaveChangesAsync();
+            return exitstapp;
         }
     }
 }
