@@ -4,7 +4,7 @@ using APIWeb1.Models;
 
 namespace APIWeb1.Interfaces
 {
-    public interface IJobRepository
+    public interface IJobRepository : IRepository<Job>
     {
         Task<List<JobDto>> GetEmployerJob(AppUser user, JobQueryObject query); //khi employer muon lay danh sach cac job da tao
         Task<Job> CreateAsync(Job job); // employer tao job

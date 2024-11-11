@@ -10,10 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Repository
 {
-    public class JobRepository : IJobRepository
+    public class JobRepository : Repository<Job>, IJobRepository
     {
         private readonly ApplicationDBContext _context;
-        public JobRepository(ApplicationDBContext context)
+        public JobRepository(ApplicationDBContext context) : base(context)
         {
             _context = context;
         }

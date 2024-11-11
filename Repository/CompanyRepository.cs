@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Repository
 {
-    public class CompanyRepository : ICompanyRepository
+    public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
         private ApplicationDBContext _context;
-        public CompanyRepository(ApplicationDBContext context) 
+        public CompanyRepository(ApplicationDBContext context) : base(context)
         {
             _context = context;
         }
@@ -16,6 +16,11 @@ namespace APIWeb1.Repository
         public async Task<List<Company>> GetAllAsync()
         {
             return await _context.Companys.Where(u=> u.Status==true).ToListAsync();
+        }
+
+        public void Update(Company company)
+        {
+            _context.Companys.Update(company);
         }
     }
 }

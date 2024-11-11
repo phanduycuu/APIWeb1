@@ -9,55 +9,74 @@ namespace APIWeb1.Repository
     {
         private readonly ApplicationDBContext _context;
         internal DbSet<T> dbSet;
-
         public Repository(ApplicationDBContext context)
         {
             _context = context;
             this.dbSet = _context.Set<T>();
         }
+        public void Add(T entity)
+        {
+            dbSet.Add(entity);
+        }
 
-        public async Task<List<T>> GetAllAsync(
-            Expression<Func<T, bool>> filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            Func<IQueryable<T>, IQueryable<T>> include = null,
-            int pageNumber = 1,
-            int pageSize = 10
-        )
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
-
-            // Apply includes if provided
-            if (include != null)
+            query = query.Where(filter);
+            if (!string.IsNullOrEmpty(includeProperties))
             {
-                query = include(query);
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+
             }
-
-            // Apply filter if provided
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            // Apply sorting if provided
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            // Apply pagination
-            var skip = (pageNumber - 1) * pageSize;
-            query = query.Skip(skip).Take(pageSize);
-
-            // Execute the query and return the results
-            return await query.ToListAsync();
+            return query.FirstOrDefault();
         }
-        public async Task<T> CreateAsync(T entity)
+
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
-            await dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            IQueryable<T> query = dbSet;
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+
+            }
+            return query.ToList();
         }
+
+        public void Remove(T entity)
+        {
+            dbSet.Remove(entity);
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            dbSet.RemoveRange(entities);
+        }
+        public IEnumerable<T> GetAll_WSET(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        {
+            IQueryable<T> query = dbSet.Where(filter);
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            return query.ToList();
+        }
+
+        public IEnumerable<T> GetListTrue(Expression<Func<T, bool>> filter)
+        {
+            IQueryable<T> query = dbSet;
+            query = query.Where(filter);
+            return query.ToList();
+        }
+    
     }
-
-
 }

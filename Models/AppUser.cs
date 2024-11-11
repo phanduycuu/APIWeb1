@@ -12,7 +12,7 @@ namespace APIWeb1.Models
         [ForeignKey("CompanyId")]
         [ValidateNever]
         public Company? Company { get; set; }
-        public bool Status { get; set; }
+        public int Status { get; set; }
         public List<Application> Applications { get; set; } = new List<Application>();
 
     }

@@ -29,7 +29,7 @@ namespace APIWeb1.Controllers.ApiControllers
 
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
             
-            if (user == null || user.Status==false) return Unauthorized("Account does not exist!");
+            if (user == null || user.Status==1) return Unauthorized("Account does not exist!");
 
             var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -63,7 +63,7 @@ namespace APIWeb1.Controllers.ApiControllers
                     UserName = registerDto.Username,
                     Email = registerDto.Email,
                     Fullname=registerDto.Fullname,
-                    Status=true
+                    Status=1
 
                 };
 
@@ -113,7 +113,7 @@ namespace APIWeb1.Controllers.ApiControllers
                     Email = registerEmployerDto.Email,
                     Fullname = registerEmployerDto.Fullname,
                     CompanyId = registerEmployerDto.CompanyId,
-                    Status=false,
+                    Status=0,
 
                 };
 
