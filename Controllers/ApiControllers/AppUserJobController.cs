@@ -25,8 +25,9 @@ namespace APIWeb1.Controllers.ApiControllers
 
 
         }
+
         [HttpGet("employer-job")]
-        [Authorize]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> GetEmployerjob([FromQuery] JobQueryObject query)
         {
             var username = User.GetUsername();
