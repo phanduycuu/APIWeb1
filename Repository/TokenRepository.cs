@@ -37,9 +37,7 @@ namespace APIWeb1.Repository
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            // Tạo SymmetricSecurityKey từ SigningKey trong cấu hình
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
