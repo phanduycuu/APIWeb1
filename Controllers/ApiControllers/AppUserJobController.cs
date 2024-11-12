@@ -37,7 +37,7 @@ namespace APIWeb1.Controllers.ApiControllers
         }
         
         [HttpGet("user-job")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserjob([FromQuery] JobQueryObject query)
         {
             var username = User.GetUsername();
@@ -47,7 +47,7 @@ namespace APIWeb1.Controllers.ApiControllers
         }
 
         [HttpPost("create-job")]
-        [Authorize]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> Create([FromBody] CreateJobDto JobDto)
         {
             if (!ModelState.IsValid)
@@ -61,7 +61,7 @@ namespace APIWeb1.Controllers.ApiControllers
         }
 
         [HttpPost("create-application")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateApplication(int JobId,int status,  IFormFile? cvFile)
         {
             if (!ModelState.IsValid)
@@ -104,7 +104,7 @@ namespace APIWeb1.Controllers.ApiControllers
         }
 
         [HttpGet("employer-jobById")]
-        [Authorize]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> GetEmployerjobById(int JobId)
         {
             var username = User.GetUsername();
