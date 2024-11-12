@@ -4,6 +4,10 @@ using APIWeb1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace APIWeb1.Controllers.ApiControllers
 {
@@ -13,12 +17,14 @@ namespace APIWeb1.Controllers.ApiControllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenRepository _tokenRepository;
+        private readonly IConfiguration _configuration;
         private readonly SignInManager<AppUser> _signinManager;
-        public AccountController(UserManager<AppUser> userManager, ITokenRepository tokenRepository, SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager, ITokenRepository tokenRepository, SignInManager<AppUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _tokenRepository = tokenRepository;
             _signinManager = signInManager;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -142,5 +148,54 @@ namespace APIWeb1.Controllers.ApiControllers
                 return StatusCode(500, e);
             }
         }
+
+        // API kiểm tra token
+        [HttpPost("checktoken")]
+        public IActionResult CheckToken([FromBody] string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized("Token is missing");
+
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]); // Lấy key từ appsettings
+                var tokenValidationParams = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = _configuration["JWT:Issuer"], // Lấy Issuer từ appsettings
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["JWT:Audience"], // Lấy Audience từ appsettings
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParams, out var validatedToken);
+
+                // Trích xuất thông tin từ token
+                var username = principal.FindFirstValue(ClaimTypes.GivenName); // Đảm bảo trích xuất đúng claim
+                var email = principal.FindFirstValue(ClaimTypes.Email);
+                // Lấy tất cả các roles
+                var roles = principal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+                return Ok(new
+                {
+                    message = "Token is valid",
+                    user = new
+                    {
+                        username = username,
+                        email = email,
+                        roles = roles
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized("Invalid token: " + ex.Message);
+            }
+        }
+
+
     }
 }
