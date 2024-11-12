@@ -4,8 +4,10 @@ using APIWeb1.Data;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
 using APIWeb1.Repository;
+using APIWeb1.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -103,6 +105,7 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Đăng ký CORS và cho phép truy cập từ http://localhost:3000
 builder.Services.AddCors(options =>
