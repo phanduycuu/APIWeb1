@@ -34,7 +34,9 @@ namespace APIWeb1.Repository
 
         public async Task<List<GetAppDto>> GetUserJob(AppUser user, JobQueryObject query)
         {
-            var applications = _context.Applications.Include(a => a.Job).ThenInclude(a => a.Employer).ThenInclude(b => b.Company).Include(a => a.Job).ThenInclude(job => job.JobSkills)
+            var applications = _context.Applications.Include(a => a.Job).
+                ThenInclude(a => a.Employer).ThenInclude(b => b.Company).Include(a => a.Job).ThenInclude(a => a.Address)
+                .Include(a => a.Job).ThenInclude(job => job.JobSkills)
             .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.UserId == user.Id);
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
@@ -43,7 +45,11 @@ namespace APIWeb1.Repository
 
             if (!string.IsNullOrWhiteSpace(query.Location))
             {
-                applications = applications.Where(s => s.Job.Location.Contains(query.Location));
+                
+                applications = applications.Where(s => (s.Job.Address.Street+" " +
+                s.Job.Address.Province + " " +
+                s.Job.Address.Ward + " " +
+                s.Job.Address.District ).Contains(query.Location));
             }
             if (!string.IsNullOrWhiteSpace(query.JobLevel))
             {
@@ -89,7 +95,8 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
-                Location = app.Job.Location,
+                Location = app.Job.Address.Street+" "+app.Job.Address.Province+" "
+                          +app.Job.Address.Ward + " " + app.Job.Address.District,
                 CV = app.Cv,
                 Skills = app.Job.JobSkills.Select(js => new SkillDto
                 {

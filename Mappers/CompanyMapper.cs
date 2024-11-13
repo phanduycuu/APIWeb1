@@ -17,7 +17,7 @@ namespace APIWeb1.Mappers
                 Website = companyModel.Website,
                 Email = companyModel.Email,
                 Phone = companyModel.Phone,
-                Location = companyModel.Location
+
 
             };
         }
@@ -32,7 +32,6 @@ namespace APIWeb1.Mappers
                 Website = companyDto.Website,
                 Email = companyDto.Email,
                 Phone = companyDto.Phone,
-                Location = companyDto.Location,
                 Status = true
             };
         }

@@ -30,7 +30,12 @@ namespace APIWeb1.Models
         public JobLevel JobLevel { get; set; }
         public JobType JobType { get; set; }
         public JobStatus JobStatus { get; set; }
-        public string Location { get; set; }
+        public int? AddressId { get; set; }
+        [ForeignKey("AddressId")]
+        [ValidateNever]
+        public Address? Address { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsFetured { get; set; }
 
         public List<JobSkill> JobSkills { get; set; } = new List<JobSkill>();
         public List<Skill> Skills { get; set; } = new List<Skill>();

@@ -7,6 +7,7 @@ using APIWeb1.Interfaces;
 using APIWeb1.Models;
 using APIWeb1.Models.Enum;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace APIWeb1.Repository
 {
@@ -18,6 +19,11 @@ namespace APIWeb1.Repository
             _context = context;
         }
 
+        public async Task<Job> AdminGetJobById(int jobId)
+        {
+            return await _context.Jobs.Where(u=>u.Id== jobId).FirstOrDefaultAsync();
+        }
+
         public async Task<Job> CreateAsync(Job job)
         {
             await _context.Jobs.AddAsync(job);
@@ -25,10 +31,29 @@ namespace APIWeb1.Repository
             return job;
         }
 
+        public async Task<List<JobAdminDto>> GetAdminJob()
+        {
+            var job = _context.Jobs.Include(a => a.Employer).ThenInclude(b => b.Company).AsQueryable();
+
+            return await job
+                .Select(job => new JobAdminDto
+                {
+                    Id = job.Id,
+                    Title = job.Title,
+                    EmployerName = job.Employer.Fullname,
+                    JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                    
+                })
+            .ToListAsync();
+        }
+
         public async Task<List<JobDto>> GetAllAsync(JobQueryObject query)
         {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var job =  _context.Jobs.Include(a => a.Employer).ThenInclude(b => b.Company).Include(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).AsQueryable();
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u=> u.JobStatus == status).AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 job = job.Where(s => s.Title.Contains(query.Title));
@@ -36,7 +61,11 @@ namespace APIWeb1.Repository
 
             if (!string.IsNullOrWhiteSpace(query.Location))
             {
-                job = job.Where(s => s.Location.Contains(query.Location));
+                job = job.Where(s => (s.Address.Street + " " +
+                          s.Address.Province + " " +
+                          s.Address.Ward + " " +
+                          s.Address.District)
+                          .Contains(query.Location));
             }
             if(!string.IsNullOrWhiteSpace(query.JobLevel))
             {
@@ -85,7 +114,10 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
-                Location=job.Location,
+                Location= job.Address.Street + " " +
+                              job.Address.Province + " " +
+                              job.Address.Ward + " " +
+                              job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
 
@@ -109,7 +141,11 @@ namespace APIWeb1.Repository
 
             if (!string.IsNullOrWhiteSpace(query.Location))
             {
-                job = job.Where(s => s.Location.Contains(query.Location));
+                job = job.Where(s => (s.Address.Street + " " +
+                          s.Address.Province + " " +
+                          s.Address.Ward + " " +
+                          s.Address.District)
+                          .Contains(query.Location));
             }
             if (!string.IsNullOrWhiteSpace(query.JobLevel))
             {
@@ -152,7 +188,10 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
-                Location = job.Location,
+                Location = job.Address.Street + " " +
+                              job.Address.Province + " " +
+                              job.Address.Ward + " " +
+                              job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
 
@@ -189,7 +228,10 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
-                Location = job.Location,
+                Location = job.Address.Street + " " +
+                              job.Address.Province + " " +
+                              job.Address.Ward + " " +
+                              job.Address.District,
                 Skills = job.JobSkills.Select(js => new Skill
                 {
 
@@ -200,6 +242,15 @@ namespace APIWeb1.Repository
 
                 }).ToList()
             }).ToListAsync();
+        }
+
+        public void UpdateStatusJob(int JobId, JobStatus Status)
+        {   
+            Job job = _context.Jobs.Where(u=> u.Id== JobId).FirstOrDefault();
+            job.JobStatus= Status;
+            _context.Jobs.Update(job);
+            _context.SaveChanges();
+
         }
     }
 

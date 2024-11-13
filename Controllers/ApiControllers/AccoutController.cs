@@ -36,7 +36,7 @@ namespace APIWeb1.Controllers.ApiControllers
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
             
             if (user == null || user.Status==0) return Unauthorized("Account does not exist!");
-
+            if ( user.Status == 2) return Unauthorized("Account has been locked, or not confirmed!");
             var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");

@@ -1,6 +1,7 @@
 ﻿using APIWeb1.Dtos.Job;
 using APIWeb1.Helpers;
 using APIWeb1.Models;
+using APIWeb1.Models.Enum;
 
 namespace APIWeb1.Interfaces
 {
@@ -10,5 +11,8 @@ namespace APIWeb1.Interfaces
         Task<Job> CreateAsync(Job job); // employer tao job
         Task<List<JobDto>> GetAllAsync(JobQueryObject query);  // hien ra tat ca job
         Task<List<GetJobByIdDto>> GetJobById(int JobId); //khi employer co danh sach cac job da dang, khi an vo chi tiet se lay job theo id
+        Task<List<JobAdminDto>> GetAdminJob(); // admin lấy danh sách job để duyệt
+        void UpdateStatusJob(int JobId,JobStatus Status);// admin lấy  job thông qua id sau đó update lại trạng thái
+        Task<Job> AdminGetJobById(int jobId);
     }
 }

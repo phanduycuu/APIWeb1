@@ -4,6 +4,7 @@ using APIWeb1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIWeb1.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241113133611_add-address-update-job-appuser-company")]
+    partial class addaddressupdatejobappusercompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,16 +52,6 @@ namespace APIWeb1.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Address");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            District = "Phú thọ hòa",
-                            Province = "HCM ",
-                            Street = "Lê thúc hoạch",
-                            Ward = "Tân phú"
-                        });
                 });
 
             modelBuilder.Entity("APIWeb1.Models.AppUser", b =>
@@ -69,10 +62,10 @@ namespace APIWeb1.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("AddressId")
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("Birthdate")
+                    b.Property<DateTime>("Birthdate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("CompanyId")
@@ -120,6 +113,7 @@ namespace APIWeb1.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sex")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
@@ -237,7 +231,7 @@ namespace APIWeb1.Migrations
                         new
                         {
                             Id = 1,
-                            Create = new DateTime(2024, 11, 13, 21, 44, 35, 778, DateTimeKind.Local).AddTicks(8428),
+                            Create = new DateTime(2024, 11, 13, 20, 36, 11, 601, DateTimeKind.Local).AddTicks(3316),
                             Description = "Công ti về công nghệ hàng đầu thế giới",
                             Email = "FPT@gmail.com",
                             Industry = "Information technology",
@@ -245,13 +239,13 @@ namespace APIWeb1.Migrations
                             Name = "FPT",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 13, 21, 44, 35, 778, DateTimeKind.Local).AddTicks(8443),
+                            Update = new DateTime(2024, 11, 13, 20, 36, 11, 601, DateTimeKind.Local).AddTicks(3328),
                             Website = "FPT.com"
                         },
                         new
                         {
                             Id = 2,
-                            Create = new DateTime(2024, 11, 13, 21, 44, 35, 778, DateTimeKind.Local).AddTicks(8445),
+                            Create = new DateTime(2024, 11, 13, 20, 36, 11, 601, DateTimeKind.Local).AddTicks(3330),
                             Description = "Đa lĩnh vực",
                             Email = "BOSCH@gmail.com",
                             Industry = "Information technology",
@@ -259,7 +253,7 @@ namespace APIWeb1.Migrations
                             Name = "BOSCH",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 13, 21, 44, 35, 778, DateTimeKind.Local).AddTicks(8446),
+                            Update = new DateTime(2024, 11, 13, 20, 36, 11, 601, DateTimeKind.Local).AddTicks(3331),
                             Website = "BOSCH.com"
                         });
                 });
@@ -272,7 +266,7 @@ namespace APIWeb1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AddressId")
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("Benefits")
@@ -424,19 +418,19 @@ namespace APIWeb1.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cc33bc40-2eba-489c-9c55-458f798d9ae6",
+                            Id = "3b787bc1-7566-471f-8eb8-8cfd0925b191",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f9e0aaef-4918-4bb5-b44e-8f15f461a88a",
+                            Id = "c7a62a44-74cc-44ff-88d2-82730df6b772",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "b40d68c5-476b-42e4-857c-a20a288aaec4",
+                            Id = "1ea8995d-8458-4bc3-8e93-15316fbaa609",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });
@@ -552,7 +546,9 @@ namespace APIWeb1.Migrations
                 {
                     b.HasOne("APIWeb1.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId");
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("APIWeb1.Models.Company", "Company")
                         .WithMany()
@@ -587,7 +583,8 @@ namespace APIWeb1.Migrations
                     b.HasOne("APIWeb1.Models.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("APIWeb1.Models.AppUser", "Employer")
                         .WithMany()

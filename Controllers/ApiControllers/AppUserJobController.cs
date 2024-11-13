@@ -56,6 +56,7 @@ namespace APIWeb1.Controllers.ApiControllers
             var appUser = await _userManager.FindByNameAsync(username);
 
             var jobModel = JobDto.ToJobFromCreate(appUser.Id);
+            jobModel.AddressId = 1;
             await _unitOfWork.JobRepo.CreateAsync(jobModel);
             return Created();
         }

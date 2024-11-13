@@ -43,6 +43,12 @@ namespace APIWeb1.Data
                 .WithMany(u => u.Applications)
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Job>()
+            .HasOne(j => j.Address)
+            .WithMany() // hoặc .WithOne() nếu quan hệ là 1-1
+            .HasForeignKey(j => j.AddressId)
+            .OnDelete(DeleteBehavior.NoAction);
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole
@@ -61,6 +67,8 @@ namespace APIWeb1.Data
                     NormalizedName = "EMPLOYER"
                 },
             };
+
+
             modelBuilder.Entity<IdentityRole>().HasData(roles);
             modelBuilder.Entity<Skill>().HasData(
                 new Skill
@@ -82,6 +90,17 @@ namespace APIWeb1.Data
                      
                 }
             );
+            modelBuilder.Entity<Address>().HasData(
+                new Address
+                {
+                    Id = 1,
+                    Street = "Lê thúc hoạch",
+                    Province ="HCM ",
+                    Ward= "Tân phú",
+                    District= "Phú thọ hòa"
+
+                }
+            );
             modelBuilder.Entity<Company>().HasData(
                 new Company
                 {
@@ -94,7 +113,6 @@ namespace APIWeb1.Data
                     Website="FPT.com",
                     Create= DateTime.Now,
                     Industry="Information technology",
-                    Location="HCM",
                     Update= DateTime.Now,
                     Status= true
 
@@ -110,7 +128,6 @@ namespace APIWeb1.Data
                     Website = "BOSCH.com",
                     Create = DateTime.Now,
                     Industry = "Information technology",
-                    Location = "HCM",
                     Update = DateTime.Now,
                     Status = true
                 }

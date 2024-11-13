@@ -26,8 +26,6 @@ namespace APIWeb1.Models
 
 
         public string Phone { get; set; }
-        public string Location { get; set; }
-
 
         public DateTime? Create { get; set; }
 

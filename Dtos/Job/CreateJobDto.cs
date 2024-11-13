@@ -24,7 +24,7 @@ namespace APIWeb1.Dtos.Job
         public JobLevel JobLevel { get; set; }
         public JobType JobType { get; set; }
         public JobStatus JobStatus { get; set; }
-        public string Location { get; set; }
+        public int Location { get; set; }
 
     }
 }

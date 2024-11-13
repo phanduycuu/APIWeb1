@@ -1,11 +1,12 @@
-﻿var dataTable
-
+﻿var dataTableEmployer
+var dataTableUser
 $(document).ready(function () {
-    loadDataTable();
+    loadDataTableEmployer();
+    loadDataTableUser();
 });
 
-function loadDataTable() {
-    dataTable = $('#tbtEmployerData').DataTable({
+function loadDataTableEmployer() {
+    dataTableEmployer = $('#tbtEmployerData').DataTable({
         "ajax": {
             url: '/Account/GetAllEmployer',
             dataSrc: function (json) {
@@ -14,16 +15,82 @@ function loadDataTable() {
             }
         },
         "columns": [
-            { data: 'userName', "width": "25%", "className": "text-center" },
+            { data: 'username', "width": "25%", "className": "text-center" },
             { data: 'email', "width": "15%", "className": "text-center" },
             { data: 'fullname', "width": "15%", "className": "text-center" },
-            { data: 'company.name', "width": "15%", "className": "text-center" },
-            { data: 'status', "width": "15%", "className": "text-center" },
+            { data: 'companyName', "width": "15%", "className": "text-center" },
+            {
+                data: 'status',
+                "width": "15%",
+                "className": "text-center",
+                "render": function (data) {
+                    if (data === 0) {
+                        return "Đang đợi duyệt";
+                    } else if (data === 1) {
+                        return "Đã duyệt";
+                    } else if (data === 2) {
+                        return "Từ chối";
+                    }
+                    return "";
+                }
+            },
             {
                 data: 'id',
                 "render": function (data) {
                     return `<div class = "w-75 d-flex gap-1" role=""> 
-                    <a href="/Account/UpdateUser?id=${data}" class="btn btn-sm btn-warning mx-1">
+                    <a href="/Account/AcceptEmployer?id=${data}" class="btn btn-sm btn-warning mx-1">
+                        <i class="fa-solid fa-pen-to-square"></i> 
+                    </a>
+
+                    <a href="/Account/RefuseEmployer?id=${data}" class="btn btn-sm btn-warning mx-1">
+                        <i class="fa-solid fa-pen-to-square"></i> 
+                    </a>
+                    
+                    </div>`;
+                },
+                "width": "15%"
+            }
+        ]
+    });
+}
+
+function loadDataTableUser() {
+    dataTableUser = $('#tbtUserData').DataTable({
+        "ajax": {
+            url: '/Account/GetAllUser',
+            dataSrc: function (json) {
+                console.log(json);  // In ra dữ liệu từ API
+                return json.data || [];
+            }
+        },
+        "columns": [
+            { data: 'username', "width": "25%", "className": "text-center" },
+            { data: 'email', "width": "15%", "className": "text-center" },
+            { data: 'fullname', "width": "15%", "className": "text-center" },
+            {
+                data: 'status',
+                "width": "15%",
+                "className": "text-center",
+                "render": function (data) {
+                    if (data === 0) {
+                        return "Đang đợi duyệt";
+                    } else if (data === 1) {
+                        return "Đã duyệt";
+                    } else if (data === 2) {
+                        return "Từ chối";
+                    }
+                    return "";
+                }
+            },
+            {
+                data: 'id',
+                "render": function (data) {
+                    return `<div class = "w-75 d-flex gap-1" role=""> 
+                    <a href="/Account/AcceptUser?id=${data}" class="btn btn-sm btn-warning mx-1">
+                        <i class="fa-solid fa-pen-to-square"></i> 
+                    </a>
+
+                    <a href="/Account/RefuseUser?id=${data}" class="btn btn-sm btn-warning mx-1">
                         <i class="fa-solid fa-pen-to-square"></i> 
                     </a>
                     

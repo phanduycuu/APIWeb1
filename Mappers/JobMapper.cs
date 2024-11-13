@@ -21,8 +21,10 @@ namespace APIWeb1.Mappers
                 JobLevel = jobDto.JobLevel,
                 JobType = jobDto.JobType,
                 JobStatus = jobDto.JobStatus,
-                Location = jobDto.Location
+                AddressId = jobDto.Location
             };
         }
+
+       
     }
 }
