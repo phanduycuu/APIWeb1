@@ -8,6 +8,7 @@
         ISkillRepository SkillRepo { get; }
         IApplicationRepository ApplicationRepo { get; }
         IAccoutAdminRepository AccoutAdminRepo { get; }
+        IAddressRepository AddressRepo { get; }
         void Save();
     }
 }

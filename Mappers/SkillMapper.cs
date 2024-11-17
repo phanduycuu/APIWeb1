@@ -1,4 +1,4 @@
-﻿using APIWeb1.Dtos.Company;
+﻿using APIWeb1.Dtos.Companys;
 using APIWeb1.Dtos.SkillDtos;
 using APIWeb1.Models;
 

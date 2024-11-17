@@ -1,5 +1,5 @@
 ﻿using APIWeb1.Dtos.Account;
-using APIWeb1.Dtos.Company;
+using APIWeb1.Dtos.Companys;
 using APIWeb1.Models;
 
 namespace APIWeb1.Mappers

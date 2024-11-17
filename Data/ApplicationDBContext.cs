@@ -16,6 +16,7 @@ namespace APIWeb1.Data
         public DbSet<JobSkill> JobSkills { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<Address> Address { get; set; }
 
         //public DbSet<Skill> Skills { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

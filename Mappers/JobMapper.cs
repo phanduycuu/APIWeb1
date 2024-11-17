@@ -20,8 +20,7 @@ namespace APIWeb1.Mappers
                 EmployerId = employerId,
                 JobLevel = jobDto.JobLevel,
                 JobType = jobDto.JobType,
-                JobStatus = jobDto.JobStatus,
-                AddressId = jobDto.Location
+                JobStatus = jobDto.JobStatus
             };
         }
 

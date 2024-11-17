@@ -1,5 +1,5 @@
 ﻿using APIWeb1.Data;
-using APIWeb1.Dtos.Company;
+using APIWeb1.Dtos.Companys;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Mappers;

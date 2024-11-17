@@ -7,7 +7,7 @@ namespace APIWeb1.Models
     public class AppUser : IdentityUser
     {
         public string Fullname { get; set; }
-
+        public string? Img { get; set; }
         public int? CompanyId { get; set; }
         [ForeignKey("CompanyId")]
         [ValidateNever]

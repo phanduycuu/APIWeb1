@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace APIWeb1.Dtos.Company
+namespace APIWeb1.Dtos.Companys
 {
     public class CompanyDto
     {

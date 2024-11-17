@@ -24,7 +24,12 @@ namespace APIWeb1.Dtos.Job
         public JobLevel JobLevel { get; set; }
         public JobType JobType { get; set; }
         public JobStatus JobStatus { get; set; }
-        public int Location { get; set; }
+
+        public string Street { get; set; }
+        public string Province { get; set; }
+        public string Ward { get; set; }
+        public string District { get; set; }
+
 
     }
 }
