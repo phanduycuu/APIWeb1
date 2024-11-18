@@ -120,7 +120,7 @@ namespace APIWeb1.Repository
                               job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
-
+                    Id=js.Skill.Id,
                     Name = js.Skill.Name
                     // Include other properties of Skill as needed
 
@@ -194,7 +194,7 @@ namespace APIWeb1.Repository
                               job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
-
+                    Id = js.Skill.Id,
                     Name = js.Skill.Name
                 }).ToList()
             })
