@@ -138,6 +138,10 @@ namespace APIWeb1.Controllers.ApiControllers
                     return BadRequest(ModelState);
                 var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == registerEmployerDto.Email.ToLower());
                 if (user != null) return Unauthorized("Invalid email!");
+
+                user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == registerEmployerDto.Username.ToLower().Trim());
+                if (user != null) return Unauthorized("The username you set is duplicated!");
+
                 var appUser = new AppUser
                 {
                     UserName = registerEmployerDto.Username,
