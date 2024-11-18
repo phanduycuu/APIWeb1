@@ -10,6 +10,7 @@ namespace APIWeb1.Mappers
         {
             return new SkillDto
             {
+                Id = skillModel.Id,
                 Name = skillModel.Name
             };
         }

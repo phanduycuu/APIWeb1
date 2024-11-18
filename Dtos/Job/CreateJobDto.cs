@@ -29,7 +29,7 @@ namespace APIWeb1.Dtos.Job
         public string Province { get; set; }
         public string Ward { get; set; }
         public string District { get; set; }
-
+        public List<int> SkillIds { get; set; }
 
     }
 }

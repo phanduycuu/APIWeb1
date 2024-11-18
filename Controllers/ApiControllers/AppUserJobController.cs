@@ -99,9 +99,23 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(userJob);
         }
 
-        [HttpPost("create-job")]
+        //[HttpPost("create-job")]
+        //[Authorize(Roles = "Employer")]
+        //public async Task<IActionResult> Create([FromBody] CreateJobDto JobDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+        //    var username = User.GetUsername();
+        //    var appUser = await _userManager.FindByNameAsync(username);
+        //    var jobModel = JobDto.ToJobFromCreate(appUser.Id);
+        //    jobModel.AddressId = await CreateAddress(JobDto.Street, JobDto.Province, JobDto.Ward, JobDto.District);
+        //    await _unitOfWork.JobRepo.CreateAsync(jobModel);
+        //    return Created();
+        //}
+
+        [HttpPost("create-job-skills")]
         [Authorize(Roles = "Employer")]
-        public async Task<IActionResult> Create([FromBody] CreateJobDto JobDto)
+        public async Task<IActionResult> CreateJob([FromBody] CreateJobDto JobDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -110,7 +124,27 @@ namespace APIWeb1.Controllers.ApiControllers
             var jobModel = JobDto.ToJobFromCreate(appUser.Id);
             jobModel.AddressId = await CreateAddress(JobDto.Street, JobDto.Province, JobDto.Ward, JobDto.District);
             await _unitOfWork.JobRepo.CreateAsync(jobModel);
-            return Created();
+            if (JobDto.SkillIds != null && JobDto.SkillIds.Any())
+            {
+                var existingSkills = await _unitOfWork.JobSkillRepo.GetJobSkill(jobModel.Id);
+
+                // Loại bỏ các skill đã tồn tại
+                var newSkillIds = JobDto.SkillIds.Where(skillId => !existingSkills.Any(e => e.Id == skillId)).ToList();
+
+                var jobSkills = newSkillIds.Select(skillId => new JobSkill
+                {
+                    JobId = jobModel.Id,
+                    SkillId = skillId
+                });
+
+                foreach (var jobSkill in jobSkills)
+                {
+                    await _unitOfWork.JobSkillRepo.CreateAsync(jobSkill);
+                }
+                return Created();
+            }
+
+            return StatusCode(500, "Could not create job with skills");
         }
 
         [HttpPost("create-address")]
