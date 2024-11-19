@@ -213,5 +213,36 @@ namespace APIWeb1.Controllers.ApiControllers
             var Job = await _unitOfWork.JobRepo.GetJobById(JobId);
             return Ok(Job);
         }
+
+        // get user by id
+        [HttpGet("GetUserById")]
+        public async Task<IActionResult> GetUserById(string userId)
+        {
+            // Tìm kiếm người dùng trong cơ sở dữ liệu dựa trên userId
+            var userInfo = await _userManager.Users
+                //.Include(u => u.Company) // Bao gồm thông tin công ty
+                .Include(u => u.Address) // Bao gồm thông tin địa chỉ
+                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+
+            if (userInfo == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            // Chuyển đổi sang DTO để trả về client
+            GetUserDto userDto = new GetUserDto()
+            {
+                Fullname = userInfo.Fullname,
+                Username = userInfo.UserName,
+                Email = userInfo.Email,
+                Phone = userInfo.PhoneNumber,
+                Company = userInfo.Company,
+                Sex = userInfo.Sex,
+                Birthdate = userInfo.Birthdate,
+                Address = userInfo.Address
+            };
+
+            return Ok(userDto);
+        }
     }
 }

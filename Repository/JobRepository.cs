@@ -116,8 +116,9 @@ namespace APIWeb1.Repository
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
                 Location= job.Address.Street + " " +
                               job.Address.Province + " " +
-                              job.Address.Ward + " " +
-                              job.Address.District,
+                              job.Address.District + " " +
+                              job.Address.Ward,
+                LocationShort = job.Address.Province + ", " + job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
                     Id=js.Skill.Id,
@@ -277,10 +278,11 @@ namespace APIWeb1.Repository
                     JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                     JobType = EnumHelper.GetEnumDescription(job.JobType),
                     JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
-                    Location = job.Address.Street + " " +
-                               job.Address.Province + " " +
-                               job.Address.Ward + " " +
+                    Location = 
+                               job.Address.Province + ", " +
+                               job.Address.Ward + ", " +
                                job.Address.District,
+                    LocationShort = job.Address.Street,
                     Skills = job.JobSkills.Select(js => new SkillDto
                     {
                         Id = js.Skill.Id,
