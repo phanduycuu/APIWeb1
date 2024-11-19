@@ -46,5 +46,12 @@ namespace APIWeb1.Repository
         {
             _context.Companys.Update(company);
         }
+
+        //public async Task<Company?> GetCompanyById(int companyId)
+        //{
+        //    return await _context.Companys
+        //        .Include(c => c.Jobs) 
+        //        .FirstOrDefaultAsync(c => c.Id == companyId);
+        //}
     }
 }

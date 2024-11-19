@@ -34,5 +34,8 @@ namespace APIWeb1.Models
 
 
         public bool Status { get; set; }
+
+        //public List<Job> Jobs { get; set; } = new List<Job>();
+        //public List<AppUser> Employers { get; set; } = new List<AppUser>();
     }
 }

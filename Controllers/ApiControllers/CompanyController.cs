@@ -37,5 +37,14 @@ namespace APIWeb1.Controllers.ApiControllers
             var companyDtos = companies.Select(c => c.ToCompanyDto()).ToList();
             return Ok(companyDtos);
         }
+
+        //[HttpGet("GetCompanyById")]
+        //public async Task<IActionResult> GetCompanyById(int companyId)
+        //{
+
+        //    var companies = await _unitOfWork.CompanyRepo.GetCompanyById(companyId);
+            
+        //    return Ok(companies);
+        //}
     }
 }

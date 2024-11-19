@@ -13,6 +13,7 @@ namespace APIWeb1.Interfaces
         Task<List<GetJobByIdDto>> GetJobById(int JobId); //khi employer co danh sach cac job da dang, khi an vo chi tiet se lay job theo id
         Task<List<JobAdminDto>> GetAdminJob(); // admin lấy danh sách job để duyệt
         void UpdateStatusJob(int JobId,JobStatus Status);// admin lấy  job thông qua id sau đó update lại trạng thái
+        Task<int> GetTotalAsync();
         Task<Job> AdminGetJobById(int jobId);
     }
 }

@@ -4,6 +4,7 @@ using APIWeb1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIWeb1.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241119063356_add-blog")]
+    partial class addblog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,6 +206,9 @@ namespace APIWeb1.Migrations
                     b.Property<DateTime?>("CreateAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EmployerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Img")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -219,11 +225,11 @@ namespace APIWeb1.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("EmployerId");
 
                     b.ToTable("Blogs");
                 });
@@ -280,7 +286,7 @@ namespace APIWeb1.Migrations
                         new
                         {
                             Id = 1,
-                            Create = new DateTime(2024, 11, 19, 14, 2, 37, 274, DateTimeKind.Local).AddTicks(4347),
+                            Create = new DateTime(2024, 11, 19, 13, 33, 55, 64, DateTimeKind.Local).AddTicks(7414),
                             Description = "Công ti về công nghệ hàng đầu thế giới",
                             Email = "FPT@gmail.com",
                             Industry = "Information technology",
@@ -288,13 +294,13 @@ namespace APIWeb1.Migrations
                             Name = "FPT",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 19, 14, 2, 37, 274, DateTimeKind.Local).AddTicks(4360),
+                            Update = new DateTime(2024, 11, 19, 13, 33, 55, 64, DateTimeKind.Local).AddTicks(7428),
                             Website = "FPT.com"
                         },
                         new
                         {
                             Id = 2,
-                            Create = new DateTime(2024, 11, 19, 14, 2, 37, 274, DateTimeKind.Local).AddTicks(4363),
+                            Create = new DateTime(2024, 11, 19, 13, 33, 55, 64, DateTimeKind.Local).AddTicks(7431),
                             Description = "Đa lĩnh vực",
                             Email = "BOSCH@gmail.com",
                             Industry = "Information technology",
@@ -302,7 +308,7 @@ namespace APIWeb1.Migrations
                             Name = "BOSCH",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 19, 14, 2, 37, 274, DateTimeKind.Local).AddTicks(4363),
+                            Update = new DateTime(2024, 11, 19, 13, 33, 55, 64, DateTimeKind.Local).AddTicks(7431),
                             Website = "BOSCH.com"
                         });
                 });
@@ -464,19 +470,19 @@ namespace APIWeb1.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c86c6f0a-b680-4394-a69a-e199356a6e31",
+                            Id = "11bb721f-67e7-41b3-a8e4-cd6ae005edc6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2d1bd9d5-5aea-4784-9124-b4a4cb77e360",
+                            Id = "2ba415fb-bade-4464-9d66-2fcbed8fb7d8",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "779a7e8e-7d2e-4b12-8b2e-f8a3adf2e0f6",
+                            Id = "353fe11b-5b42-4747-bb49-c65a9df91068",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });
@@ -626,9 +632,7 @@ namespace APIWeb1.Migrations
                 {
                     b.HasOne("APIWeb1.Models.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployerId");
 
                     b.Navigation("User");
                 });

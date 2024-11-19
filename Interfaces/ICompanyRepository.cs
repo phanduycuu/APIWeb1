@@ -8,6 +8,7 @@ namespace APIWeb1.Interfaces
     {
         Task<List<Company>> GetAllAsync();
         Task<List<Company>> GetAllAsyncForUser(CompanyQueryObj query);
+        //Task<Company?> GetCompanyById(int companyId);
         void Update(Company company);
     }
 }

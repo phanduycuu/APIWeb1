@@ -21,5 +21,6 @@ namespace APIWeb1.Models
         public Address? Address { get; set; }
         public List<Application> Applications { get; set; } = new List<Application>();
 
+
     }
 }

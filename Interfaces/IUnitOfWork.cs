@@ -9,6 +9,7 @@
         IApplicationRepository ApplicationRepo { get; }
         IAccoutAdminRepository AccoutAdminRepo { get; }
         IAddressRepository AddressRepo { get; }
+        IBlogRepository BlogRepo { get; }
         void Save();
     }
 }

@@ -24,5 +24,11 @@ namespace APIWeb1.Controllers.ApiControllers
             var Job = await _unitOfWork.JobRepo.GetAllAsync(query);
             return Ok(Job);
         }
+        [HttpGet("GetTotal")]
+        public async Task<IActionResult> GetTotal()
+        {
+            var total = await _unitOfWork.JobRepo.GetTotalAsync();
+            return Ok(total);
+        }
     }
 }

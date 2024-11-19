@@ -172,7 +172,7 @@ namespace APIWeb1.Controllers.ApiControllers
             var filePath = "";
             if (cvFile != null)
             {
-                filePath = Path.Combine("wwwroot/uploads", $"{appUser.Id}_{cvFile.FileName}");
+                filePath = Path.Combine(@"wwwroot\uploads\", $"{appUser.Id}_{cvFile.FileName}");
 
                 // Lưu file vào hệ thống file
                 using (var stream = new FileStream(filePath, FileMode.Create))

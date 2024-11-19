@@ -244,6 +244,17 @@ namespace APIWeb1.Repository
             }).ToListAsync();
         }
 
+        public async Task<int> GetTotalAsync()
+        {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
+            var totalJobs = await _context.Jobs
+                                  .Where(u => u.JobStatus == status)
+                                  .CountAsync();
+
+            return totalJobs;
+
+        }
+
         public void UpdateStatusJob(int JobId, JobStatus Status)
         {   
             Job job = _context.Jobs.Where(u=> u.Id== JobId).FirstOrDefault();
