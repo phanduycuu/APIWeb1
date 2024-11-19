@@ -1,4 +1,5 @@
-﻿using APIWeb1.Dtos.Job;
+﻿using APIWeb1.Dtos.Companys;
+using APIWeb1.Dtos.Job;
 using APIWeb1.Helpers;
 using APIWeb1.Models;
 
@@ -8,7 +9,7 @@ namespace APIWeb1.Interfaces
     {
         Task<List<Company>> GetAllAsync();
         Task<List<Company>> GetAllAsyncForUser(CompanyQueryObj query);
-        //Task<Company?> GetCompanyById(int companyId);
+        Task<GetCompanybyIdDto> GetCompanyWithJobsByIdAsync(int companyId);
         void Update(Company company);
     }
 }

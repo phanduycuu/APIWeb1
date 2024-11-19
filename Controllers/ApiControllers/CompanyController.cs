@@ -38,13 +38,13 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(companyDtos);
         }
 
-        //[HttpGet("GetCompanyById")]
-        //public async Task<IActionResult> GetCompanyById(int companyId)
-        //{
+        [HttpGet("GetCompanyById")]
+        public async Task<IActionResult> GetCompanyById(int companyId)
+        {
 
-        //    var companies = await _unitOfWork.CompanyRepo.GetCompanyById(companyId);
-            
-        //    return Ok(companies);
-        //}
+            var companies = await _unitOfWork.CompanyRepo.GetCompanyWithJobsByIdAsync(companyId);
+
+            return Ok(companies);
+        }
     }
 }

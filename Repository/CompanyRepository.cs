@@ -1,4 +1,8 @@
 ﻿using APIWeb1.Data;
+using APIWeb1.Dtos.AppUsers;
+using APIWeb1.Dtos.Companys;
+using APIWeb1.Dtos.Job;
+using APIWeb1.Dtos.SkillDtos;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
@@ -47,11 +51,60 @@ namespace APIWeb1.Repository
             _context.Companys.Update(company);
         }
 
-        //public async Task<Company?> GetCompanyById(int companyId)
-        //{
-        //    return await _context.Companys
-        //        .Include(c => c.Jobs) 
-        //        .FirstOrDefaultAsync(c => c.Id == companyId);
-        //}
+        public async Task<GetCompanybyIdDto> GetCompanyWithJobsByIdAsync(int companyId)
+        {
+            var company = await _context.Companys
+                .Where(c => c.Id == companyId)
+                .Select(c => new GetCompanybyIdDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Industry = c.Industry,
+                    Description = c.Description,
+                    Logo = c.Logo,
+                    Website = c.Website,
+                    Email = c.Email,
+                    Phone = c.Phone,
+                    Create = c.Create,
+                    Update = c.Update,
+                    Status = c.Status,
+                    Jobs = c.Employers
+                        .SelectMany(u => u.Jobs)
+                        .Select(job => new JobDto
+                        {
+                            Id = job.Id,
+                            Title = job.Title,
+                            Description = job.Description,
+                            Requirements = job.Requirements,
+                            Benefits = job.Benefits,
+                            Salary = job.Salary,
+                            ExpiredDate = job.ExpiredDate,
+                            CreateOn = job.CreateOn,
+                            UpdatedOn = job.UpdatedOn,
+                            Employer = new EmployerDto
+                            {
+                                Id = job.Employer.Id,
+                                FullName = job.Employer.Fullname,
+                                Email = job.Employer.Email,
+
+                            },
+                            Skills = job.JobSkills.Select(js => new SkillDto
+                            {
+                                Id = js.Skill.Id,
+                                Name = js.Skill.Name
+                                // Include other properties of Skill as needed
+                            }).ToList(),
+                            JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                            JobType = EnumHelper.GetEnumDescription(job.JobType),
+                            JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                            Location = job.Address != null
+                                ? $"{job.Address.Street} {job.Address.Ward} {job.Address.District} {job.Address.Province}"
+                                : "N/A"
+                        }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            return company;
+        }
     }
 }

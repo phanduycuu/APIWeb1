@@ -20,6 +20,7 @@ namespace APIWeb1.Models
         [ValidateNever]
         public Address? Address { get; set; }
         public List<Application> Applications { get; set; } = new List<Application>();
+        public List<Job> Jobs { get; set; } = new List<Job>();
 
 
     }

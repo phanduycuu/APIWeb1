@@ -1,41 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using APIWeb1.Dtos.Job;
 
-namespace APIWeb1.Models
+namespace APIWeb1.Dtos.Companys
 {
-    public class Company
+    public class GetCompanybyIdDto
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
-
         public string Name { get; set; }
-
-
         public string Industry { get; set; }
-
-
         public string Description { get; set; }
-
         public string? Logo { get; set; }
-
-
         public string Website { get; set; }
-
-
         public string Email { get; set; }
-
-
         public string Phone { get; set; }
-
         public DateTime? Create { get; set; }
-
-
         public DateTime? Update { get; set; }
-
-
         public bool Status { get; set; }
-
-        //public List<Job> Jobs { get; set; } = new List<Job>();
-        public List<AppUser> Employers { get; set; } = new List<AppUser>();
+        public List<JobDto> Jobs { get; set; } = new List<JobDto>();
     }
 }
