@@ -20,11 +20,20 @@ namespace APIWeb1.Controllers.ApiControllers
         }
 
         
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("GetAllForEmployer")]
+        public async Task<IActionResult> GetAllForEmployer()
         {
             
             var companies = await _unitOfWork.CompanyRepo.GetAllAsync();
+            var companyDtos = companies.Select(c => c.ToCompanyDto()).ToList();
+            return Ok(companyDtos);
+        }
+
+        [HttpGet("GetAllForUser")]
+        public async Task<IActionResult> GetAllForUser([FromQuery] CompanyQueryObj obj)
+        {
+
+            var companies = await _unitOfWork.CompanyRepo.GetAllAsyncForUser(obj);
             var companyDtos = companies.Select(c => c.ToCompanyDto()).ToList();
             return Ok(companyDtos);
         }
