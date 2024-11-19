@@ -244,6 +244,55 @@ namespace APIWeb1.Repository
             }).ToListAsync();
         }
 
+        public async Task<JobDto> GetJobByIdForAll(int JobId)
+        {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
+
+            // Query to retrieve the job details
+            var jobModel = await _context.Jobs
+                .Include(a => a.Employer)
+                    .ThenInclude(b => b.Company)
+                .Include(job => job.JobSkills)
+                    .ThenInclude(jobSkill => jobSkill.Skill)
+                    .Include(j=>j.Address)
+                .Where(u => u.JobStatus == status && u.Id == JobId)
+                .Select(job => new JobDto
+                {
+                    Id = job.Id,
+                    Title = job.Title,
+                    Description = job.Description,
+                    Requirements = job.Requirements,
+                    Benefits = job.Benefits,
+                    Salary = job.Salary,
+                    ExpiredDate = job.ExpiredDate,
+                    CreateOn = job.CreateOn,
+                    UpdatedOn = job.UpdatedOn,
+                    Employer = new EmployerDto
+                    {
+                        Id = job.Employer.Id,
+                        FullName = job.Employer.Fullname,
+                        Email = job.Employer.Email,
+                        Company = job.Employer.Company
+                    },
+                    JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                    Location = job.Address.Street + " " +
+                               job.Address.Province + " " +
+                               job.Address.Ward + " " +
+                               job.Address.District,
+                    Skills = job.JobSkills.Select(js => new SkillDto
+                    {
+                        Id = js.Skill.Id,
+                        Name = js.Skill.Name
+                        // Include other properties of Skill as needed
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            return jobModel;
+        }
+
         public async Task<int> GetTotalAsync()
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
