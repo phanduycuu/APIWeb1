@@ -210,7 +210,9 @@ namespace APIWeb1.Controllers.ApiControllers
         {
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
-            var Job = await _unitOfWork.JobRepo.GetJobById(JobId);
+            var Job = await _unitOfWork.JobRepo.GetJobById(JobId, appUser.Id);
+            if (Job == null) 
+                return NotFound("you don't have permition for this job or this job doesn't exist");
             return Ok(Job);
         }
 
@@ -243,6 +245,33 @@ namespace APIWeb1.Controllers.ApiControllers
             };
 
             return Ok(userDto);
+        }
+
+        [HttpPost("Confirm-application")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> ConfirmApplication(ComfirmAppDto dto) // status= 2 duyet, status= 3 tu choi
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);           
+            var app = await _unitOfWork.ApplicationRepo.GetEmployerApp(dto.JobId, dto.UserId, appUser.Id);
+
+            if (app == null)
+            {
+                
+                return BadRequest("You don't have permition for this job");
+
+            }
+            else
+            {
+                Application appModel = app;                
+                appModel.Status = dto.Status;
+                
+
+                await _unitOfWork.ApplicationRepo.UpdateAppUserJob(appModel);
+                return Ok("Update status successfully");
+            }
         }
     }
 }

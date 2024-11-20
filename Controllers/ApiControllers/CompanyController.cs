@@ -46,5 +46,12 @@ namespace APIWeb1.Controllers.ApiControllers
 
             return Ok(companies);
         }
+
+        [HttpGet("GetTotal")]
+        public async Task<IActionResult> GetTotal()
+        {
+            var total = await _unitOfWork.CompanyRepo.GetTotalAsync();
+            return Ok(total);
+        }
     }
 }

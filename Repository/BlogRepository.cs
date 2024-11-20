@@ -84,5 +84,14 @@ namespace APIWeb1.Repository
                 Content = u.Content
             }).ToListAsync();
         }
+
+        public async Task<int> GetTotalAsync()
+        {
+            var totalblogs = await _context.Blogs
+                                  .Where(u => u.Status == 1)
+                                  .CountAsync();
+
+            return totalblogs;
+        }
     }
 }

@@ -85,6 +85,14 @@ namespace APIWeb1.Controllers.ApiControllers
             var blog = await _unitOfWork.BlogRepo.GetById(blogId);
             return Ok(blog);
         }
+
+
+        [HttpGet("GetTotal")]
+        public async Task<IActionResult> GetTotal()
+        {
+            var total = await _unitOfWork.BlogRepo.GetTotalAsync();
+            return Ok(total);
+        }
     }
 
 }

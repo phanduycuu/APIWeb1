@@ -32,6 +32,11 @@ namespace APIWeb1.Repository
             return await _context.Applications.Where(a=>a.JobId==JobId && a.UserId==userId).FirstOrDefaultAsync();
         }
 
+        public async Task<Application> GetEmployerApp(int JobId, string userId, string employerId)
+        {
+            return await _context.Applications.Include(u=> u.Job).ThenInclude(j=>j.Employer).Where(a => a.JobId == JobId && a.UserId == userId && a.Job.EmployerId== employerId).FirstOrDefaultAsync();
+        }
+
         public async Task<List<GetAppDto>> GetUserJob(AppUser user, JobQueryObject query)
         {
             var applications = _context.Applications.Include(a => a.Job).

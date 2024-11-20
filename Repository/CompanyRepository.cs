@@ -6,6 +6,7 @@ using APIWeb1.Dtos.SkillDtos;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using APIWeb1.Models.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Repository
@@ -81,11 +82,15 @@ namespace APIWeb1.Repository
                             ExpiredDate = job.ExpiredDate,
                             CreateOn = job.CreateOn,
                             UpdatedOn = job.UpdatedOn,
-                            Employer = new EmployerDto
+                            Employer = new GetEmployerDto
                             {
                                 Id = job.Employer.Id,
                                 FullName = job.Employer.Fullname,
                                 Email = job.Employer.Email,
+                                Location = job.Employer.Address.Street + " " +
+                                            job.Employer.Address.Province + " " +
+                                            job.Employer.Address.District + " " +
+                                            job.Employer.Address.Ward
 
                             },
                             Skills = job.JobSkills.Select(js => new SkillDto
@@ -105,6 +110,15 @@ namespace APIWeb1.Repository
                 .FirstOrDefaultAsync();
 
             return company;
+        }
+
+        public async Task<int> GetTotalAsync()
+        {
+            var totalcompanys = await _context.Companys
+                                  .Where(u => u.Status == true)
+                                  .CountAsync();
+
+            return totalcompanys;
         }
     }
 }

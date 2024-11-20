@@ -11,5 +11,6 @@ namespace APIWeb1.Interfaces
         Task<List<GetAllBlogDto>> GetAllAsync(BlogQueryObject query);
         Task<List<GetAllBlogDto>> GetForEmployer(BlogQueryObject query,string userId);
         Task<List<Blog>> GetById(int blogId);
+        Task<int> GetTotalAsync();
     }
 }

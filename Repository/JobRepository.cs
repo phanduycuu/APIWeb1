@@ -104,11 +104,15 @@ namespace APIWeb1.Repository
                 ExpiredDate = job.ExpiredDate,
                 CreateOn = job.CreateOn,
                 UpdatedOn = job.UpdatedOn,
-                Employer = new EmployerDto
+                Employer = new GetEmployerDto
                 {
                     Id = job.Employer.Id,
                     FullName = job.Employer.Fullname,
                     Email = job.Employer.Email,
+                    Location= job.Employer.Address.Street + " " +
+                              job.Employer.Address.Province + " " +
+                              job.Employer.Address.District + " " +
+                              job.Employer.Address.Ward,
                     Company = job.Employer.Company
                 },
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
@@ -201,10 +205,10 @@ namespace APIWeb1.Repository
             })
         .ToListAsync();
         }
-        public Task<List<GetJobByIdDto>> GetJobById(int JobId)
+        public Task<List<GetJobByIdDto>> GetJobById(int JobId, string EmployerId)
         {
             var jobModel = _context.Jobs.Include(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.Id == JobId);
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.Id == JobId && u.EmployerId==EmployerId);
 
             return jobModel.Select(job => new GetJobByIdDto
             {
@@ -219,7 +223,7 @@ namespace APIWeb1.Repository
                 UpdatedOn = job.UpdatedOn,
                 Users = job.Applications.Where(u=>u.Status !=0).Select(user => new AppUserDto
                 {
-
+                    Id=user.UserId,
                     FullName = user.User.Fullname,
                     Email = user.User.Email,
                     CV = user.Cv
@@ -268,12 +272,16 @@ namespace APIWeb1.Repository
                     ExpiredDate = job.ExpiredDate,
                     CreateOn = job.CreateOn,
                     UpdatedOn = job.UpdatedOn,
-                    Employer = new EmployerDto
+                    Employer = new GetEmployerDto
                     {
                         Id = job.Employer.Id,
                         FullName = job.Employer.Fullname,
                         Email = job.Employer.Email,
-                        Company = job.Employer.Company
+                        Company = job.Employer.Company,
+                        Location = job.Employer.Address.Street + " " +
+                              job.Employer.Address.Province + " " +
+                              job.Employer.Address.District + " " +
+                              job.Employer.Address.Ward,
                     },
                     JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                     JobType = EnumHelper.GetEnumDescription(job.JobType),

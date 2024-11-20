@@ -10,7 +10,7 @@ namespace APIWeb1.Interfaces
         Task<List<JobDto>> GetEmployerJob(AppUser user, JobQueryObject query); //khi employer muon lay danh sach cac job da tao
         Task<Job> CreateAsync(Job job); // employer tao job
         Task<List<JobDto>> GetAllAsync(JobQueryObject query);  // hien ra tat ca job
-        Task<List<GetJobByIdDto>> GetJobById(int JobId); //khi employer co danh sach cac job da dang, khi an vo chi tiet se lay job theo id
+        Task<List<GetJobByIdDto>> GetJobById(int JobId,string EmployerId); //khi employer co danh sach cac job da dang, khi an vo chi tiet se lay job theo id
         Task<List<JobAdminDto>> GetAdminJob(); // admin lấy danh sách job để duyệt
         void UpdateStatusJob(int JobId,JobStatus Status);// admin lấy  job thông qua id sau đó update lại trạng thái
         Task<int> GetTotalAsync();

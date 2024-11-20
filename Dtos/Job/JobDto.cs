@@ -25,7 +25,7 @@ namespace APIWeb1.Dtos.Job
         public DateTime? ExpiredDate { get; set; }
         public DateTime CreateOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public EmployerDto Employer { get; set; }
+        public GetEmployerDto Employer { get; set; }
         public string JobLevel { get; set; }
         public string JobType { get; set; }
         public string JobStatus { get; set; }
