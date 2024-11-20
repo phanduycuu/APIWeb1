@@ -2,10 +2,9 @@
 
 namespace APIWeb1.Dtos.AppUsers
 {
-    public class GetEmployerDto
+    public class GetEmployer
     {
         public string Id { get; set; }
-        public CompanyDto Company { get; set; }
-
+        public GetCompany Company { get; set; }
     }
 }

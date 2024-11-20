@@ -71,40 +71,34 @@ namespace APIWeb1.Repository
                     Status = c.Status,
                     Jobs = c.Employers
                         .SelectMany(u => u.Jobs)
-                        .Select(job => new JobDto
+                        .Select(job => new GetAllJobDto
                         {
                             Id = job.Id,
                             Title = job.Title,
-                            Description = job.Description,
-                            Requirements = job.Requirements,
-                            Benefits = job.Benefits,
                             Salary = job.Salary,
-                            ExpiredDate = job.ExpiredDate,
                             CreateOn = job.CreateOn,
-                            UpdatedOn = job.UpdatedOn,
-                            Employer = new GetEmployerDto
+
+                            Employer = new GetEmployer
                             {
                                 Id = job.Employer.Id,
-                                FullName = job.Employer.Fullname,
-                                Email = job.Employer.Email,
-                                Location = job.Employer.Address.Street + " " +
-                                            job.Employer.Address.Province + " " +
-                                            job.Employer.Address.District + " " +
-                                            job.Employer.Address.Ward
-
+                                Company = new GetCompany
+                                {
+                                    Name = job.Employer.Company.Name,
+                                    logo = job.Employer.Company.Logo
+                                },
                             },
+                            JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                            JobType = EnumHelper.GetEnumDescription(job.JobType),
+                            JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                            LocationShort = job.Address.Province + ", " + job.Address.District,
                             Skills = job.JobSkills.Select(js => new SkillDto
                             {
                                 Id = js.Skill.Id,
                                 Name = js.Skill.Name
                                 // Include other properties of Skill as needed
-                            }).ToList(),
-                            JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
-                            JobType = EnumHelper.GetEnumDescription(job.JobType),
-                            JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
-                            Location = job.Address != null
-                                ? $"{job.Address.Street} {job.Address.Ward} {job.Address.District} {job.Address.Province}"
-                                : "N/A"
+
+                            }).ToList()
+
                         }).ToList()
                 })
                 .FirstOrDefaultAsync();

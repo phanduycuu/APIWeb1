@@ -99,6 +99,16 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(userJob);
         }
 
+        [HttpGet("user-issave-job")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetUserIsSavejob([FromQuery] JobQueryObject query)
+        {
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var userJob = await _unitOfWork.ApplicationRepo.GetAppUserIsSaveJob(appUser, query);
+            return Ok(userJob);
+        }
+
         //[HttpPost("create-job")]
         //[Authorize(Roles = "Employer")]
         //public async Task<IActionResult> Create([FromBody] CreateJobDto JobDto)
@@ -163,29 +173,30 @@ namespace APIWeb1.Controllers.ApiControllers
 
         [HttpPost("create-application")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateApplication(int JobId,int status,  IFormFile? cvFile)
+        public async Task<IActionResult> CreateApplication(CreateApplicationDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
             var filePath = "";
-            if (cvFile != null)
-            {
-                filePath = Path.Combine(@"wwwroot\uploads\", $"{appUser.Id}_{cvFile.FileName}");
+
+                filePath = Path.Combine(@"wwwroot\uploads\", $"{appUser.Id}_{dto.cvFile.FileName}_{dto.JobId}");
 
                 // Lưu file vào hệ thống file
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await cvFile.CopyToAsync(stream);
+                    await dto.cvFile.CopyToAsync(stream);
                 }
-            }
-            var app = await _unitOfWork.ApplicationRepo.GetAppUserJob(JobId, appUser.Id);
+            
+            var app = await _unitOfWork.ApplicationRepo.GetAppUserJob(dto.JobId, appUser.Id);
 
             if (app != null)
             {
-                app.Status = status;
+                app.Status = 1;
                 app.Cv = filePath;
+                app.Isshow = true;
+                app.DateApply= DateTime.Now;
                 await _unitOfWork.ApplicationRepo.UpdateAppUserJob(app);
                 return Ok();
 
@@ -193,11 +204,43 @@ namespace APIWeb1.Controllers.ApiControllers
             else
             {
                 Application appModel = new Application();
-                appModel.JobId = JobId;
+                appModel.JobId = dto.JobId;
                 appModel.UserId = appUser.Id;
-                appModel.Status = status;
-                appModel.IsSale = true;
+                appModel.Status = 1;
+                appModel.Isshow = true;
                 appModel.Cv = filePath;
+                app.DateApply = DateTime.Now;
+
+                await _unitOfWork.ApplicationRepo.CreateAsync(appModel);
+                return Created();
+            }
+        }
+
+
+        [HttpPost("issave")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> CreateApplicatio(IsSaveApplication dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);           
+            var app = await _unitOfWork.ApplicationRepo.GetAppUserJob(dto.JobId, appUser.Id);
+
+            if (app != null)
+            {
+                app.Issave = dto.Issave;
+                await _unitOfWork.ApplicationRepo.UpdateAppUserJob(app);
+                return Ok();
+
+            }
+            else
+            {
+                Application appModel = new Application();
+                appModel.JobId = dto.JobId;
+                appModel.UserId = appUser.Id;
+                appModel.Status = 0;
+                appModel.Issave = true;
 
                 await _unitOfWork.ApplicationRepo.CreateAsync(appModel);
                 return Created();

@@ -24,6 +24,5 @@ namespace APIWeb1.Dtos.Companys
 
         public string Phone { get; set; }
 
-        public string Location { get; set; }
     }
 }

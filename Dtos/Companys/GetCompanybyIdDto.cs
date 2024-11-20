@@ -15,6 +15,6 @@ namespace APIWeb1.Dtos.Companys
         public DateTime? Create { get; set; }
         public DateTime? Update { get; set; }
         public bool Status { get; set; }
-        public List<JobDto> Jobs { get; set; } = new List<JobDto>();
+        public List<GetAllJobDto> Jobs { get; set; } = new List<GetAllJobDto>();
     }
 }

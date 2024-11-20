@@ -21,7 +21,8 @@ namespace APIWeb1.Models
 
         public string? Cv { get; set; }
         public int Status { get; set; }  //0 chua gui,1 dang duyet,2 da duyet,3 tu choi
-        public bool IsSale  { get; set; } 
+        public bool Issave { get; set; }
+        public bool Isshow { get; set; }
 
     }
 }
