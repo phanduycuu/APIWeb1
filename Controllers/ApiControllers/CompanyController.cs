@@ -53,5 +53,12 @@ namespace APIWeb1.Controllers.ApiControllers
             var total = await _unitOfWork.CompanyRepo.GetTotalAsync();
             return Ok(total);
         }
+
+        [HttpGet("GetTotalWithConditions")]
+        public async Task<IActionResult> GetTotalWithConditionsAsync([FromQuery] CompanyQueryObj query)
+        {
+            var total = await _unitOfWork.CompanyRepo.GetTotalWithConditionsAsync(query);
+            return Ok(total);
+        }
     }
 }

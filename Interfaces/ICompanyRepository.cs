@@ -11,6 +11,8 @@ namespace APIWeb1.Interfaces
         Task<List<Company>> GetAllAsyncForUser(CompanyQueryObj query);
         Task<GetCompanybyIdDto> GetCompanyWithJobsByIdAsync(int companyId);
         Task<int> GetTotalAsync();
+
+        Task<int> GetTotalWithConditionsAsync(CompanyQueryObj query);
         void Update(Company company);
     }
 }

@@ -31,6 +31,13 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(total);
         }
 
+        [HttpGet("GetTotalWithConditions")]
+        public async Task<IActionResult> GetTotalWithConditionsAsync([FromQuery] JobQueryObject query)
+        {
+            var total = await _unitOfWork.JobRepo.GetTotalWithConditionsAsync(query);
+            return Ok(total);
+        }
+
         [HttpGet("GetJobById")]
         public async Task<IActionResult> GetjobById(int jobId)
         {

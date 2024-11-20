@@ -171,24 +171,74 @@ namespace APIWeb1.Controllers.ApiControllers
             return addModel.Id;
         }
 
+        //[HttpPost("create-application")]
+        //[Authorize(Roles = "User")]
+        //public async Task<IActionResult> CreateApplication(CreateApplicationDto dto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+        //    var username = User.GetUsername();
+        //    var appUser = await _userManager.FindByNameAsync(username);
+        //    var filePath = "";
+
+        //        filePath = Path.Combine(@"wwwroot\uploads\", $"{appUser.Id}_{dto.cvFile.FileName}_{dto.JobId}");
+
+        //        // Lưu file vào hệ thống file
+        //        using (var stream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            await dto.cvFile.CopyToAsync(stream);
+        //        }
+
+        //    var app = await _unitOfWork.ApplicationRepo.GetAppUserJob(dto.JobId, appUser.Id);
+
+        //    if (app != null)
+        //    {
+        //        app.Status = 1;
+        //        app.Cv = filePath;
+        //        app.Isshow = true;
+        //        app.DateApply= DateTime.Now;
+        //        await _unitOfWork.ApplicationRepo.UpdateAppUserJob(app);
+        //        return Ok();
+
+        //    }
+        //    else
+        //    {
+        //        Application appModel = new Application();
+        //        appModel.JobId = dto.JobId;
+        //        appModel.UserId = appUser.Id;
+        //        appModel.Status = 1;
+        //        appModel.Isshow = true;
+        //        appModel.Cv = filePath;
+        //        app.DateApply = DateTime.Now;
+
+        //        await _unitOfWork.ApplicationRepo.CreateAsync(appModel);
+        //        return Created();
+        //    }
+        //}
+
         [HttpPost("create-application")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateApplication(CreateApplicationDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
             var filePath = "";
 
-                filePath = Path.Combine(@"wwwroot\uploads\", $"{appUser.Id}_{dto.cvFile.FileName}_{dto.JobId}");
+            // Tạo tên file và đường dẫn
+            var fileExtension = Path.GetExtension(dto.cvFile.FileName);
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(dto.cvFile.FileName);
+            var fileName = $"{appUser.Id}_{fileNameWithoutExtension}_{dto.JobId}{fileExtension}";
+            filePath = Path.Combine(@"wwwroot\uploads\", fileName);
 
-                // Lưu file vào hệ thống file
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await dto.cvFile.CopyToAsync(stream);
-                }
-            
+            // Lưu file vào hệ thống
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await dto.cvFile.CopyToAsync(stream);
+            }
+
             var app = await _unitOfWork.ApplicationRepo.GetAppUserJob(dto.JobId, appUser.Id);
 
             if (app != null)
@@ -196,10 +246,9 @@ namespace APIWeb1.Controllers.ApiControllers
                 app.Status = 1;
                 app.Cv = filePath;
                 app.Isshow = true;
-                app.DateApply= DateTime.Now;
+                app.DateApply = DateTime.Now;
                 await _unitOfWork.ApplicationRepo.UpdateAppUserJob(app);
                 return Ok();
-
             }
             else
             {
@@ -209,12 +258,51 @@ namespace APIWeb1.Controllers.ApiControllers
                 appModel.Status = 1;
                 appModel.Isshow = true;
                 appModel.Cv = filePath;
-                app.DateApply = DateTime.Now;
+                appModel.DateApply = DateTime.Now;
 
                 await _unitOfWork.ApplicationRepo.CreateAsync(appModel);
                 return Created();
             }
         }
+
+        //[HttpGet("get-applications")]
+        //[Authorize(Roles = "User")]
+        //public async Task<IActionResult> GetApplicationsByUser()
+        //{
+        //    // Lấy tên người dùng từ token JWT
+        //    var username = User.GetUsername();
+
+        //    // Tìm người dùng trong hệ thống
+        //    var appUser = await _userManager.FindByNameAsync(username);
+        //    if (appUser == null)
+        //    {
+        //        return NotFound("User not found.");
+        //    }
+
+        //    // Lấy tất cả ứng tuyển của người dùng này
+        //    var applications = await _unitOfWork.ApplicationRepo.GetApplicationsByUserId(appUser.Id);
+
+        //    // Nếu không tìm thấy ứng tuyển nào
+        //    if (applications == null || !applications.Any())
+        //    {
+        //        return NoContent(); // Hoặc trả về BadRequest nếu bạn muốn
+        //    }
+
+        //    // Trả về danh sách ứng tuyển (có thể dùng ApplicationDto hoặc mô hình khác)
+        //    var applicationsDto = applications.Select(app => new ApplicationDto
+        //    {
+        //        Id = app.Id,
+        //        JobId = app.JobId,
+        //        Status = app.Status,
+        //        Cv = app.Cv,
+        //        DateApply = app.DateApply,
+        //        JobTitle = app.Job.Title, // Giả sử bạn muốn trả về tiêu đề công việc
+        //        EmployerName = app.Job.Employer.Name // Tên nhà tuyển dụng
+        //    }).ToList();
+
+        //    return Ok(applicationsDto);
+        //}
+
 
 
         [HttpPost("issave")]

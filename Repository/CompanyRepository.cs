@@ -114,5 +114,27 @@ namespace APIWeb1.Repository
 
             return totalcompanys;
         }
+
+        public Task<int> GetTotalWithConditionsAsync(CompanyQueryObj query)
+        {
+            var companyQuery = _context.Companys.Where(s => s.Status == true);
+
+
+            // Áp dụng các bộ lọc
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                companyQuery = companyQuery.Where(s => s.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Industry))
+            {
+                companyQuery = companyQuery.Where(s => s.Industry.Contains(query.Industry));
+            }
+
+            // Tính tổng số công ty thoả mãn các điều kiện
+            var totalCompanys = companyQuery.CountAsync();
+
+            return totalCompanys;
+        }
     }
 }

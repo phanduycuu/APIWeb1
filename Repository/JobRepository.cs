@@ -302,6 +302,48 @@ namespace APIWeb1.Repository
 
         }
 
+        public async Task<int> GetTotalWithConditionsAsync(JobQueryObject query)
+        {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
+            var jobQuery = _context.Jobs.Where(u => u.JobStatus == status).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                jobQuery = jobQuery.Where(s => s.Title.Contains(query.Title));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Location))
+            {
+                jobQuery = jobQuery.Where(s => (s.Address.Street + " " +
+                                                 s.Address.Province + " " +
+                                                 s.Address.Ward + " " +
+                                                 s.Address.District)
+                                                 .Contains(query.Location));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.JobLevel))
+            {
+                var level = EnumHelper.GetEnumValueFromDescription<JobLevel>(query.JobLevel);
+                jobQuery = jobQuery.Where(s => s.JobLevel == level);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.JobStatus))
+            {
+                var Status = EnumHelper.GetEnumValueFromDescription<JobStatus>(query.JobStatus);
+                jobQuery = jobQuery.Where(s => s.JobStatus == Status);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.JobType))
+            {
+                var Type = EnumHelper.GetEnumValueFromDescription<JobType>(query.JobType);
+                jobQuery = jobQuery.Where(s => s.JobType == Type);
+            }
+
+            // Tính tổng số lượng công việc phù hợp với các điều kiện
+            return await jobQuery.CountAsync();
+        }
+
+
         public void UpdateStatusJob(int JobId, JobStatus Status)
         {   
             Job job = _context.Jobs.Where(u=> u.Id== JobId).FirstOrDefault();

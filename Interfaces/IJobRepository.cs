@@ -14,6 +14,8 @@ namespace APIWeb1.Interfaces
         Task<List<JobAdminDto>> GetAdminJob(); // admin lấy danh sách job để duyệt
         void UpdateStatusJob(int JobId,JobStatus Status);// admin lấy  job thông qua id sau đó update lại trạng thái
         Task<int> GetTotalAsync();
+        Task<int> GetTotalWithConditionsAsync(JobQueryObject query);
+
         Task<JobDto> GetJobByIdForAll(int JobId);
         Task<Job> AdminGetJobById(int jobId);
     }
