@@ -7,6 +7,6 @@
         public string Email { get; set; }
         public string CV { get; set; }
 
-
+        public int Status { get; set; }
     }
 }

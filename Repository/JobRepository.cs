@@ -127,7 +127,7 @@ namespace APIWeb1.Repository
 
         public async Task<List<GetAllJobDto>> GetEmployerJob(AppUser user, JobQueryObject query)
         {
-            var job =  _context.Jobs
+            var job = _context.Jobs
                         .Where(job => job.EmployerId == user.Id).Include(job => job.JobSkills)
                         .ThenInclude(jobSkill => jobSkill.Skill).AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
@@ -200,6 +200,71 @@ namespace APIWeb1.Repository
         .ToListAsync();
         }
 
+        //public async Task<List<GetAllJobDto>> GetEmployerJob(AppUser user, JobQueryObject query)
+        //{
+        //    // Truy vấn các công việc của nhà tuyển dụng có ứng viên đã ứng tuyển
+        //    var jobQuery = _context.Jobs
+        //        .Where(job => job.EmployerId == user.Id) // Lọc công việc của nhà tuyển dụng
+        //        .Include(job => job.JobSkills)
+        //            .ThenInclude(jobSkill => jobSkill.Skill) // Bao gồm JobSkills và Skill
+        //        .Include(job => job.Applications) // Bao gồm Applications
+        //            .ThenInclude(application => application.User) // Bao gồm User trong Application
+        //        .Include(job => job.Address) // Bao gồm Address để sử dụng trong LocationShort
+        //        .AsQueryable();
+
+        //    // Điều kiện tìm kiếm theo tiêu đề công việc
+        //    if (!string.IsNullOrWhiteSpace(query.Title))
+        //    {
+        //        jobQuery = jobQuery.Where(s => s.Title.Contains(query.Title));
+        //    }
+
+        //    // Điều kiện sắp xếp theo ngày tạo
+        //    if (!string.IsNullOrWhiteSpace(query.SortBy))
+        //    {
+        //        if (query.SortBy.Equals("CreateOn", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            jobQuery = query.IsDecsending
+        //                ? jobQuery.OrderByDescending(s => s.CreateOn)
+        //                : jobQuery.OrderBy(s => s.CreateOn);
+        //        }
+        //    }
+
+        //    // Lọc các công việc đã có ứng viên ứng tuyển
+        //    var jobListWithApplications = await jobQuery
+        //        .Where(job => job.Applications.Any(application => application.UserId != null)) // Lọc các công việc có ứng viên ứng tuyển
+        //        .Select(job => new GetAllJobDto
+        //        {
+        //            Id = job.Id,
+        //            Title = job.Title,
+        //            Salary = job.Salary,
+        //            CreateOn = job.CreateOn,
+        //            Employer = new GetEmployer
+        //            {
+        //                Id = job.Employer.Id,
+        //                Company = new GetCompany
+        //                {
+        //                    Name = job.Employer.Company.Name,
+        //                    logo = job.Employer.Company.Logo
+        //                },
+        //            },
+        //            JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+        //            JobType = EnumHelper.GetEnumDescription(job.JobType),
+        //            JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+        //            LocationShort = job.Address != null
+        //                ? job.Address.Province + ", " + job.Address.District
+        //                : "N/A", // Kiểm tra null để tránh lỗi nếu Address là null
+        //            Skills = job.JobSkills.Select(js => new SkillDto
+        //            {
+        //                Id = js.Skill.Id,
+        //                Name = js.Skill.Name
+        //            }).ToList(),
+        //            IsShow = job.Applications.Any(application => application.Isshow) // Kiểm tra xem có ứng viên nào được hiển thị không
+        //        })
+        //        .ToListAsync();
+
+        //    return jobListWithApplications;
+        //}
+
         public async Task<int> GetTotalforEmployerAsync(AppUser user)
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
@@ -231,7 +296,8 @@ namespace APIWeb1.Repository
                     Id=user.UserId,
                     FullName = user.User.Fullname,
                     Email = user.User.Email,
-                    CV = user.Cv
+                    CV = user.Cv,
+                    Status = user.Status
                     // Include other properties of Skill as needed
 
                 }).ToList(),

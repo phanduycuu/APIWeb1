@@ -16,5 +16,6 @@ namespace APIWeb1.Dtos.Job
         public string JobStatus { get; set; }
         public GetEmployer Employer { get; set; }
         public string LocationShort { get; set; }
+        public bool IsShow { get; set; } // Thêm thuộc tính IsShow
     }
 }
