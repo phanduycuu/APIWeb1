@@ -72,13 +72,18 @@ namespace APIWeb1.Repository
             }).ToListAsync();
         }
 
-        public async Task<int> GetTotalAsync()
+        public async Task<int> GetTotalAsync(BlogQueryObject query, string userId)
         {
-            var totalblogs = await _context.Blogs
-                                  .Where(u => u.Status == 1)
-                                  .CountAsync();
+            var blog = _context.Blogs.Where(b => b.UserId == userId).Include(u => u.User).ThenInclude(p => p.Company).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                blog = blog.Where(s => s.Title.Contains(query.Title));
+            }
 
-            return totalblogs;
+
+            var totalblogs= blog.CountAsync();
+
+            return await totalblogs;
         }
     }
 }

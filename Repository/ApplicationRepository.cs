@@ -157,42 +157,8 @@ namespace APIWeb1.Repository
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 applications = applications.Where(s => s.Job.Title.Contains(query.Title));
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.Location))
-            {
-
-                applications = applications.Where(s => (s.Job.Address.Street + " " +
-                s.Job.Address.Province + " " +
-                s.Job.Address.Ward + " " +
-                s.Job.Address.District).Contains(query.Location));
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobLevel))
-            {
-                var level = EnumHelper.GetEnumValueFromDescription<JobLevel>(query.JobLevel);
-                applications = applications.Where(s => s.Job.JobLevel == level);
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobStatus))
-            {
-                var Status = EnumHelper.GetEnumValueFromDescription<JobStatus>(query.JobStatus);
-                applications = applications.Where(s => s.Job.JobStatus == Status);
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobType))
-            {
-                var Type = EnumHelper.GetEnumValueFromDescription<JobType>(query.JobType);
-                applications = applications.Where(s => s.Job.JobType == Type);
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
-                {
-                    applications = query.IsDecsending ? applications.OrderByDescending(s => s.Job.Title) : applications.OrderBy(s => s.Job.Title);
-                }
-            }
-
-            var skipNumber = (query.PageNumber - 1) * query.PageSize;
-            return await applications.Skip(skipNumber).Take(query.PageSize).Select(app => new GetAppDto
+            }            
+            return await applications.Select(app => new GetAppDto
             {
                 Id = app.Job.Id,
                 Title = app.Job.Title,

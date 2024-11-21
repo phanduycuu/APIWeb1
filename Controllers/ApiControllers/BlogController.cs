@@ -88,9 +88,11 @@ namespace APIWeb1.Controllers.ApiControllers
 
 
         [HttpGet("GetTotal")]
-        public async Task<IActionResult> GetTotal()
+        public async Task<IActionResult> GetTotal(BlogQueryObject query)
         {
-            var total = await _unitOfWork.BlogRepo.GetTotalAsync();
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var total = await _unitOfWork.BlogRepo.GetTotalAsync(query, appUser.Id);
             return Ok(total);
         }
     }
