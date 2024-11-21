@@ -389,6 +389,7 @@ namespace APIWeb1.Controllers.ApiControllers
         }
 
         [HttpGet("GetIssaveAndStatus")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetIssaveAndStatus(int JobId)
         {
             // Tìm kiếm người dùng trong cơ sở dữ liệu dựa trên userId

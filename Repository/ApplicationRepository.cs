@@ -72,8 +72,8 @@ namespace APIWeb1.Repository
                 }
             }
 
-            var skipNumber = (query.PageNumber - 1) * query.PageSize;
-            return await applications.Skip(skipNumber).Take(query.PageSize).Select(app => new GetAppDto
+            
+            return await applications.Select(app => new GetAppDto
             {
                 Id = app.Job.Id,
                 Title = app.Job.Title,

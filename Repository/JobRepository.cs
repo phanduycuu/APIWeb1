@@ -135,29 +135,29 @@ namespace APIWeb1.Repository
                 job = job.Where(s => s.Title.Contains(query.Title));
             }
 
-            if (!string.IsNullOrWhiteSpace(query.Location))
-            {
-                job = job.Where(s => (s.Address.Street + " " +
-                          s.Address.Province + " " +
-                          s.Address.Ward + " " +
-                          s.Address.District)
-                          .Contains(query.Location));
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobLevel))
-            {
-                var level = EnumHelper.GetEnumValueFromDescription<JobLevel>(query.JobLevel);
-                job = job.Where(s => s.JobLevel == level);
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobStatus))
-            {
-                var Status = EnumHelper.GetEnumValueFromDescription<JobStatus>(query.JobStatus);
-                job = job.Where(s => s.JobStatus == Status);
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobType))
-            {
-                var Type = EnumHelper.GetEnumValueFromDescription<JobType>(query.JobType);
-                job = job.Where(s => s.JobType == Type);
-            }
+            //if (!string.IsNullOrWhiteSpace(query.Location))
+            //{
+            //    job = job.Where(s => (s.Address.Street + " " +
+            //              s.Address.Province + " " +
+            //              s.Address.Ward + " " +
+            //              s.Address.District)
+            //              .Contains(query.Location));
+            //}
+            //if (!string.IsNullOrWhiteSpace(query.JobLevel))
+            //{
+            //    var level = EnumHelper.GetEnumValueFromDescription<JobLevel>(query.JobLevel);
+            //    job = job.Where(s => s.JobLevel == level);
+            //}
+            //if (!string.IsNullOrWhiteSpace(query.JobStatus))
+            //{
+            //    var Status = EnumHelper.GetEnumValueFromDescription<JobStatus>(query.JobStatus);
+            //    job = job.Where(s => s.JobStatus == Status);
+            //}
+            //if (!string.IsNullOrWhiteSpace(query.JobType))
+            //{
+            //    var Type = EnumHelper.GetEnumValueFromDescription<JobType>(query.JobType);
+            //    job = job.Where(s => s.JobType == Type);
+            //}
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
@@ -167,8 +167,9 @@ namespace APIWeb1.Repository
                 }
             }
 
-            var skipNumber = (query.PageNumber - 1) * query.PageSize;
-            return await job.Skip(skipNumber).Take(query.PageSize)
+            //var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            //return await job.Skip(skipNumber).Take(query.PageSize)
+            return await job
             .Select(job => new GetAllJobDto
             {
                 Id = job.Id,
