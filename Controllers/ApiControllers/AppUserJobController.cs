@@ -88,7 +88,17 @@ namespace APIWeb1.Controllers.ApiControllers
             var userJob = await _unitOfWork.JobRepo.GetEmployerJob(appUser, query);
             return Ok(userJob);
         }
-        
+
+        [HttpGet("GetTotalForEmployer")]
+        public async Task<IActionResult> GetTotalForEmployer()
+        {
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var total = await _unitOfWork.JobRepo.GetTotalforEmployerAsync(appUser);
+            return Ok(total);
+        }
+
+
         [HttpGet("user-job")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserjob([FromQuery] JobQueryObject query)
@@ -376,6 +386,28 @@ namespace APIWeb1.Controllers.ApiControllers
             };
 
             return Ok(userDto);
+        }
+
+        [HttpGet("GetIssaveAndStatus")]
+        public async Task<IActionResult> GetIssaveAndStatus(int JobId)
+        {
+            // Tìm kiếm người dùng trong cơ sở dữ liệu dựa trên userId
+            var username = User.GetUsername();
+
+            // Tìm người dùng trong hệ thống
+            var appUser = await _userManager.FindByNameAsync(username);
+            if (appUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Chuyển đổi sang DTO để trả về client
+            GetIsaveAndStatus dto = await _unitOfWork.ApplicationRepo.GetIssvaAndStatus(JobId, appUser.Id);
+            if (dto == null)
+            {
+                return BadRequest();
+            }
+            return Ok(dto);
         }
 
         [HttpPost("Confirm-application")]

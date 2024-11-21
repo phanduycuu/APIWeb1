@@ -87,9 +87,9 @@ namespace APIWeb1.Repository
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("CreateOn", StringComparison.OrdinalIgnoreCase))
                 {
-                    job = query.IsDecsending ? job.OrderByDescending(s => s.Title) : job.OrderBy(s => s.Title);
+                    job = query.IsDecsending ? job.OrderByDescending(s => s.CreateOn) : job.OrderBy(s => s.CreateOn);
                 }
             }
 
@@ -161,9 +161,9 @@ namespace APIWeb1.Repository
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("CreateOn", StringComparison.OrdinalIgnoreCase))
                 {
-                    job = query.IsDecsending ? job.OrderByDescending(s => s.Title) : job.OrderBy(s => s.Title);
+                    job = query.IsDecsending ? job.OrderByDescending(s => s.CreateOn) : job.OrderBy(s => s.CreateOn);
                 }
             }
 
@@ -197,6 +197,17 @@ namespace APIWeb1.Repository
                 }).ToList()
             })
         .ToListAsync();
+        }
+
+        public async Task<int> GetTotalforEmployerAsync(AppUser user)
+        {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
+            var totalJobs = await _context.Jobs
+                                  .Where(u => u.JobStatus == status && u.EmployerId== user.Id)
+                                  .CountAsync();
+
+            return totalJobs;
+
         }
         public Task<List<GetJobByIdDto>> GetJobById(int JobId, string EmployerId)
         {
@@ -337,6 +348,14 @@ namespace APIWeb1.Repository
             {
                 var Type = EnumHelper.GetEnumValueFromDescription<JobType>(query.JobType);
                 jobQuery = jobQuery.Where(s => s.JobType == Type);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("CreateOn", StringComparison.OrdinalIgnoreCase))
+                {
+                    jobQuery = query.IsDecsending ? jobQuery.OrderByDescending(s => s.CreateOn) : jobQuery.OrderBy(s => s.CreateOn);
+                }
             }
 
             // Tính tổng số lượng công việc phù hợp với các điều kiện

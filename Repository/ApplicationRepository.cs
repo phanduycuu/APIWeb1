@@ -32,6 +32,20 @@ namespace APIWeb1.Repository
             return await _context.Applications.Where(a=>a.JobId==JobId && a.UserId==userId).FirstOrDefaultAsync();
         }
 
+        public async Task<GetIsaveAndStatus> GetIssvaAndStatus(int JobId, string userId)
+        {
+
+            var app= await _context.Applications.Where(a => a.JobId == JobId && a.UserId == userId).FirstOrDefaultAsync();
+            if (app == null)
+            {
+                return null;
+            }
+            GetIsaveAndStatus dto= new GetIsaveAndStatus();
+            dto.Status = app.Status;
+            dto.Issave = app.Issave;
+            return dto;
+        }
+
         public async Task<Application> GetEmployerApp(int JobId, string userId, string employerId)
         {
             return await _context.Applications.Include(u=> u.Job).ThenInclude(j=>j.Employer).Where(a => a.JobId == JobId && a.UserId == userId && a.Job.EmployerId== employerId).FirstOrDefaultAsync();
@@ -48,35 +62,13 @@ namespace APIWeb1.Repository
                 applications = applications.Where(s => s.Job.Title.Contains(query.Title));
             }
 
-            if (!string.IsNullOrWhiteSpace(query.Location))
-            {
-                
-                applications = applications.Where(s => (s.Job.Address.Street+" " +
-                s.Job.Address.Province + " " +
-                s.Job.Address.Ward + " " +
-                s.Job.Address.District ).Contains(query.Location));
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobLevel))
-            {
-                var level = EnumHelper.GetEnumValueFromDescription<JobLevel>(query.JobLevel);
-                applications = applications.Where(s => s.Job.JobLevel == level);
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobStatus))
-            {
-                var Status = EnumHelper.GetEnumValueFromDescription<JobStatus>(query.JobStatus);
-                applications = applications.Where(s => s.Job.JobStatus == Status);
-            }
-            if (!string.IsNullOrWhiteSpace(query.JobType))
-            {
-                var Type = EnumHelper.GetEnumValueFromDescription<JobType>(query.JobType);
-                applications = applications.Where(s => s.Job.JobType == Type);
-            }
+            
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("CreateOn", StringComparison.OrdinalIgnoreCase))
                 {
-                    applications = query.IsDecsending ? applications.OrderByDescending(s => s.Job.Title) : applications.OrderBy(s => s.Job.Title);
+                    applications = query.IsDecsending ? applications.OrderByDescending(s => s.Job.CreateOn) : applications.OrderBy(s => s.Job.CreateOn);
                 }
             }
 
@@ -102,6 +94,49 @@ namespace APIWeb1.Repository
                 JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
                 Location = app.Job.Address.Street+" "+app.Job.Address.Province+" "
                           +app.Job.Address.Ward + " " + app.Job.Address.District,
+                CV = app.Cv,
+                Skills = app.Job.JobSkills.Select(js => new SkillDto
+                {
+                    Name = js.Skill.Name
+
+                }).ToList()
+            })
+        .ToListAsync();
+        }
+
+        public async Task<List<GetAppDto>> GetUserJobSearchByTitle(AppUser user, JobQueryObject query)
+        {
+            var applications = _context.Applications.Include(a => a.Job).
+                ThenInclude(a => a.Employer).ThenInclude(b => b.Company).Include(a => a.Job).ThenInclude(a => a.Address)
+                .Include(a => a.Job).ThenInclude(job => job.JobSkills)
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.UserId == user.Id && u.Status != 0);
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                applications = applications.Where(s => s.Job.Title.Contains(query.Title));
+            }
+            
+            return await applications.Select(app => new GetAppDto
+            {
+                Id = app.Job.Id,
+                Title = app.Job.Title,
+                Description = app.Job.Description,
+                Requirements = app.Job.Requirements,
+                Benefits = app.Job.Benefits,
+                ExpiredDate = app.Job.ExpiredDate,
+                CreateOn = app.Job.CreateOn,
+                UpdatedOn = app.Job.UpdatedOn,
+                Employer = new EmployerDto
+                {
+                    Id = app.Job.Employer.Id,
+                    FullName = app.Job.Employer.Fullname,
+                    Email = app.Job.Employer.Email,
+                    Company = app.Job.Employer.Company
+                },
+                JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
+                JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
+                JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
+                Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
+                          + app.Job.Address.Ward + " " + app.Job.Address.District,
                 CV = app.Cv,
                 Skills = app.Job.JobSkills.Select(js => new SkillDto
                 {

@@ -31,6 +31,8 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(total);
         }
 
+        
+
         [HttpGet("GetTotalWithConditions")]
         public async Task<IActionResult> GetTotalWithConditionsAsync([FromQuery] JobQueryObject query)
         {

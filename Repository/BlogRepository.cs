@@ -30,13 +30,6 @@ namespace APIWeb1.Repository
             {
                 blog = blog.Where(s => s.Title.Contains(query.Title));
             }
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
-                {
-                    blog = query.IsDecsending ? blog.OrderByDescending(s => s.Title) : blog.OrderBy(s => s.Title);
-                }
-            }
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await blog.Skip(skipNumber).Take(query.PageSize).Select(u=> new GetAllBlogDto
@@ -51,6 +44,7 @@ namespace APIWeb1.Repository
 
         }
 
+
         public async Task<List<Blog>> GetById(int blogId)
         {
             var blog = _context.Blogs.Where(b => b.Id == blogId).Include(u => u.User);
@@ -64,13 +58,6 @@ namespace APIWeb1.Repository
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 blog = blog.Where(s => s.Title.Contains(query.Title));
-            }
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
-                {
-                    blog = query.IsDecsending ? blog.OrderByDescending(s => s.Title) : blog.OrderBy(s => s.Title);
-                }
             }
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
