@@ -72,7 +72,7 @@ namespace APIWeb1.Repository
                 }
             }
 
-            
+            if (query.PageSize == 0 && query.PageNumber == 0)
             return await applications.Select(app => new GetAppDto
             {
                 Id = app.Job.Id,
@@ -102,7 +102,41 @@ namespace APIWeb1.Repository
 
                 }).ToList()
             })
-        .ToListAsync();
+            .ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return await applications.Skip(skipNumber).Take(query.PageSize)
+                .Select(app => new GetAppDto
+                {
+                    Id = app.Job.Id,
+                    Title = app.Job.Title,
+                    Description = app.Job.Description,
+                    Requirements = app.Job.Requirements,
+                    Benefits = app.Job.Benefits,
+                    Salary = app.Job.Salary,
+                    ExpiredDate = app.Job.ExpiredDate,
+                    CreateOn = app.Job.CreateOn,
+                    UpdatedOn = app.Job.UpdatedOn,
+                    Employer = new EmployerDto
+                    {
+                        Id = app.Job.Employer.Id,
+                        FullName = app.Job.Employer.Fullname,
+                        Email = app.Job.Employer.Email,
+                        Company = app.Job.Employer.Company
+                    },
+                    JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
+                    Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
+                          + app.Job.Address.Ward + " " + app.Job.Address.District,
+                    CV = app.Cv,
+                    Skills = app.Job.JobSkills.Select(js => new SkillDto
+                    {
+                        Name = js.Skill.Name
+
+                    }).ToList()
+                })
+            .ToListAsync();
+
         }
 
         public async Task<List<GetAppDto>> GetUserJobSearchByTitle(AppUser user, JobQueryObject query)
@@ -115,37 +149,72 @@ namespace APIWeb1.Repository
             {
                 applications = applications.Where(s => s.Job.Title.Contains(query.Title));
             }
-            
-            return await applications.Select(app => new GetAppDto
-            {
-                Id = app.Job.Id,
-                Title = app.Job.Title,
-                Description = app.Job.Description,
-                Requirements = app.Job.Requirements,
-                Benefits = app.Job.Benefits,
-                ExpiredDate = app.Job.ExpiredDate,
-                CreateOn = app.Job.CreateOn,
-                UpdatedOn = app.Job.UpdatedOn,
-                Employer = new EmployerDto
-                {
-                    Id = app.Job.Employer.Id,
-                    FullName = app.Job.Employer.Fullname,
-                    Email = app.Job.Employer.Email,
-                    Company = app.Job.Employer.Company
-                },
-                JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
-                JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
-                JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
-                Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
-                          + app.Job.Address.Ward + " " + app.Job.Address.District,
-                CV = app.Cv,
-                Skills = app.Job.JobSkills.Select(js => new SkillDto
-                {
-                    Name = js.Skill.Name
 
-                }).ToList()
-            })
-        .ToListAsync();
+            if (query.PageSize == 0 && query.PageNumber == 0)
+                return await applications.Select(app => new GetAppDto
+                {
+                    Id = app.Job.Id,
+                    Title = app.Job.Title,
+                    Description = app.Job.Description,
+                    Requirements = app.Job.Requirements,
+                    Benefits = app.Job.Benefits,
+                    Salary = app.Job.Salary,
+                    ExpiredDate = app.Job.ExpiredDate,
+                    CreateOn = app.Job.CreateOn,
+                    UpdatedOn = app.Job.UpdatedOn,
+                    Employer = new EmployerDto
+                    {
+                        Id = app.Job.Employer.Id,
+                        FullName = app.Job.Employer.Fullname,
+                        Email = app.Job.Employer.Email,
+                        Company = app.Job.Employer.Company
+                    },
+                    JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
+                    Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
+                              + app.Job.Address.Ward + " " + app.Job.Address.District,
+                    CV = app.Cv,
+                    Skills = app.Job.JobSkills.Select(js => new SkillDto
+                    {
+                        Name = js.Skill.Name
+
+                    }).ToList()
+                })
+                .ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return await applications.Skip(skipNumber).Take(query.PageSize)
+                .Select(app => new GetAppDto
+                {
+                    Id = app.Job.Id,
+                    Title = app.Job.Title,
+                    Description = app.Job.Description,
+                    Requirements = app.Job.Requirements,
+                    Benefits = app.Job.Benefits,
+                    Salary = app.Job.Salary,
+                    ExpiredDate = app.Job.ExpiredDate,
+                    CreateOn = app.Job.CreateOn,
+                    UpdatedOn = app.Job.UpdatedOn,
+                    Employer = new EmployerDto
+                    {
+                        Id = app.Job.Employer.Id,
+                        FullName = app.Job.Employer.Fullname,
+                        Email = app.Job.Employer.Email,
+                        Company = app.Job.Employer.Company
+                    },
+                    JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
+                    Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
+                          + app.Job.Address.Ward + " " + app.Job.Address.District,
+                    CV = app.Cv,
+                    Skills = app.Job.JobSkills.Select(js => new SkillDto
+                    {
+                        Name = js.Skill.Name
+
+                    }).ToList()
+                })
+            .ToListAsync();
         }
 
 
@@ -158,38 +227,72 @@ namespace APIWeb1.Repository
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 applications = applications.Where(s => s.Job.Title.Contains(query.Title));
-            }            
-            return await applications.Select(app => new GetAppDto
-            {
-                Id = app.Job.Id,
-                Title = app.Job.Title,
-                Description = app.Job.Description,
-                Requirements = app.Job.Requirements,
-                Benefits = app.Job.Benefits,
-                Salary = app.Job.Salary,
-                ExpiredDate = app.Job.ExpiredDate,
-                CreateOn = app.Job.CreateOn,
-                UpdatedOn = app.Job.UpdatedOn,
-                Employer = new EmployerDto
+            }
+            if (query.PageSize == 0 && query.PageNumber == 0)
+                return await applications.Select(app => new GetAppDto
                 {
-                    Id = app.Job.Employer.Id,
-                    FullName = app.Job.Employer.Fullname,
-                    Email = app.Job.Employer.Email,
-                    Company = app.Job.Employer.Company
-                },
-                JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
-                JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
-                JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
-                Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
-                          + app.Job.Address.Ward + " " + app.Job.Address.District,
-                CV = app.Cv,
-                Skills = app.Job.JobSkills.Select(js => new SkillDto
-                {
-                    Name = js.Skill.Name
+                    Id = app.Job.Id,
+                    Title = app.Job.Title,
+                    Description = app.Job.Description,
+                    Requirements = app.Job.Requirements,
+                    Benefits = app.Job.Benefits,
+                    Salary = app.Job.Salary,
+                    ExpiredDate = app.Job.ExpiredDate,
+                    CreateOn = app.Job.CreateOn,
+                    UpdatedOn = app.Job.UpdatedOn,
+                    Employer = new EmployerDto
+                    {
+                        Id = app.Job.Employer.Id,
+                        FullName = app.Job.Employer.Fullname,
+                        Email = app.Job.Employer.Email,
+                        Company = app.Job.Employer.Company
+                    },
+                    JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
+                    Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
+                              + app.Job.Address.Ward + " " + app.Job.Address.District,
+                    CV = app.Cv,
+                    Skills = app.Job.JobSkills.Select(js => new SkillDto
+                    {
+                        Name = js.Skill.Name
 
-                }).ToList()
-            })
-        .ToListAsync();
+                    }).ToList()
+                })
+                .ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return await applications.Skip(skipNumber).Take(query.PageSize)
+                .Select(app => new GetAppDto
+                {
+                    Id = app.Job.Id,
+                    Title = app.Job.Title,
+                    Description = app.Job.Description,
+                    Requirements = app.Job.Requirements,
+                    Benefits = app.Job.Benefits,
+                    Salary = app.Job.Salary,
+                    ExpiredDate = app.Job.ExpiredDate,
+                    CreateOn = app.Job.CreateOn,
+                    UpdatedOn = app.Job.UpdatedOn,
+                    Employer = new EmployerDto
+                    {
+                        Id = app.Job.Employer.Id,
+                        FullName = app.Job.Employer.Fullname,
+                        Email = app.Job.Employer.Email,
+                        Company = app.Job.Employer.Company
+                    },
+                    JobLevel = EnumHelper.GetEnumDescription(app.Job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(app.Job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(app.Job.JobStatus),
+                    Location = app.Job.Address.Street + " " + app.Job.Address.Province + " "
+                          + app.Job.Address.Ward + " " + app.Job.Address.District,
+                    CV = app.Cv,
+                    Skills = app.Job.JobSkills.Select(js => new SkillDto
+                    {
+                        Name = js.Skill.Name
+
+                    }).ToList()
+                })
+            .ToListAsync();
         }
 
         public async Task<Application> UpdateAppUserJob(Application app)

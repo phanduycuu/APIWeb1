@@ -92,6 +92,35 @@ namespace APIWeb1.Repository
                     job = query.IsDecsending ? job.OrderByDescending(s => s.CreateOn) : job.OrderBy(s => s.CreateOn);
                 }
             }
+            if(query.PageSize == 0 && query.PageNumber==0) return await job
+            .Select(job => new GetAllJobDto
+            {
+                Id = job.Id,
+                Title = job.Title,
+                Salary = job.Salary,
+                CreateOn = job.CreateOn,
+                Employer = new GetEmployer
+                {
+                    Id = job.Employer.Id,
+                    Company = new GetCompany
+                    {
+                        Name = job.Employer.Company.Name,
+                        logo = job.Employer.Company.Logo
+                    },
+                },
+                JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                JobType = EnumHelper.GetEnumDescription(job.JobType),
+                JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                LocationShort = job.Address.Province + ", " + job.Address.District,
+                Skills = job.JobSkills.Select(js => new SkillDto
+                {
+                    Id = js.Skill.Id,
+                    Name = js.Skill.Name
+                    // Include other properties of Skill as needed
+
+                }).ToList()
+            })
+        .ToListAsync();
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await job.Skip(skipNumber).Take(query.PageSize)
@@ -167,9 +196,38 @@ namespace APIWeb1.Repository
                 }
             }
 
-            //var skipNumber = (query.PageNumber - 1) * query.PageSize;
-            //return await job.Skip(skipNumber).Take(query.PageSize)
-            return await job
+            if (query.PageSize == 0 && query.PageNumber == 0) return await job
+            .Select(job => new GetAllJobDto
+            {
+                Id = job.Id,
+                Title = job.Title,
+                Salary = job.Salary,
+                CreateOn = job.CreateOn,
+                Employer = new GetEmployer
+                {
+                    Id = job.Employer.Id,
+                    Company = new GetCompany
+                    {
+                        Name = job.Employer.Company.Name,
+                        logo = job.Employer.Company.Logo
+                    },
+                },
+                JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                JobType = EnumHelper.GetEnumDescription(job.JobType),
+                JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                LocationShort = job.Address.Province + ", " + job.Address.District,
+                Skills = job.JobSkills.Select(js => new SkillDto
+                {
+                    Id = js.Skill.Id,
+                    Name = js.Skill.Name
+                    // Include other properties of Skill as needed
+
+                }).ToList()
+            })
+        .ToListAsync();
+
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return await job.Skip(skipNumber).Take(query.PageSize)
             .Select(job => new GetAllJobDto
             {
                 Id = job.Id,
@@ -200,6 +258,19 @@ namespace APIWeb1.Repository
         .ToListAsync();
         }
 
+
+        public async Task<int> GetTotalForEmployer(AppUser user, JobQueryObject query)
+        {
+            var job = _context.Jobs
+                        .Where(job => job.EmployerId == user.Id).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                job = job.Where(s => s.Title.Contains(query.Title));
+            }
+
+
+            return await job.CountAsync();
+        }
         //public async Task<List<GetAllJobDto>> GetEmployerJob(AppUser user, JobQueryObject query)
         //{
         //    // Truy vấn các công việc của nhà tuyển dụng có ứng viên đã ứng tuyển
@@ -265,16 +336,16 @@ namespace APIWeb1.Repository
         //    return jobListWithApplications;
         //}
 
-        public async Task<int> GetTotalforEmployerAsync(AppUser user)
-        {
-            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
-            var totalJobs = await _context.Jobs
-                                  .Where(u => u.JobStatus == status && u.EmployerId== user.Id)
-                                  .CountAsync();
+        //public async Task<int> GetTotalforEmployerAsync(AppUser user)
+        //{
+        //    var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
+        //    var totalJobs = await _context.Jobs
+        //                          .Where(u => u.JobStatus == status && u.EmployerId== user.Id)
+        //                          .CountAsync();
 
-            return totalJobs;
+        //    return totalJobs;
 
-        }
+        //}
         public Task<List<GetJobByIdDto>> GetJobById(int JobId, string EmployerId)
         {
             var jobModel = _context.Jobs.Include(job => job.JobSkills)

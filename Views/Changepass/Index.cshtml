@@ -1,0 +1,43 @@
+﻿@using APIWeb1.Dtos.Account
+@model ChangePassAdmin
+
+<div class="container-fluid pt-4 px-0">
+    <div class="row bg-light rounded mx-0">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h4 class="mb-0 fw-bold text-primary">Change Password</h4>
+                </div>
+
+                <form method="post" class="row">
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="CurentPass" type="password" class="form-control" id="currentpass" placeholder="">
+                        <label asp-for="CurentPass" for="currentpass">Current Password</label>
+                        <span asp-validation-for="CurentPass" class="text-danger m-2" id="errorcurrentpass"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="NewPass" type="password" class="form-control" id="newpass" placeholder="">
+                        <label asp-for="NewPass" for="newpass">New Password</label>
+                        <span asp-validation-for="NewPass" class="text-danger m-2" id="errornewpass"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="RePass" name="RePass" type="password" class="form-control" id="repass" placeholder="">
+                        <label asp-for="RePass" for="repass">Confirm New Password</label>
+                        <span asp-validation-for="RePass" class="text-danger m-2" id="errorrepass" ></span>
+                    </div>
+
+                    <div>
+                        <a onclick="change(event)" class="btn btn-danger">Change</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/changepass.js"></script>
+
+}

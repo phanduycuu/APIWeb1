@@ -42,7 +42,8 @@ namespace APIWeb1.Repository
                     company = query.IsDecsending ? company.OrderByDescending(s => s.Name) : company.OrderBy(s => s.Name);
                 }
             }
-
+            if (query.PageSize == 0 && query.PageNumber == 0)
+                return await company.ToListAsync();
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await company.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }

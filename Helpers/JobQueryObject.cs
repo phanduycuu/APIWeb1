@@ -11,8 +11,8 @@ namespace APIWeb1.Helpers
         public string? JobStatus { get; set; } = null;
         public string? SortBy { get; set; } = "CreateOn";
         public bool IsDecsending { get; set; } = false;
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 2;
+        public int PageNumber { get; set; } = 0;
+        public int PageSize { get; set; } = 0;
 
     }
 }

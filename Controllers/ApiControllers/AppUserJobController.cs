@@ -10,9 +10,11 @@ using APIWeb1.Mappers;
 using APIWeb1.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace APIWeb1.Controllers.ApiControllers
 {
@@ -22,15 +24,17 @@ namespace APIWeb1.Controllers.ApiControllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-        public AppUserJobController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
-        
+        private readonly IEmailSender _emailSender;
+        public AppUserJobController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IEmailSender emailSender)
+
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
 
 
         }
-        
+
         [HttpGet("Get-User")]
         [Authorize]
         public async Task<IActionResult> GetAppUser()
@@ -39,16 +43,16 @@ namespace APIWeb1.Controllers.ApiControllers
             var userInfo = await _userManager.Users
                 .Include(u => u.Company).Include(u => u.Address) // Load thông tin của Company
                 .FirstOrDefaultAsync(u => u.UserName == username);
-            if (userInfo == null) 
+            if (userInfo == null)
             {
                 return NotFound();
             }
             GetUserDto userDto = new GetUserDto()
             {
                 Fullname = userInfo.Fullname,
-                Username= userInfo.UserName,
-                Email= userInfo.Email,
-                Phone= userInfo.PhoneNumber,
+                Username = userInfo.UserName,
+                Email = userInfo.Email,
+                Phone = userInfo.PhoneNumber,
                 Company = userInfo.Company,
                 Sex = userInfo.Sex,
                 Birthdate = userInfo.Birthdate,
@@ -69,7 +73,7 @@ namespace APIWeb1.Controllers.ApiControllers
                 return NotFound();
             }
             userInfo.Fullname = userdto.Fullname;
-            userInfo.PhoneNumber= userdto.Phone;
+            userInfo.PhoneNumber = userdto.Phone;
             userInfo.Email = userdto.Email;
             userInfo.Sex = userdto.Sex;
             userInfo.Birthdate = userdto.Birthdate;
@@ -90,11 +94,11 @@ namespace APIWeb1.Controllers.ApiControllers
         }
 
         [HttpGet("GetTotalForEmployer")]
-        public async Task<IActionResult> GetTotalForEmployer()
+        public async Task<IActionResult> GetTotalForEmployer([FromQuery] JobQueryObject query)
         {
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
-            var total = await _unitOfWork.JobRepo.GetTotalforEmployerAsync(appUser);
+            var total = await _unitOfWork.JobRepo.GetTotalForEmployer(appUser, query);
             return Ok(total);
         }
 
@@ -322,7 +326,7 @@ namespace APIWeb1.Controllers.ApiControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);           
+            var appUser = await _userManager.FindByNameAsync(username);
             var app = await _unitOfWork.ApplicationRepo.GetAppUserJob(dto.JobId, appUser.Id);
 
             if (app != null)
@@ -352,7 +356,7 @@ namespace APIWeb1.Controllers.ApiControllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
             var Job = await _unitOfWork.JobRepo.GetJobById(JobId, appUser.Id);
-            if (Job == null) 
+            if (Job == null)
                 return NotFound("you don't have permition for this job or this job doesn't exist");
             return Ok(Job);
         }
@@ -418,21 +422,60 @@ namespace APIWeb1.Controllers.ApiControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);           
+            var appUser = await _userManager.FindByNameAsync(username);
             var app = await _unitOfWork.ApplicationRepo.GetEmployerApp(dto.JobId, dto.UserId, appUser.Id);
 
             if (app == null)
             {
-                
+
                 return BadRequest("You don't have permition for this job");
 
             }
             else
             {
-                Application appModel = app;                
+                Application appModel = app;
                 appModel.Status = dto.Status;
-                
+                if (dto.Status == 2)
+                {
+                    var User = await _userManager.FindByIdAsync(dto.UserId);
+                    var job = await _unitOfWork.JobRepo.GetJobByIdForAll(dto.JobId);
+                    string subject = "Web Job Update Notification";
+                    string htmlMessage = "<p>Congratulations. The job title is " + job.Title + " of the " +
+                        "company " + job.Employer.Company.Name + " you want to apply for has been approved. There will soon " +
+                        "be an email from the company to you with information including " +
+                        "time and location of the interview.</p>";
 
+                    await _emailSender.SendEmailAsync(User.Email, subject, htmlMessage);
+                }
+
+                await _unitOfWork.ApplicationRepo.UpdateAppUserJob(appModel);
+                return Ok("Update status successfully");
+            }
+
+
+
+        }
+
+        [HttpPost("Remove-application")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> RemoveApplication(ComfirmAppDto dto) // status= 2 duyet, status= 3 tu choi
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var app = await _unitOfWork.ApplicationRepo.GetEmployerApp(dto.JobId, dto.UserId, appUser.Id);
+
+            if (app == null)
+            {
+
+                return BadRequest("You don't have permition for this job");
+
+            }
+            else
+            {
+                Application appModel = app;
+                appModel.Isshow = false;                
                 await _unitOfWork.ApplicationRepo.UpdateAppUserJob(appModel);
                 return Ok("Update status successfully");
             }
