@@ -24,6 +24,7 @@ namespace APIWeb1.Repository
         public IAddressRepository AddressRepo { get; private set; }
 
         public IBlogRepository BlogRepo { get; private set; }
+        public IStatisticalRepository StatisticalRepo { get; private set; }
 
         public UnitOfWork(ApplicationDBContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -38,6 +39,7 @@ namespace APIWeb1.Repository
             AccoutAdminRepo = new AccoutAdminRepository(_userManager, _roleManager, _context);
             AddressRepo = new AddressRepository(_context);
             BlogRepo= new BlogRepository(_context);
+            StatisticalRepo= new StatisticalRepository(_context);
 
         }
         public void Save()

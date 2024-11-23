@@ -10,6 +10,7 @@
         IAccoutAdminRepository AccoutAdminRepo { get; }
         IAddressRepository AddressRepo { get; }
         IBlogRepository BlogRepo { get; }
+        IStatisticalRepository StatisticalRepo { get; }
         void Save();
     }
 }

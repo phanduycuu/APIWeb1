@@ -57,7 +57,15 @@
         loop: true,
         nav : false
     });
-
+    const Utils = {
+        months: ({ count }) => {
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            return months.slice(0, count);
+        }
+    };
     const ctx = document.getElementById('chart1');
     const ctx1 = document.getElementById('chart2');
     const labels = Utils.months({ count: 7 });
@@ -69,7 +77,8 @@
             fill: false,
             borderColor: 'rgb(75, 192, 192)',
             tension: 0.1
-        }],
+        }]
+    };
     new Chart(ctx, {
         type: 'bar',
 
@@ -96,14 +105,7 @@
     new Chart(ctx1, {
         type: 'bar',
 
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
-            }]
-        },
+        data: data1,
         options: {
             scales: {
                 y: {
