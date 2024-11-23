@@ -88,11 +88,19 @@ namespace APIWeb1.Controllers.ApiControllers
 
 
         [HttpGet("GetTotal")]
-        public async Task<IActionResult> GetTotal(BlogQueryObject query)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> GetTotal([FromQuery] BlogQueryObject query)
         {
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
             var total = await _unitOfWork.BlogRepo.GetTotalAsync(query, appUser.Id);
+            return Ok(total);
+        }
+
+        [HttpGet("GetTotalWithConditions")]
+        public async Task<IActionResult> GetTotalWithConditionsAsync([FromQuery] BlogQueryObject query)
+        {
+            var total = await _unitOfWork.BlogRepo.GetTotalWithConditions(query);
             return Ok(total);
         }
     }

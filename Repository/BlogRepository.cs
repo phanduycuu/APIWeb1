@@ -117,6 +117,20 @@ namespace APIWeb1.Repository
             return await totalblogs;
         }
 
+        public async Task<int> GetTotalWithConditions(BlogQueryObject query)
+        {
+            var blog = _context.Blogs.Where(b => b.Status == 1).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                blog = blog.Where(s => s.Title.Contains(query.Title));
+            }
+
+
+            var totalblogs = blog.CountAsync();
+
+            return await totalblogs;
+        }
+
         public void UpdateStatusBlog(int BlogId, int Status)
         {
             Blog? blog = _context.Blogs.Where(u => u.Id == BlogId).FirstOrDefault();

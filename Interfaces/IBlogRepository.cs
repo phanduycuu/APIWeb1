@@ -13,6 +13,7 @@ namespace APIWeb1.Interfaces
         Task<List<GetAllBlogDto>> GetForEmployer(BlogQueryObject query,string userId);
         Task<List<Blog>> GetById(int blogId);
         Task<int> GetTotalAsync(BlogQueryObject query, string userId);
+        Task<int> GetTotalWithConditions(BlogQueryObject query);
         void UpdateStatusBlog(int BlogId, int Status);
         Task<List<BlogAdminDto>> GetAdminBlog();
     }
