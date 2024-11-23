@@ -3,6 +3,7 @@ using APIWeb1.Dtos.Blogs;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -50,7 +51,8 @@ namespace APIWeb1.Repository
                     Companyname = u.User.Company.Name,
                     Img = u.Img,
                     Title = u.Title,
-                    Content = u.Content
+                    Content = u.Content,
+                    CreateOn = u.CreateAt
                 }).ToListAsync();
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await blog.Skip(skipNumber).Take(query.PageSize).Select(u=> new GetAllBlogDto
@@ -60,7 +62,8 @@ namespace APIWeb1.Repository
                 Companyname=u.User.Company.Name,
                 Img=u.Img,
                 Title=u.Title,
-                Content=u.Content
+                Content=u.Content,
+                CreateOn = u.CreateAt
             }).ToListAsync();
 
         }
