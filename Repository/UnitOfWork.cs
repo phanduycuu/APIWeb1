@@ -39,7 +39,7 @@ namespace APIWeb1.Repository
             AccoutAdminRepo = new AccoutAdminRepository(_userManager, _roleManager, _context);
             AddressRepo = new AddressRepository(_context);
             BlogRepo= new BlogRepository(_context);
-            StatisticalRepo= new StatisticalRepository(_context);
+            StatisticalRepo= new StatisticalRepository(_userManager, _roleManager, _context);
 
         }
         public void Save()

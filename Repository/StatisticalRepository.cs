@@ -2,16 +2,23 @@
 using APIWeb1.Dtos.Statisticals;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
+using APIWeb1.Models;
 using APIWeb1.Models.Enum;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace APIWeb1.Repository
 {
     public class StatisticalRepository : IStatisticalRepository
     {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDBContext _context;
-        public StatisticalRepository(ApplicationDBContext context) 
+        public StatisticalRepository(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDBContext context)
         {
+            _userManager = userManager;
+            _roleManager = roleManager;
             _context = context;
         }
 
@@ -38,6 +45,8 @@ namespace APIWeb1.Repository
 
             int totalJob = await _context.Jobs.Where(u=> u.EmployerId == employerId).CountAsync();
             int totalApply = await _context.Applications.Include(u=>u.Job).Where(a => a.Job.EmployerId == employerId && a.Status!=0).CountAsync();
+            var totalUser = await _context.Applications.Include(u => u.Job).Where(a => a.Job.EmployerId == employerId && a.Status != 0).ToListAsync();
+
 
             StatisticalGetTotalJobAndAppli gettotal = new StatisticalGetTotalJobAndAppli()
             {
@@ -46,6 +55,47 @@ namespace APIWeb1.Repository
             };
             
             return gettotal;
+        }
+
+
+
+
+
+
+        // admin
+        public async Task<AdminGetTotal> GetStatisticalTotal()
+        {
+
+            int totalJob = await _context.Jobs.CountAsync();
+            int totalApply = await _context.Applications.Where(a => a.Status != 0).CountAsync();
+            var employerUsers = await _userManager.GetUsersInRoleAsync("Employer");
+            var Users = await _userManager.GetUsersInRoleAsync("User");
+            int Apply = await _context.Applications.Where(a=> a.Status != 0).CountAsync();
+            AdminGetTotal gettotal = new AdminGetTotal()
+            {
+                employer = employerUsers.Count(),
+                jobseeker = Users.Count(),
+                jobpost = totalJob,
+                apply = Apply
+
+            };
+
+            return gettotal;
+        }
+
+
+        public async Task<List<UserStatistics>> GetUserCountByRoleAndDateRange(string role, DateTime startDate, DateTime endDate)
+        {
+            var user = await _userManager.GetUsersInRoleAsync(role);
+            var userdto=user.Where(u=>u.CreateAt >= startDate && u.CreateAt <= endDate)
+                .GroupBy(u => u.CreateAt.Value.Date)
+                .Select( g => new UserStatistics
+                {
+                    Date =  g.Key.ToString("dd/MM/yyyy"),
+                    Count = g.Count()
+                })
+                .ToList();
+            return userdto;
         }
     }
 }

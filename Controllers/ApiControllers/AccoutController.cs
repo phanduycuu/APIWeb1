@@ -2,8 +2,10 @@
 using APIWeb1.Extensions;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using APIWeb1.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,12 +23,14 @@ namespace APIWeb1.Controllers.ApiControllers
         private readonly ITokenRepository _tokenRepository;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<AppUser> _signinManager;
-        public AccountController(UserManager<AppUser> userManager, ITokenRepository tokenRepository, SignInManager<AppUser> signInManager, IConfiguration configuration)
+        private readonly IEmailSender _emailSender;
+        public AccountController(UserManager<AppUser> userManager, ITokenRepository tokenRepository, SignInManager<AppUser> signInManager, IConfiguration configuration,IEmailSender emailSender)
         {
             _userManager = userManager;
             _tokenRepository = tokenRepository;
             _signinManager = signInManager;
             _configuration = configuration;
+            _emailSender = emailSender;
         }
 
         [HttpPost("login")]
@@ -223,6 +227,22 @@ namespace APIWeb1.Controllers.ApiControllers
             {
                 return Unauthorized("Invalid token: " + ex.Message);
             }
+        }
+
+        [HttpPost("Forget-pass")]
+        public async Task<IActionResult> ForgetPass([FromBody] string email)
+        {
+            var random = new Random();
+            int otp = random.Next(100000, 999999); // Tạo số ngẫu nhiên từ 100000 đến 999999
+
+            // Nội dung email
+            string subject = "Web Job Update Notification";
+            string htmlMessage = $"<p>Your OTP is <strong>{otp}</strong></p>";
+
+            await _emailSender.SendEmailAsync(email, subject, htmlMessage);
+
+            return Ok(otp);
+
         }
 
 

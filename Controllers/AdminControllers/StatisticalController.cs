@@ -1,4 +1,6 @@
-﻿using APIWeb1.Interfaces;
+﻿using APIWeb1.Dtos.Statisticals;
+using APIWeb1.Interfaces;
+using APIWeb1.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIWeb1.Controllers.AdminControllers
@@ -15,5 +17,16 @@ namespace APIWeb1.Controllers.AdminControllers
 
             return View();
         }
+
+        public async Task<IActionResult> GetTotal()
+        {
+
+            AdminGetTotal total = await _unitOfWork.StatisticalRepo.GetStatisticalTotal();
+
+            return Json(new { Data = total });
+        }
+
+        
+
     }
 }

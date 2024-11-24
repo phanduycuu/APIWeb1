@@ -80,7 +80,7 @@
         }]
     };
     new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
 
         data: {
             labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
@@ -103,15 +103,11 @@
 
 
     new Chart(ctx1, {
-        type: 'bar',
+        type: 'line',
 
         data: data1,
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+            
         }
 
     });

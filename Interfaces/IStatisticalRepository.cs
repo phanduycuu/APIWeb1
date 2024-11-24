@@ -9,5 +9,9 @@ namespace APIWeb1.Interfaces
     {
         Task<StatisticalGetStatusJob> GetStatisticalJobStatus(string employerId);
         Task<StatisticalGetTotalJobAndAppli> GetStatisticalTotalJobAndAppli(string employerId);
+
+        //admin
+        Task<AdminGetTotal> GetStatisticalTotal();
+        Task<List<UserStatistics>> GetUserCountByRoleAndDateRange(string role, DateTime startDate, DateTime endDate);
     }
 }

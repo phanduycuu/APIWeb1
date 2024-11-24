@@ -19,6 +19,8 @@ namespace APIWeb1.Models
         [ForeignKey("AddressId")]
         [ValidateNever]
         public Address? Address { get; set; }
+        public DateTime? CreateAt { get; set; }
+        public DateTime? UpdateAt { get; set; }
         public List<Application> Applications { get; set; } = new List<Application>();
         public List<Job> Jobs { get; set; } = new List<Job>();
 
