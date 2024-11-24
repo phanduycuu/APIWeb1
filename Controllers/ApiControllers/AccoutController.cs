@@ -230,20 +230,52 @@ namespace APIWeb1.Controllers.ApiControllers
         }
 
         [HttpPost("Forget-pass")]
-        public async Task<IActionResult> ForgetPass([FromBody] string email)
+        public async Task<IActionResult> ForgetPass([FromBody] string username)
         {
+            // Tạo số ngẫu nhiên gồm 6 chữ số
             var random = new Random();
             int otp = random.Next(100000, 999999); // Tạo số ngẫu nhiên từ 100000 đến 999999
 
+            // Tạo chữ cái viết hoa ngẫu nhiên
+            var uppercaseLetter = (char)random.Next('A', 'Z' + 1);
+
+            // Tạo chữ cái viết thường ngẫu nhiên
+            var lowercaseLetter = (char)random.Next('a', 'z' + 1);
+
+            // Kết hợp OTP và các chữ cái vào mật khẩu
+            string newPassword = $"{otp}{uppercaseLetter}{lowercaseLetter}";
+
+            // Tìm người dùng theo username
+            var userInfo = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.UserName == username);
+
+            if (userInfo == null)
+            {
+                return BadRequest("Username is invalid");
+            }
+
+            // Tạo token đặt lại mật khẩu
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(userInfo);
+
+            // Đặt lại mật khẩu với OTP làm mật khẩu mới
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(userInfo, resetToken, newPassword);
+
+            if (!resetPasswordResult.Succeeded)
+            {
+                // Trả về lỗi nếu việc đặt lại mật khẩu không thành công
+                return BadRequest("Failed to reset password");
+            }
+
             // Nội dung email
             string subject = "Web Job Update Notification";
-            string htmlMessage = $"<p>Your OTP is <strong>{otp}</strong></p>";
+            string htmlMessage = $"<p>Your new password is <strong>{newPassword}</strong></p>";
 
-            await _emailSender.SendEmailAsync(email, subject, htmlMessage);
+            // Gửi email thông báo mật khẩu mới
+            await _emailSender.SendEmailAsync(userInfo.Email, subject, htmlMessage);
 
-            return Ok(otp);
-
+            return Ok("Password reset successfully. Please check your email for the new password.");
         }
+
 
 
     }

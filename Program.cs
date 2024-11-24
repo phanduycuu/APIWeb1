@@ -80,7 +80,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false;
 
 })
-.AddEntityFrameworkStores<ApplicationDBContext>();
+.AddEntityFrameworkStores<ApplicationDBContext>().AddDefaultTokenProviders(); ;
 
 builder.Services.AddAuthentication(options =>
 {
@@ -104,6 +104,8 @@ builder.Services.AddAuthentication(options =>
         )
     };
 });
+
+
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
