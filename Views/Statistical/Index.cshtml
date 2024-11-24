@@ -41,14 +41,23 @@
 </div>
 <!-- Sale & Revenue End -->
 <!-- Phần tử canvas cho biểu đồ thứ nhất -->
-<canvas id="chart1" width="400" height="200"></canvas>
+@* <canvas id="chart1" width="400" height="200"></canvas> *@
 <!-- Phần tử canvas cho biểu đồ thứ hai -->
+<br />
+
 <div class="container mt-3">
+    <h6 class="mb-0" style="text-align"> Số lượng người đăng kí:</h6>
     <label for="dateRange">Chọn khoảng thời gian:</label>
     <input type="text" id="dateRange" class="form-control" />
 </div>
-<canvas id="chart2" width="400" height="200"></canvas>
+<canvas id="userChart" width="400" height="200"></canvas>
 
+<div class="container mt-3">
+    <h6 class="mb-0" > Số job được đăng:</h6>
+    <label for="dateRange">Chọn khoảng thời gian:</label>
+    <input type="text" id="dateRange1" class="form-control" />
+</div>
+<canvas id="jobChart" width="400" height="200"></canvas>
 @section Scripts {
     <script src="~/js/Statistical.js"></script>
 

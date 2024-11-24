@@ -57,7 +57,7 @@
         loop: true,
         nav : false
     });
-    const Utils = {
+    /*const Utils = {
         months: ({ count }) => {
             const months = [
                 'January', 'February', 'March', 'April', 'May', 'June',
@@ -111,7 +111,7 @@
         }
 
     });
-
+*/
 
 
 

@@ -97,5 +97,19 @@ namespace APIWeb1.Repository
                 .ToList();
             return userdto;
         }
+
+        public async Task<List<UserStatistics>> GetJobCountAndDateRange( DateTime startDate, DateTime endDate)
+        {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
+            var job = await _context.Jobs.Where(u => u.CreateOn >= startDate && u.CreateOn <= endDate && u.JobStatus== status)
+                .GroupBy(u => u.CreateOn.Date)
+                .Select(g => new UserStatistics
+                {
+                    Date = g.Key.ToString("dd/MM/yyyy"),
+                    Count = g.Count()
+                })
+                .ToListAsync();
+            return job;
+        }
     }
 }

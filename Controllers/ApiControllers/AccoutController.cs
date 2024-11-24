@@ -98,7 +98,8 @@ namespace APIWeb1.Controllers.ApiControllers
                     UserName = registerDto.Username,
                     Email = registerDto.Email,
                     Fullname=registerDto.Fullname,
-                    Status=1
+                    Status=1,
+                    CreateAt=DateTime.Now,
 
                 };
 
@@ -153,6 +154,7 @@ namespace APIWeb1.Controllers.ApiControllers
                     Fullname = registerEmployerDto.Fullname,
                     CompanyId = registerEmployerDto.CompanyId,
                     Status=0,
+                    CreateAt = DateTime.Now,
 
                 };
 

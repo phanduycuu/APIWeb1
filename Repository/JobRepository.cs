@@ -505,6 +505,9 @@ namespace APIWeb1.Repository
         {   
             Job job = _context.Jobs.Where(u=> u.Id== JobId).FirstOrDefault();
             job.JobStatus= Status;
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
+            if (Status== status)
+                job.CreateOn=DateTime.Now;
             _context.Jobs.Update(job);
             _context.SaveChanges();
 

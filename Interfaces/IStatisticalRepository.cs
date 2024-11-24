@@ -13,5 +13,6 @@ namespace APIWeb1.Interfaces
         //admin
         Task<AdminGetTotal> GetStatisticalTotal();
         Task<List<UserStatistics>> GetUserCountByRoleAndDateRange(string role, DateTime startDate, DateTime endDate);
+        Task<List<UserStatistics>> GetJobCountAndDateRange(DateTime startDate, DateTime endDate);
     }
 }
