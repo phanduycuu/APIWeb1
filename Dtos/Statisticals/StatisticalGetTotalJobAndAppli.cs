@@ -4,6 +4,7 @@
     {
         public int totalJob { get; set; } = 0;
         public int totalApply { get; set; } = 0;
+        public int totalUser { get; set; } = 0;
 
     }
 }

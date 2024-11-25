@@ -47,28 +47,19 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(statistical);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetJobStatistics(DateTime startDate, DateTime endDate)
+        [HttpGet("GetApplyAndDateRange")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> GetApplyAndDateRange(DateTime startDate, DateTime endDate)
         {
             // Giả sử bạn có repository để lấy dữ liệu người dùng
-            var job = await _unitOfWork.StatisticalRepo.GetJobCountAndDateRange(startDate, endDate);
-
-            // Xử lý dữ liệu theo từng ngày
-            var labels = Enumerable.Range(0, (endDate - startDate).Days + 1)
-                                    .Select(offset => startDate.AddDays(offset).ToString("dd/MM/yyyy"))
-                                    .ToList();
-
-            var jobData = labels.Select(date => job.FirstOrDefault(js => js.Date == date)?.Count ?? 0).ToList();
-
-            //Trả về JSON
-            return Ok(new
-            {
-                Data = new
-                {
-                    labels,
-                    jobData
-                }
-            });
+            var username = User.GetUsername();
+            var userInfo = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.UserName == username);
+            var statistical = await _unitOfWork.StatisticalRepo.GetApplyAndDateRange(userInfo.Id, startDate, endDate);
+            return Ok(statistical);
         }
+        
+
+        
     }
 }
