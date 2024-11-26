@@ -36,8 +36,6 @@ namespace APIWeb1.Dtos.AppUsers
 
         [Required(ErrorMessage = "District is required.")]
         public string District { get; set; }
-
-        public IFormFile? img { get; set; }
     }
 
 }

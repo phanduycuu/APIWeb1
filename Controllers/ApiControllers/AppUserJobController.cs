@@ -66,7 +66,7 @@ namespace APIWeb1.Controllers.ApiControllers
 
         [HttpPost("Update-User")]
         [Authorize]
-        public async Task<IActionResult> UpdateUser([FromForm] UpdateUser userdto)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUser userdto)
         {
             var username = User.GetUsername();
             var userInfo = await _userManager.Users
@@ -75,24 +75,40 @@ namespace APIWeb1.Controllers.ApiControllers
             {
                 return NotFound();
             }
-            string filePath = userInfo.Img;
-            if (userdto.img != null)
-            {
-                filePath = Path.Combine(@"wwwroot\admin\img\User\", $"{userInfo.Id}_{userdto.img.FileName}");
-
-                // Lưu file vào hệ thống file
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await userdto.img.CopyToAsync(stream);
-                }
-            }
+            
             userInfo.Fullname = userdto.Fullname;
             userInfo.PhoneNumber = userdto.Phone;
             userInfo.Email = userdto.Email;
             userInfo.Sex = userdto.Sex;
-            userInfo.Img = filePath;
             userInfo.Birthdate = userdto.Birthdate;
             userInfo.AddressId = await CreateAddress(userdto.Street, userdto.Province, userdto.Ward, userdto.District);
+            await _userManager.UpdateAsync(userInfo);
+            return Ok("Update account successfully");
+        }
+
+        [HttpPost("Update-Img-User")]
+        [Authorize]
+        public async Task<IActionResult> UpdateImgUser(IFormFile img)
+        {
+            var username = User.GetUsername();
+            var userInfo = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.UserName == username);
+            if (userInfo == null)
+            {
+                return NotFound();
+            }
+            string filePath = "";
+            if (img != null)
+            {
+                filePath = Path.Combine(@"wwwroot\admin\img\User\", $"{userInfo.Id}_{img.FileName}");
+
+                // Lưu file vào hệ thống file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(stream);
+                }
+            }
+            userInfo.Img = filePath;            
             await _userManager.UpdateAsync(userInfo);
             return Ok("Update account successfully");
         }
