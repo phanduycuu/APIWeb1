@@ -17,6 +17,14 @@ namespace APIWeb1.Repository
         {
             _context = context;
         }
+
+        public async Task<Blog> UpdateEmployerblog(Blog blog)
+        {
+            var exitstblog = await _context.Blogs.FirstOrDefaultAsync(x => x.Id == blog.Id);
+            exitstblog = blog;
+            await _context.SaveChangesAsync();
+            return exitstblog;
+        }
         public async Task<Blog> CreateAsync(Blog blog)
         {
             await _context.Blogs.AddAsync(blog);
@@ -38,7 +46,7 @@ namespace APIWeb1.Repository
 
         public async Task<List<GetAllBlogDto>> GetAllAsync(BlogQueryObject query)
         {
-            var blog = _context.Blogs.Where(b => b.Status==1).Include(u=>u.User).ThenInclude(p=>p.Company).AsQueryable();
+            var blog = _context.Blogs.Where(b => b.Status==1 && b.IsShow==true).Include(u=>u.User).ThenInclude(p=>p.Company).Where(u=>u.IsShow== true).AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 blog = blog.Where(s => s.Title.Contains(query.Title));
@@ -52,7 +60,8 @@ namespace APIWeb1.Repository
                     Img = u.Img,
                     Title = u.Title,
                     Content = u.Content,
-                    CreateOn = u.CreateAt
+                    CreateOn = u.CreateAt,
+                    IsShow = u.IsShow
                 }).ToListAsync();
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await blog.Skip(skipNumber).Take(query.PageSize).Select(u=> new GetAllBlogDto
@@ -63,17 +72,25 @@ namespace APIWeb1.Repository
                 Img=u.Img,
                 Title=u.Title,
                 Content=u.Content,
-                CreateOn = u.CreateAt
+                CreateOn = u.CreateAt,
+                IsShow = u.IsShow
             }).ToListAsync();
 
         }
 
 
-        public async Task<List<Blog>> GetById(int blogId)
+        public async Task<Blog> GetByIdForAll(int blogId)
         {
-            var blog = _context.Blogs.Where(b => b.Id == blogId).Include(u => u.User);
+            var blog = await _context.Blogs.Where(b => b.Id == blogId && b.IsShow == true).Include(u => u.User).FirstOrDefaultAsync();
             
-            return await blog.ToListAsync();
+            return  blog;
+        }
+
+        public async Task<Blog> GetByIdForEmployer(int blogId,string EmployerId)
+        {
+            var blog = await _context.Blogs.Where(b => b.Id == blogId && b.UserId== EmployerId).Include(u => u.User).FirstOrDefaultAsync();
+
+            return blog;
         }
 
         public async Task<List<GetAllBlogDto>> GetForEmployer(BlogQueryObject query, string userId)
@@ -92,7 +109,8 @@ namespace APIWeb1.Repository
                     Companyname = u.User.Company.Name,
                     Img = u.Img,
                     Title = u.Title,
-                    Content = u.Content
+                    Content = u.Content,
+                    IsShow = u.IsShow,
                 }).ToListAsync();
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await blog.Skip(skipNumber).Take(query.PageSize).Select(u => new GetAllBlogDto
@@ -102,7 +120,8 @@ namespace APIWeb1.Repository
                 Companyname = u.User.Company.Name,
                 Img = u.Img,
                 Title = u.Title,
-                Content = u.Content
+                Content = u.Content,
+                IsShow = u.IsShow,
             }).ToListAsync();
         }
 
@@ -122,7 +141,7 @@ namespace APIWeb1.Repository
 
         public async Task<int> GetTotalWithConditions(BlogQueryObject query)
         {
-            var blog = _context.Blogs.Where(b => b.Status == 1).AsQueryable();
+            var blog = _context.Blogs.Where(b => b.Status == 1 && b.IsShow == true).AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 blog = blog.Where(s => s.Title.Contains(query.Title));

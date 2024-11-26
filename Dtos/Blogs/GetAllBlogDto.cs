@@ -21,5 +21,6 @@ namespace APIWeb1.Dtos.Blogs
         public string Content { get; set; }
 
         public DateTime? CreateOn { get; set; }
+        public bool IsShow { get; set; }
     }
 }

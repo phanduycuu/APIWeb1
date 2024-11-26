@@ -50,20 +50,23 @@ namespace APIWeb1.Controllers.ApiControllers
             GetUserDto userDto = new GetUserDto()
             {
                 Fullname = userInfo.Fullname,
+                
                 Username = userInfo.UserName,
                 Email = userInfo.Email,
                 Phone = userInfo.PhoneNumber,
                 Company = userInfo.Company,
                 Sex = userInfo.Sex,
                 Birthdate = userInfo.Birthdate,
-                Address = userInfo.Address
+                Address = userInfo.Address,
+                Img = userInfo.Img
+
             };
             return Ok(userDto);
         }
 
         [HttpPost("Update-User")]
         [Authorize]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUser userdto)
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUser userdto)
         {
             var username = User.GetUsername();
             var userInfo = await _userManager.Users
@@ -72,10 +75,22 @@ namespace APIWeb1.Controllers.ApiControllers
             {
                 return NotFound();
             }
+            string filePath = userInfo.Img;
+            if (userdto.img != null)
+            {
+                filePath = Path.Combine(@"wwwroot\admin\img\User\", $"{userInfo.Id}_{userdto.img.FileName}");
+
+                // Lưu file vào hệ thống file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await userdto.img.CopyToAsync(stream);
+                }
+            }
             userInfo.Fullname = userdto.Fullname;
             userInfo.PhoneNumber = userdto.Phone;
             userInfo.Email = userdto.Email;
             userInfo.Sex = userdto.Sex;
+            userInfo.Img = filePath;
             userInfo.Birthdate = userdto.Birthdate;
             userInfo.AddressId = await CreateAddress(userdto.Street, userdto.Province, userdto.Ward, userdto.District);
             await _userManager.UpdateAsync(userInfo);
@@ -477,6 +492,32 @@ namespace APIWeb1.Controllers.ApiControllers
                 Application appModel = app;
                 appModel.Isshow = false;                
                 await _unitOfWork.ApplicationRepo.UpdateAppUserJob(appModel);
+                return Ok("Update status successfully");
+            }
+        }
+
+        [HttpPost("Update-IsShow-Job")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> UpdateEmployerIsShowJob(IsShowJob dto) // status= 2 duyet, status= 3 tu choi
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var jobdto = await _unitOfWork.JobRepo.GetJobById(dto.JobId,  appUser.Id);
+            
+            if (jobdto == null)
+            {
+
+                return BadRequest("You don't have permition for this job");
+
+            }
+            else
+            {
+                var Job = _unitOfWork.JobRepo.Get(x => x.Id == dto.JobId);
+                Job jobmodel = Job;
+                jobmodel.IsShow = dto.IsShow;
+                await _unitOfWork.JobRepo.UpdateEmployerJob(jobmodel);
                 return Ok("Update status successfully");
             }
         }

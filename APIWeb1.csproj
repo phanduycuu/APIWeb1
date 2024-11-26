@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\admin\img\Blog\" />
+    <Folder Include="wwwroot\admin\img\User\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 

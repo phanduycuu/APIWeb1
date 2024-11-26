@@ -20,6 +20,13 @@ namespace APIWeb1.Repository
         {
             _context = context;
         }
+        public async Task<Job> UpdateEmployerJob(Job job)
+        {
+            var exitstJob = await _context.Jobs.FirstOrDefaultAsync(x => x.Id == job.Id);
+            exitstJob = job;
+            await _context.SaveChangesAsync();
+            return exitstJob;
+        }
 
         public async Task<Job> AdminGetJobById(int jobId)
         {
@@ -55,7 +62,7 @@ namespace APIWeb1.Repository
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var job =  _context.Jobs.Include(a => a.Employer).ThenInclude(b => b.Company).Include(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).Where(u=> u.JobStatus == status && u.ExpiredDate >= DateTime.Now).AsQueryable();
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u=> u.JobStatus == status && u.ExpiredDate >= DateTime.Now && u.IsShow==true).AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 job = job.Where(s => s.Title.Contains(query.Title));
@@ -111,6 +118,7 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                IsShow = job.IsShow,
                 LocationShort = job.Address.Province + ", " + job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
@@ -141,7 +149,8 @@ namespace APIWeb1.Repository
                 },
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
-                JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),                
+                JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                IsShow = job.IsShow,
                 LocationShort = job.Address.Province + ", " + job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
@@ -215,6 +224,7 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                IsShow = job.IsShow,
                 LocationShort = job.Address.Province + ", " + job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
@@ -246,6 +256,7 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                IsShow = job.IsShow,
                 LocationShort = job.Address.Province + ", " + job.Address.District,
                 Skills = job.JobSkills.Select(js => new SkillDto
                 {
@@ -346,12 +357,12 @@ namespace APIWeb1.Repository
         //    return totalJobs;
 
         //}
-        public Task<List<GetJobByIdDto>> GetJobById(int JobId, string EmployerId)
+        public async Task<GetJobByIdDto> GetJobById(int JobId, string EmployerId)
         {
-            var jobModel = _context.Jobs.Include(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.Id == JobId && u.EmployerId==EmployerId);
+            var job = await _context.Jobs.Include(job => job.JobSkills)
+            .ThenInclude(jobSkill => jobSkill.Skill).Include(job => job.Address).Where(u => u.Id == JobId && u.EmployerId==EmployerId).FirstOrDefaultAsync();
 
-            return jobModel.Select(job => new GetJobByIdDto
+            return new GetJobByIdDto
             {
                 Id = job.Id,
                 Title = job.Title,
@@ -362,9 +373,9 @@ namespace APIWeb1.Repository
                 ExpiredDate = job.ExpiredDate,
                 CreateOn = job.CreateOn,
                 UpdatedOn = job.UpdatedOn,
-                Users = job.Applications.Where(u=>u.Status !=0 && u.Isshow == true).Select(user => new AppUserDto
+                Users = job.Applications.Where(u => u.Status != 0 && u.Isshow == true).Select(user => new AppUserDto
                 {
-                    Id=user.UserId,
+                    Id = user.UserId,
                     FullName = user.User.Fullname,
                     Email = user.User.Email,
                     CV = user.Cv,
@@ -375,6 +386,7 @@ namespace APIWeb1.Repository
                 JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                 JobType = EnumHelper.GetEnumDescription(job.JobType),
                 JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                IsShow = job.IsShow,
                 Location = job.Address.Street + " " +
                               job.Address.Province + " " +
                               job.Address.Ward + " " +
@@ -388,7 +400,7 @@ namespace APIWeb1.Repository
                     // Include other properties of Skill as needed
 
                 }).ToList()
-            }).ToListAsync();
+            };
         }
 
         public async Task<JobDto> GetJobByIdForAll(int JobId)
@@ -423,6 +435,7 @@ namespace APIWeb1.Repository
                     JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
                     JobType = EnumHelper.GetEnumDescription(job.JobType),
                     JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                    IsShow = job.IsShow,
                     Location = 
                                job.Address.Province + ", " +
                                job.Address.District + ", " +
@@ -444,7 +457,7 @@ namespace APIWeb1.Repository
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var totalJobs = await _context.Jobs
-                                  .Where(u => u.JobStatus == status && u.ExpiredDate >= DateTime.Now)
+                                  .Where(u => u.JobStatus == status && u.ExpiredDate >= DateTime.Now && u.IsShow== true)
                                   .CountAsync();
 
             return totalJobs;
@@ -454,7 +467,7 @@ namespace APIWeb1.Repository
         public async Task<int> GetTotalWithConditionsAsync(JobQueryObject query)
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
-            var jobQuery = _context.Jobs.Where(u => u.JobStatus == status && u.ExpiredDate >= DateTime.Now).AsQueryable();
+            var jobQuery = _context.Jobs.Where(u => u.JobStatus == status && u.ExpiredDate >= DateTime.Now && u.IsShow== true).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Title))
             {

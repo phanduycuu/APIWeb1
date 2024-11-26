@@ -22,6 +22,7 @@ namespace APIWeb1.Models
         public string Title { get; set; }
 
         public string Content { get; set; }
+        public bool IsShow { get; set; }
 
         public DateTime? CreateAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

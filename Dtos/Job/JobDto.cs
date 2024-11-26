@@ -29,6 +29,7 @@ namespace APIWeb1.Dtos.Job
         public string JobLevel { get; set; }
         public string JobType { get; set; }
         public string JobStatus { get; set; }
+        public bool IsShow { get; set; }
         public string Location { get; set;}
         public string LocationShort { get; set;}
         public List<SkillDto> Skills { get; set; } = new List<SkillDto>();

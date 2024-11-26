@@ -36,6 +36,7 @@ namespace APIWeb1.Models
         public Address? Address { get; set; }
         public bool IsNew { get; set; }
         public bool IsFetured { get; set; }
+        public bool IsShow{ get; set; }
 
         public List<JobSkill> JobSkills { get; set; } = new List<JobSkill>();
         public List<Skill> Skills { get; set; } = new List<Skill>();
