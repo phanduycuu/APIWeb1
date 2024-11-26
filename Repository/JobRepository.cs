@@ -55,7 +55,7 @@ namespace APIWeb1.Repository
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var job =  _context.Jobs.Include(a => a.Employer).ThenInclude(b => b.Company).Include(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).Where(u=> u.JobStatus == status && u.ExpiredDate< DateTime.Now).AsQueryable();
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u=> u.JobStatus == status && u.ExpiredDate >= DateTime.Now).AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 job = job.Where(s => s.Title.Contains(query.Title));
@@ -262,7 +262,7 @@ namespace APIWeb1.Repository
         public async Task<int> GetTotalForEmployer(AppUser user, JobQueryObject query)
         {
             var job = _context.Jobs
-                        .Where(job => job.EmployerId == user.Id && job.ExpiredDate < DateTime.Now).AsQueryable();
+                        .Where(job => job.EmployerId == user.Id ).AsQueryable();
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 job = job.Where(s => s.Title.Contains(query.Title));
@@ -444,7 +444,7 @@ namespace APIWeb1.Repository
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var totalJobs = await _context.Jobs
-                                  .Where(u => u.JobStatus == status && u.ExpiredDate < DateTime.Now)
+                                  .Where(u => u.JobStatus == status && u.ExpiredDate >= DateTime.Now)
                                   .CountAsync();
 
             return totalJobs;
@@ -454,7 +454,7 @@ namespace APIWeb1.Repository
         public async Task<int> GetTotalWithConditionsAsync(JobQueryObject query)
         {
             var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
-            var jobQuery = _context.Jobs.Where(u => u.JobStatus == status && u.ExpiredDate < DateTime.Now).AsQueryable();
+            var jobQuery = _context.Jobs.Where(u => u.JobStatus == status && u.ExpiredDate >= DateTime.Now).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
