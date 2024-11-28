@@ -9,6 +9,7 @@ namespace APIWeb1.Controllers.AdminControllers
 
         public IActionResult Index()
         {
+            
             return View();
         }
 

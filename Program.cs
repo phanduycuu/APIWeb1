@@ -109,7 +109,7 @@ builder.Services.AddAuthentication(options =>
         OnMessageReceived = context =>
         {
             // Đọc token từ cookie
-            var token = context.Request.Cookies["tokenAdmin"];
+            var token = context.Request.Cookies["token"];
             if (!string.IsNullOrEmpty(token))
             {
                 context.Token = token;
