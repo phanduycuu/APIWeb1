@@ -61,7 +61,8 @@ namespace APIWeb1.Repository
                     Title = u.Title,
                     Content = u.Content,
                     CreateOn = u.CreateAt,
-                    IsShow = u.IsShow
+                    IsShow = u.IsShow,
+                    Status = u.Status
                 }).ToListAsync();
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await blog.Skip(skipNumber).Take(query.PageSize).Select(u=> new GetAllBlogDto
@@ -73,7 +74,8 @@ namespace APIWeb1.Repository
                 Title=u.Title,
                 Content=u.Content,
                 CreateOn = u.CreateAt,
-                IsShow = u.IsShow
+                IsShow = u.IsShow,
+                Status = u.Status
             }).ToListAsync();
 
         }
@@ -111,6 +113,8 @@ namespace APIWeb1.Repository
                     Title = u.Title,
                     Content = u.Content,
                     IsShow = u.IsShow,
+                    CreateOn = u.CreateAt,
+                    Status = u.Status
                 }).ToListAsync();
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             return await blog.Skip(skipNumber).Take(query.PageSize).Select(u => new GetAllBlogDto
@@ -122,6 +126,8 @@ namespace APIWeb1.Repository
                 Title = u.Title,
                 Content = u.Content,
                 IsShow = u.IsShow,
+                CreateOn = u.CreateAt,
+                Status = u.Status
             }).ToListAsync();
         }
 
