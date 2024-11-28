@@ -86,6 +86,21 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(blog);
         }
 
+        [HttpGet("GetBlogByIdForEmployer")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> GetBlogByIdForEmployer(int blogId)
+        {
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+
+            var blog = await _unitOfWork.BlogRepo.GetByIdForEmployer(blogId, appUser.Id);
+            if (blog == null)
+            {
+                return BadRequest("you don't have permition for this blog");
+            }
+            return Ok(blog);
+        }
+
 
         [HttpGet("GetTotal")]
         [Authorize(Roles = "Employer")]
