@@ -53,10 +53,11 @@ namespace APIWeb1.Repository
 
         public async Task<List<GetAppDto>> GetUserJob(AppUser user, JobQueryObject query)
         {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var applications = _context.Applications.Include(a => a.Job).
                 ThenInclude(a => a.Employer).ThenInclude(b => b.Company).Include(a => a.Job).ThenInclude(a => a.Address)
                 .Include(a => a.Job).ThenInclude(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.UserId == user.Id && u.Status!=0);
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.UserId == user.Id && u.Status!=0 && u.Job.IsShow == true && u.Job.ExpiredDate < DateTime.Now && u.Job.JobStatus == status);
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 applications = applications.Where(s => s.Job.Title.Contains(query.Title));
@@ -220,10 +221,11 @@ namespace APIWeb1.Repository
 
         public async Task<List<GetAppDto>> GetAppUserIsSaveJob(AppUser user, JobQueryObject query)
         {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var applications = _context.Applications.Include(a => a.Job).
                 ThenInclude(a => a.Employer).ThenInclude(b => b.Company).Include(a => a.Job).ThenInclude(a => a.Address)
                 .Include(a => a.Job).ThenInclude(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.UserId == user.Id && u.Issave == true);
+            .ThenInclude(jobSkill => jobSkill.Skill).Where(u => u.UserId == user.Id && u.Issave == true && u.Job.IsShow == true && u.Job.ExpiredDate < DateTime.Now && u.Job.JobStatus == status);
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 applications = applications.Where(s => s.Job.Title.Contains(query.Title));
