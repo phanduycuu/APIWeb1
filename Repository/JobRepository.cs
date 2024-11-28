@@ -359,8 +359,14 @@ namespace APIWeb1.Repository
         //}
         public async Task<GetJobByIdDto> GetJobById(int JobId, string EmployerId)
         {
-            var job = await _context.Jobs.Include(job => job.JobSkills)
-            .ThenInclude(jobSkill => jobSkill.Skill).Include(job => job.Address).Where(u => u.Id == JobId && u.EmployerId==EmployerId).FirstOrDefaultAsync();
+            var job = await _context.Jobs
+        .Include(job => job.JobSkills)
+            .ThenInclude(jobSkill => jobSkill.Skill)
+        .Include(job => job.Address)
+        .Include(job => job.Applications) // Include Applications
+            .ThenInclude(app => app.User) // Include User nếu cần truy cập thông tin từ User
+        .Where(u => u.Id == JobId && u.EmployerId == EmployerId)
+        .FirstOrDefaultAsync();
 
             return new GetJobByIdDto
             {
