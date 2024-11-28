@@ -103,6 +103,22 @@ builder.Services.AddAuthentication(options =>
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
         )
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // Đọc token từ cookie
+            var token = context.Request.Cookies["tokenAdmin"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
+    };
+
+
 });
 
 

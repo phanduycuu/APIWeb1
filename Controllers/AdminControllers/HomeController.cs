@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
+    [Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
 
