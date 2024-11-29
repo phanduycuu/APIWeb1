@@ -37,18 +37,15 @@ function loadDataTableEmployer() {
             {
                 data: 'id',
                 "render": function (data) {
-                    return `<div class = "w-75 d-flex gap-1" role=""> 
-                    <a href="/Account/AcceptEmployer?id=${data}" class="btn btn-sm btn-warning mx-1">
-                        <i class="fa-solid fa-pen-to-square"></i> 
-                    </a>
+                    return `<div class="w-75 d-flex justify-content-center align-items-center gap-1" role=""> 
 
-                    <a href="/Account/RefuseEmployer?id=${data}" class="btn btn-sm btn-warning mx-1">
-                        <i class="fa-solid fa-pen-to-square"></i> 
-                    </a>
-                    
-                    </div>`;
+                <a href="/Account/DetailEmployer?id=${data}" class="btn btn-sm btn-info mx-1">
+                    <i class="fa-solid fa-eye"></i> 
+                </a>
+                
+            </div>`;
                 },
-                "width": "15%"
+                "width": "9%"
             }
         ]
     });
@@ -85,18 +82,14 @@ function loadDataTableUser() {
             {
                 data: 'id',
                 "render": function (data) {
-                    return `<div class = "w-75 d-flex gap-1" role=""> 
-                    <a href="/Account/AcceptUser?id=${data}" class="btn btn-sm btn-warning mx-1">
-                        <i class="fa-solid fa-pen-to-square"></i> 
-                    </a>
-
-                    <a href="/Account/RefuseUser?id=${data}" class="btn btn-sm btn-warning mx-1">
-                        <i class="fa-solid fa-pen-to-square"></i> 
+                    return `<div class="w-75 d-flex justify-content-center align-items-center gap-1" role="">
+                    <a href="/Account/DetailUser?id=${data}"  class="btn btn-sm btn-info mx-1">
+                        <i class="fa-solid fa-eye"></i> 
                     </a>
                     
                     </div>`;
                 },
-                "width": "15%"
+                "width": "9%"
             }
         ]
     });

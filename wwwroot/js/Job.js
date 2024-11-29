@@ -23,14 +23,14 @@ function loadDataTable() {
             {
                 data: 'id',
                 "render": function (data) {
-                    return `<div class = "w-75 d-flex gap-1" role=""> 
+                    return `<div class="w-75 d-flex justify-content-center align-items-center gap-1" role=""> 
                   
                      <a href="/job/detail?id=${data}"  class="btn btn-sm btn-info mx-1">
                         <i class="fa-solid fa-eye"></i> 
                     </a>
                     </div>`;
                 },
-                "width": "15%"
+                "width": "9%"
             }
         ],
        "lengthMenu": [

@@ -33,6 +33,33 @@ namespace APIWeb1.Controllers.AdminControllers
             return View();
         }
 
+        public async Task<IActionResult> DetailEmployer(string id)
+        {
+            if (id==null )
+            {
+                return NotFound();
+            }
+            AppUser? user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+        public async Task<IActionResult> DetailUser(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            AppUser? user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllEmployer()
         {

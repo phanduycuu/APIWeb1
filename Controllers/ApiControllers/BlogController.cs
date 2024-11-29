@@ -49,7 +49,7 @@ namespace APIWeb1.Controllers.ApiControllers
                 Blog blogmodel = new Blog() 
                 {
                     UserId= appUser.Id,
-                    Img= filePath,
+                    Img= @"\admin\img\Blog\"+$"{appUser.Id}_{blogDto.Img.FileName}",
                     Title=blogDto.Title,
                     Content=blogDto.Content,
                     CreateAt= DateTime.Now,

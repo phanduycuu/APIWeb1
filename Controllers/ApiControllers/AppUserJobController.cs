@@ -108,7 +108,7 @@ namespace APIWeb1.Controllers.ApiControllers
                     await img.CopyToAsync(stream);
                 }
             }
-            userInfo.Img = filePath;            
+            userInfo.Img = @"\admin\img\User\"+ $"{userInfo.Id}_{img.FileName}";            
             await _userManager.UpdateAsync(userInfo);
             return Ok("Update account successfully");
         }
