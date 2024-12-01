@@ -25,7 +25,9 @@ namespace APIWeb1.Controllers.AdminControllers
         {
             return View();
         }
-        public async Task<IActionResult> ChangePass([FromBody] ChangePass model)
+
+        [HttpPost]
+        public async Task<IActionResult> Index(ChangePassAdmin model)
         {
             var username = User.GetUsername();
             var user = await _userManager.Users
@@ -34,15 +36,26 @@ namespace APIWeb1.Controllers.AdminControllers
             {
                 return NotFound();
             }
-            var result = await _userManager.ChangePasswordAsync(user, model.CurentPass, model.NewPass);
-            if (!result.Succeeded)
+            else if ( ModelState.IsValid)
             {
-                // Trả về lỗi nếu mật khẩu không thỏa mãn
-                var errors = result.Errors.Select(e => e.Description);
-                return BadRequest(new { Errors = errors });
+                var result = await _userManager.ChangePasswordAsync(user, model.CurentPass, model.NewPass);
+                if (!result.Succeeded)
+                {
+                    // Trả về lỗi nếu mật khẩu không thỏa mãn
+                    var errors = result.Errors.Select(e => e.Description);
+                    TempData["error"] = "pass update fail";
+
+                }
+                else
+                {
+                    TempData["success"] = "pass update success";
+
+
+                }
             }
 
-            return Ok("Password changed successfully");
+            model.CurentPass = "";
+            return View(model);
 
         }
     }

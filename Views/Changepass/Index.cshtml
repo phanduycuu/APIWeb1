@@ -11,25 +11,30 @@
 
                 <form method="post" class="row">
                     <div class="form-floating mb-3 col-lg-6">
-                        <input asp-for="CurentPass" type="password" class="form-control" id="currentpass" placeholder="">
-                        <label asp-for="CurentPass" for="currentpass">Current Password</label>
+                        <input asp-for="CurentPass" type="text" class="form-control" id="currentpass" placeholder="">
+                        <label asp-for="CurentPass" >Current Password</label>
                         <span asp-validation-for="CurentPass" class="text-danger m-2" id="errorcurrentpass"></span>
                     </div>
 
                     <div class="form-floating mb-3 col-lg-6">
                         <input asp-for="NewPass" type="password" class="form-control" id="newpass" placeholder="">
-                        <label asp-for="NewPass" for="newpass">New Password</label>
+                        <label asp-for="NewPass" >New Password</label>
                         <span asp-validation-for="NewPass" class="text-danger m-2" id="errornewpass"></span>
                     </div>
 
-                    <div class="form-floating mb-3 col-lg-6">
+                    @* <div class="form-floating mb-3 col-lg-6">
                         <input asp-for="RePass" name="RePass" type="password" class="form-control" id="repass" placeholder="">
                         <label asp-for="RePass" for="repass">Confirm New Password</label>
                         <span asp-validation-for="RePass" class="text-danger m-2" id="errorrepass" ></span>
-                    </div>
+                    </div> *@
 
-                    <div>
-                        <a onclick="change(event)" class="btn btn-danger">Change</a>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            Update
+                        </button>
+
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-danger">Back To List</a>
+
                     </div>
                 </form>
             </div>
@@ -37,7 +42,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <script src="~/js/changepass.js"></script>
-
-}

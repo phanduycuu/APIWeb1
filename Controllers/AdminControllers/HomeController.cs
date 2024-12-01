@@ -1,4 +1,5 @@
-﻿using APIWeb1.Extensions;
+﻿using APIWeb1.Dtos.Blogs;
+using APIWeb1.Extensions;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,13 +28,17 @@ namespace APIWeb1.Controllers.AdminControllers
 
         public async Task<IActionResult> Index()
         {
+                     
+            return View();
+        }
+
+        public async Task<IActionResult> GetAdmin()
+        {
             var username = User.GetUsername();
             var userInfo = await _userManager.Users
                 .Include(u => u.Company).Include(u => u.Address)
                 .FirstOrDefaultAsync(u => u.UserName == username);
-
-            ViewData["UserInfo"] = userInfo; // Hoặc ViewBag.UserInfo = userInfo;
-            return View(userInfo);
+            return Json(new { Data = userInfo });
         }
 
 

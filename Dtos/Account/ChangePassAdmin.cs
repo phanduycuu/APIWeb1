@@ -8,7 +8,5 @@ namespace APIWeb1.Dtos.Account
         public string CurentPass { get; set; }
         [Required]
         public string NewPass { get; set; }
-        [Required]
-        public string RePass { get; set; }
     }
 }
