@@ -18,5 +18,6 @@ namespace APIWeb1.Interfaces
         Task<List<BlogAdminDto>> GetAdminBlog();
         Task<Blog> GetByIdForEmployer(int blogId, string EmployerId);
         Task<Blog> UpdateEmployerblog(Blog blog);
+        Task Deleteblog(Blog blog);
     }
 }

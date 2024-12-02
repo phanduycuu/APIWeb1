@@ -25,6 +25,12 @@ namespace APIWeb1.Repository
             await _context.SaveChangesAsync();
             return exitstblog;
         }
+
+        public async Task Deleteblog(Blog blog)
+        {
+            _context.Blogs.Remove(blog);
+            await _context.SaveChangesAsync();
+        }
         public async Task<Blog> CreateAsync(Blog blog)
         {
             await _context.Blogs.AddAsync(blog);
@@ -83,7 +89,7 @@ namespace APIWeb1.Repository
 
         public async Task<Blog> GetByIdForAll(int blogId)
         {
-            var blog = await _context.Blogs.Where(b => b.Id == blogId && b.IsShow == true).Include(u => u.User).FirstOrDefaultAsync();
+            var blog = await _context.Blogs.Where(b => b.Status == 1&& b.Id == blogId && b.IsShow == true).Include(u => u.User).FirstOrDefaultAsync();
             
             return  blog;
         }

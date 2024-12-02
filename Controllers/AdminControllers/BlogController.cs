@@ -28,13 +28,19 @@ namespace APIWeb1.Controllers.AdminControllers
         }
         public async Task<IActionResult> Accept(int Id)
         {
-            _unitOfWork.BlogRepo.UpdateStatusBlog(Id, 1);
+            var blog = await _unitOfWork.BlogRepo.GetByIdForAll(Id);
+            blog.Status = 1;
+            blog.IsShow = true;
+            await _unitOfWork.BlogRepo.UpdateEmployerblog(blog);
             TempData["success"] = "Blog update successfully";
             return RedirectToAction("Index", "Blog");
         }
         public async Task<IActionResult> Refuse(int Id)
         {
-            _unitOfWork.BlogRepo.UpdateStatusBlog(Id, 2);
+            var blog = await _unitOfWork.BlogRepo.GetByIdForAll(Id);
+            blog.Status = 2;
+            blog.IsShow = false;
+            await _unitOfWork.BlogRepo.UpdateEmployerblog(blog);
             TempData["success"] = "Blog update successfully";
             return RedirectToAction("Index", "Blog");
         }

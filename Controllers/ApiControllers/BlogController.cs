@@ -121,7 +121,7 @@ namespace APIWeb1.Controllers.ApiControllers
 
         [HttpPost("Update-IsShow-Blog")]
         [Authorize(Roles = "Employer")]
-        public async Task<IActionResult> UpdateEmployerIsShowBlog(IsShowBlog dto) // status= 2 duyet, status= 3 tu choi
+        public async Task<IActionResult> UpdateEmployerIsShowBlog(IsShowBlog dto) 
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -140,6 +140,30 @@ namespace APIWeb1.Controllers.ApiControllers
                 Blog blog = blogdto;
                 blog.IsShow = dto.IsShow;
                 await _unitOfWork.BlogRepo.UpdateEmployerblog(blog);
+                return Ok("Update status successfully");
+            }
+        }
+
+        [HttpPost("Delete-Blog")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> DeleteBlog(int blogId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var blogdto = await _unitOfWork.BlogRepo.GetByIdForEmployer(blogId, appUser.Id);
+
+            if (blogdto == null)
+            {
+
+                return BadRequest("You don't have permition for this blog");
+
+            }
+            else
+            {
+                Blog blog = blogdto;               
+                 _unitOfWork.BlogRepo.Deleteblog(blog);
                 return Ok("Update status successfully");
             }
         }
