@@ -67,6 +67,8 @@ namespace APIWeb1.Repository
                 }
             }
 
+            var Total = await usersQuery.ToListAsync();
+
             if (query.PageSize != 0 && query.PageNumber != 0)
             {
                 var skipNumber = (query.PageNumber - 1) * query.PageSize;
@@ -102,7 +104,7 @@ namespace APIWeb1.Repository
             return new PaginationGetAllAccount
             {
                 AccountUser=userDtos,
-                Total=users.Count()
+                Total= Total.Count()
             };
 
         }
@@ -129,7 +131,7 @@ namespace APIWeb1.Repository
                     usersQuery = query.IsDecsending ? usersQuery.OrderByDescending(s => s.Fullname) : usersQuery.OrderBy(s => s.Fullname);
                 }
             }
-
+            var Total = await usersQuery.ToListAsync();
             if (query.PageSize != 0 && query.PageNumber != 0)
             {
                 var skipNumber = (query.PageNumber - 1) * query.PageSize;
@@ -165,7 +167,7 @@ namespace APIWeb1.Repository
             return new PaginationGetAllAccount
             {
                 AccountUser = userDtos,
-                Total = users.Count()
+                Total = Total.Count()
             };
         }
         public async Task<AdminAccountUser> GetById(string Id)
@@ -215,6 +217,7 @@ namespace APIWeb1.Repository
                     company = query.IsDecsending ? company.OrderByDescending(s => s.Name) : company.OrderBy(s => s.Name);
                 }
             }
+            var Total = await company.ToListAsync();
             if (query.PageSize != 0 && query.PageNumber != 0)
             { 
                 var skipNumber = (query.PageNumber - 1) * query.PageSize;
@@ -225,7 +228,7 @@ namespace APIWeb1.Repository
             return new PaginationGetAllCompany
             {
                 Company=companymodel,
-                Total=companymodel.Count,
+                Total= Total.Count(),
 
             };
         }
