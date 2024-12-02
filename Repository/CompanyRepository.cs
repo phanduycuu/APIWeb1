@@ -55,6 +55,7 @@ namespace APIWeb1.Repository
 
         public async Task<GetCompanybyIdDto> GetCompanyWithJobsByIdAsync(int companyId)
         {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>("Approved");
             var company = await _context.Companys
                 .Where(c => c.Id == companyId)
                 .Select(c => new GetCompanybyIdDto
@@ -71,7 +72,8 @@ namespace APIWeb1.Repository
                     Update = c.Update,
                     Status = c.Status,
                     Jobs = c.Employers
-                        .SelectMany(u => u.Jobs)
+                        .SelectMany(u => u.Jobs )
+                        .Where(job => job.JobStatus == status && job.ExpiredDate >= DateTime.Now && job.IsShow == true)
                         .Select(job => new GetAllJobDto
                         {
                             Id = job.Id,

@@ -53,8 +53,8 @@
                     @* <button type="submit" class="btn btn-primary">Create</button> *@
                     <div>
                         <a asp-controller="Account" asp-action="Employer" class="btn btn-danger">Back To List</a>
-                        <a asp-controller="Account" asp-action="AcceptEmployer" asp-route-id="@Model.Id" class="btn btn-danger">Accept job</a>
-                        <a asp-controller="Account" asp-action="RefuseEmployer" asp-route-id="@Model.Id" class="btn btn-danger">Refuse job</a>
+                        <a asp-controller="Account" asp-action="AcceptEmployer" asp-route-id="@Model.Id" class="btn btn-primary">Accept job</a>
+                        <a asp-controller="Account" asp-action="RefuseEmployer" asp-route-id="@Model.Id" class="btn btn-warning">Refuse job</a>
                     </div>
                 </form>
             </div>

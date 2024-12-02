@@ -89,7 +89,7 @@ namespace APIWeb1.Repository
 
         public async Task<Blog> GetByIdForAll(int blogId)
         {
-            var blog = await _context.Blogs.Where(b => b.Status == 1&& b.Id == blogId && b.IsShow == true).Include(u => u.User).FirstOrDefaultAsync();
+            var blog = await _context.Blogs.Where(b => b.Id == blogId).Include(u => u.User).FirstOrDefaultAsync();
             
             return  blog;
         }

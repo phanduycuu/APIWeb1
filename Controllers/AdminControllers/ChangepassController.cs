@@ -49,13 +49,12 @@ namespace APIWeb1.Controllers.AdminControllers
                 else
                 {
                     TempData["success"] = "pass update success";
-
+                    return RedirectToAction("Index", "Changepass");
 
                 }
             }
-
-            model.CurentPass = "";
             return View(model);
+            //return View(model);
 
         }
     }

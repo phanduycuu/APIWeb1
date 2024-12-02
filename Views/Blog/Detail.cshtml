@@ -28,8 +28,8 @@
                     @* <button type="submit" class="btn btn-primary">Create</button> *@
                     <div>
                         <a asp-controller="Blog" asp-action="Index" class="btn btn-danger">Back To List</a>
-                        <a asp-controller="Blog" asp-action="Accept" asp-route-id="@Model.Id" class="btn btn-danger">Accept Blog</a>
-                        <a asp-controller="Blog" asp-action="Refuse" asp-route-id="@Model.Id" class="btn btn-danger">Refuse Blog</a>
+                        <a asp-controller="Blog" asp-action="Accept" asp-route-id="@Model.Id" class="btn btn-primary">Accept Blog</a>
+                        <a asp-controller="Blog" asp-action="Refuse" asp-route-id="@Model.Id" class="btn btn-warning">Refuse Blog</a>
                     </div>
                 </form>
             </div>

@@ -23,11 +23,11 @@ function loadDataTable() {
                 "className": "text-center",
                 "render": function (data) {
                     if (data === 0) {
-                        return "Đang đợi duyệt";
+                        return "Pending";
                     } else if (data === 1) {
-                        return "Đã duyệt";
+                        return "Approved";
                     } else if (data === 2) {
-                        return "Từ chối";
+                        return "Rejected";
                     }
                     return "";
                 }
