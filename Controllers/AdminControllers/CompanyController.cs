@@ -1,6 +1,8 @@
 ﻿using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Areas.Admin.Controllers
 {
@@ -8,10 +10,12 @@ namespace APIWeb1.Areas.Admin.Controllers
     {
 		private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-		public CompanyController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        private readonly UserManager<AppUser> _userManager;
+        public CompanyController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment,UserManager<AppUser> userManager)
 		{		
 			_unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
 		}
 		public IActionResult Index()
         {
@@ -105,11 +109,16 @@ namespace APIWeb1.Areas.Admin.Controllers
 
 
         [HttpPut]
-        public IActionResult Hidden(int? id)
+        public async Task<IActionResult> Hidden(int? id)
         {
             Company? company = _unitOfWork.CompanyRepo.Get(x => x.Id == id);
             company.Status = false;
-
+            var users= await _userManager.Users.Where(user=>user.CompanyId == id).ToListAsync();
+            foreach (var user in users)
+            {
+                user.Status = 0;
+                await _userManager.UpdateAsync(user);
+            }
             _unitOfWork.CompanyRepo.Update(company);
             _unitOfWork.Save();
 
