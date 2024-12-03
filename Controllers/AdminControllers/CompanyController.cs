@@ -117,7 +117,7 @@ namespace APIWeb1.Areas.Admin.Controllers
             foreach (var user in users)
             {
                 user.Status = 0;
-                await _userManager.UpdateAsync(user);
+                await _userManager.UpdateAsync(user);                
             }
             _unitOfWork.CompanyRepo.Update(company);
             _unitOfWork.Save();

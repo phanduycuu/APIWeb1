@@ -1,9 +1,14 @@
 ﻿using APIWeb1.Dtos.AppUsers;
+using APIWeb1.Dtos.Blogs;
+using APIWeb1.Dtos.Companys;
+using APIWeb1.Dtos.Statisticals;
 using APIWeb1.Extensions;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
+using APIWeb1.Mappers;
 using APIWeb1.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -147,5 +152,213 @@ namespace APIWeb1.Controllers.ApiControllers
 
             return Ok(company);
         }
+
+        [HttpGet("Get-ById-Company")]
+        public IActionResult GetByIdCompany(int id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Company? company = _unitOfWork.CompanyRepo.Get(x => x.Id == id);
+            if (company == null)
+            {
+                return NotFound();
+            }
+            return Ok(company);
+        }
+
+        [HttpPost("Upsert-Company")]
+        public async Task<IActionResult> Upsert([FromForm] AdminAddCompany dto)
+        {
+            if (ModelState.IsValid)
+            {
+                string filePath = "";
+
+                    filePath = Path.Combine(@"wwwroot\admin\img\Company\", $"{dto.Img.FileName}");
+
+                    // Lưu file vào hệ thống file
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await dto.Img.CopyToAsync(stream);
+                    }
+
+                if (dto.Id == 0 || dto.Id == null)
+                {
+                    Company company = dto.ToCompanyFromAdminAddCompany();
+                    company.Create = DateTime.Now;
+                    company.Logo = @"\admin\img\Company\"+ $"{dto.Img.FileName}";
+                    _unitOfWork.CompanyRepo.Add(company);
+                    _unitOfWork.Save();
+                }
+                else
+                {
+                    Company companymodel = _unitOfWork.CompanyRepo.Get(x => x.Id == dto.Id);
+                    companymodel.Name = dto.Name;
+                    companymodel.Description = dto.Description;
+                    companymodel.Phone = dto.Phone;
+                    companymodel.Email = dto.Email;
+                    companymodel.Website = dto.Website;
+                    companymodel.Industry = dto.Industry;
+                    companymodel.Update = DateTime.Now;
+                    companymodel.Logo = @"\admin\img\Company\" + $"{dto.Img.FileName}";
+                    _unitOfWork.CompanyRepo.Update(companymodel);
+                    _unitOfWork.Save();
+                }
+                
+            }
+            return Ok();
+        }
+
+        [HttpPost("Delete-Company")]
+        public async Task<IActionResult> Hidden(int id)
+        {
+            if (id == 0 || id == null)
+            {
+                return BadRequest();
+            } 
+            Company company = _unitOfWork.CompanyRepo.Get(x => x.Id == id);
+            company.Status = false;
+            var users = await _userManager.Users.Where(user => user.CompanyId == id).ToListAsync();
+            foreach (var user in users)
+            {
+                user.Status = 0;
+                await _userManager.UpdateAsync(user);
+            }
+            _unitOfWork.CompanyRepo.Update(company);
+            _unitOfWork.Save();
+
+            return Ok("Delete successfully");
+        }
+
+        // blog
+        [HttpGet("Get-All-Blog")]
+        //[Authorize]
+        public async Task<IActionResult> GetAllBlog([FromQuery] BlogQueryObject query)
+        {
+            var blog = await _unitOfWork.AccoutAdminRepo.GetAllBlog(query);
+
+            return Ok(blog);
+        }
+
+        [HttpPost("Add-Blogs")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([FromForm] CreateBlogDto blogDto)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var filePath = "";
+            if (blogDto.Img == null)
+            {
+                return BadRequest(ModelState);
+            }
+            else
+            {
+                filePath = Path.Combine(@"wwwroot\admin\img\Blog\", $"{appUser.Id}_{blogDto.Img.FileName}");
+
+                // Lưu file vào hệ thống file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await blogDto.Img.CopyToAsync(stream);
+                }
+                Blog blogmodel = new Blog()
+                {
+                    UserId = appUser.Id,
+                    Img = @"\admin\img\Blog\" + $"{appUser.Id}_{blogDto.Img.FileName}",
+                    Title = blogDto.Title,
+                    Content = blogDto.Content,
+                    CreateAt = DateTime.Now,
+                    UpdatedAt = null,
+                    Status = 1,
+                    IsShow = true,
+                };
+                await _unitOfWork.BlogRepo.CreateAsync(blogmodel);
+                return Created();
+            }
+
+        }
+
+        [HttpPost("Accept-Blogs")]
+        public async Task<IActionResult> Accept(int Id)
+        {
+            var blog = await _unitOfWork.BlogRepo.GetByIdForAll(Id);
+            blog.Status = 1;
+            blog.IsShow = true;
+            await _unitOfWork.BlogRepo.UpdateEmployerblog(blog);
+            return Ok("Confirm successfully");
+        }
+
+        [HttpPost("Refuse-Blogs")]
+        public async Task<IActionResult> Refuse(int Id)
+        {
+            var blog = await _unitOfWork.BlogRepo.GetByIdForAll(Id);
+            blog.Status = 2;
+            blog.IsShow = false;
+            await _unitOfWork.BlogRepo.UpdateEmployerblog(blog);
+            return Ok("Confirm successfully");
+        }
+
+
+        // Thong ke
+        [HttpGet("Statistical-Get-Total")]
+        public async Task<IActionResult> GetTotal()
+        {
+
+            AdminGetTotal total = await _unitOfWork.StatisticalRepo.GetStatisticalTotal();
+
+            return Ok(total);
+        }
+
+        //[HttpGet("GetUserStatistics")]
+        [HttpPost("Statistical-Get-Register-User")]
+        public async Task<IActionResult> GetUserStatistics(DateTime startDate, DateTime endDate)
+        {
+            // Giả sử bạn có repository để lấy dữ liệu người dùng
+            var jobSeekers = await _unitOfWork.StatisticalRepo.GetUserCountByRoleAndDateRange("User", startDate, endDate);
+            var employers = await _unitOfWork.StatisticalRepo.GetUserCountByRoleAndDateRange("Employer", startDate, endDate);
+
+            // Xử lý dữ liệu theo từng ngày
+            var labels = Enumerable.Range(0, (endDate - startDate).Days + 1)
+                                    .Select(offset => startDate.AddDays(offset).ToString("dd/MM/yyyy"))
+                                    .ToList();
+
+            var jobSeekerData = labels.Select(date => jobSeekers.FirstOrDefault(js => js.Date == date)?.Count ?? 0).ToList();
+            var employerData = labels.Select(date => employers.FirstOrDefault(em => em.Date == date)?.Count ?? 0).ToList();
+
+            //Trả về JSON
+            return Ok( new
+                {
+                    labels,
+                    jobSeekerData,
+                    employerData
+                }
+            );
+        }
+
+        [HttpPost("Statistical-Get-Job")]
+        public async Task<IActionResult> GetJobStatistics(DateTime startDate, DateTime endDate)
+        {
+            // Giả sử bạn có repository để lấy dữ liệu người dùng
+            var job = await _unitOfWork.StatisticalRepo.GetJobCountAndDateRange(startDate, endDate);
+
+            // Xử lý dữ liệu theo từng ngày
+            var labels = Enumerable.Range(0, (endDate - startDate).Days + 1)
+                                    .Select(offset => startDate.AddDays(offset).ToString("dd/MM/yyyy"))
+                                    .ToList();
+
+            var jobData = labels.Select(date => job.FirstOrDefault(js => js.Date == date)?.Count ?? 0).ToList();
+
+            //Trả về JSON
+            return Ok( new
+                {
+                    labels,
+                    jobData
+                }
+            );
+        }
+
     }
 }
