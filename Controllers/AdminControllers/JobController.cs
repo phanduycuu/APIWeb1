@@ -3,11 +3,13 @@ using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
 using APIWeb1.Models.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
+    [Authorize(Roles = "Admin")]
     public class JobController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

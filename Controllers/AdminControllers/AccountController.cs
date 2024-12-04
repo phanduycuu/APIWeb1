@@ -2,6 +2,7 @@
 using APIWeb1.Mappers;
 using APIWeb1.Models;
 using APIWeb1.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
+    [Authorize(Roles = "Admin")]
     public class AccountController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

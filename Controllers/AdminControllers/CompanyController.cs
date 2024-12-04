@@ -1,9 +1,11 @@
 ﻿using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIWeb1.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CompanyController : Controller
     {
 		private readonly IUnitOfWork _unitOfWork;

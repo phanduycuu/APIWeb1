@@ -5,9 +5,11 @@ using APIWeb1.Models.Enum;
 using APIWeb1.Models;
 using Microsoft.AspNetCore.Mvc;
 using APIWeb1.Dtos.Blogs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
+    [Authorize(Roles = "Admin")]
     public class BlogController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

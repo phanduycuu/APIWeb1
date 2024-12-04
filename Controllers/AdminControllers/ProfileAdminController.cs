@@ -2,6 +2,7 @@
 using APIWeb1.Extensions;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProfileAdminController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

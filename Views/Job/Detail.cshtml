@@ -48,8 +48,8 @@
                     @* <button type="submit" class="btn btn-primary">Create</button> *@
                     <div>
                         <a asp-controller="Job" asp-action="Index" class="btn btn-danger">Back To List</a>
-                        <a asp-controller="Job" asp-action="Accept" asp-route-id="@Model.Id" class="btn btn-danger">Accept job</a>
-                        <a asp-controller="Job" asp-action="Refuse" asp-route-id="@Model.Id" class="btn btn-danger">Refuse job</a>
+                        <a asp-controller="Job" asp-action="Accept" asp-route-id="@Model.Id" class="btn btn-primaryAccept job</a>
+                        <a asp-controller="Job" asp-action="Refuse" asp-route-id="@Model.Id" class="btn btn-warning">Refuse job</a>
                     </div>
                 </form>
             </div>

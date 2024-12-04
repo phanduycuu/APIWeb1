@@ -1,10 +1,12 @@
 ﻿using APIWeb1.Dtos.Statisticals;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
+    [Authorize(Roles = "Admin")]
     public class StatisticalController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
