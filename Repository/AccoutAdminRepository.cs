@@ -1,6 +1,7 @@
 ﻿using APIWeb1.Data;
 using APIWeb1.Dtos.Admin;
 using APIWeb1.Dtos.AppUsers;
+using APIWeb1.Dtos.Blogs;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
@@ -219,16 +220,58 @@ namespace APIWeb1.Repository
             }
             var Total = await company.ToListAsync();
             if (query.PageSize != 0 && query.PageNumber != 0)
-            { 
+            {
                 var skipNumber = (query.PageNumber - 1) * query.PageSize;
-                company= company.Skip(skipNumber).Take(query.PageSize);
+                company = company.Skip(skipNumber).Take(query.PageSize);
             }
-            
-            var companymodel= await company.ToListAsync();
+
+            var companymodel = await company.ToListAsync();
             return new PaginationGetAllCompany
             {
-                Company=companymodel,
-                Total= Total.Count(),
+                Company = companymodel,
+                Total = Total.Count(),
+
+            };
+        }
+
+        public async Task<PaginationGetAllBlog> GetAllBlog(BlogQueryObject query)
+        {
+            var blogs = _context.Blogs.Include(u => u.User).ThenInclude(p => p.Company).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                blogs = blogs.Where(s => s.Title.Contains(query.Title));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
+                {
+                    blogs = query.IsDecsending ? blogs.OrderByDescending(s => s.Title) : blogs.OrderBy(s => s.Title);
+                }
+            }
+            var Total = await blogs.ToListAsync();
+            if (query.PageSize != 0 && query.PageNumber != 0)
+            {
+                var skipNumber = (query.PageNumber - 1) * query.PageSize;
+                blogs = blogs.Skip(skipNumber).Take(query.PageSize);
+            }
+
+            var blogmodel = await blogs.Select(u => new GetAllBlogDto
+            {
+                Id = u.Id,
+                Username = u.User.Fullname,
+                Companyname = u.User.Company.Name,
+                Img = u.Img,
+                Title = u.Title,
+                Content = u.Content,
+                CreateOn = u.CreateAt,
+                IsShow = u.IsShow,
+                Status = u.Status
+            }).ToListAsync();
+            return new PaginationGetAllBlog
+            {
+                Blogs = blogmodel,
+                Total = Total.Count(),
 
             };
         }

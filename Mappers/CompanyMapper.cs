@@ -35,5 +35,19 @@ namespace APIWeb1.Mappers
                 Status = true
             };
         }
+
+        public static Company ToCompanyFromAdminAddCompany(this AdminAddCompany companyDto)
+        {
+            return new Company
+            {
+                Name = companyDto.Name,
+                Industry = companyDto.Industry,
+                Description = companyDto.Description,
+                Website = companyDto.Website,
+                Email = companyDto.Email,
+                Phone = companyDto.Phone,
+                Status = true
+            };
+        }
     }
 }
