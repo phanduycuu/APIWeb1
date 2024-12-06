@@ -375,6 +375,14 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(blog);
         }
 
+        [HttpGet("Get-Job-Id")]
+        //[Authorize]
+        public async Task<IActionResult> GetJobById(int id)
+        {
+            var job = await _unitOfWork.AccoutAdminRepo.GetJobById(id);
+
+            return Ok(job);
+        }
         [HttpPost("Update-Status-Job")]
         public IActionResult UpdateStatus(int Id,string Status)
         {

@@ -7,7 +7,9 @@ using APIWeb1.Dtos.Job;
 using APIWeb1.Dtos.SkillDtos;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
+using APIWeb1.Mappers;
 using APIWeb1.Models;
+using APIWeb1.Models.Enum;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -340,6 +342,56 @@ namespace APIWeb1.Repository
                 Total = Total.Count(),
 
             };
+        }
+
+
+
+        public async Task<JobDto> GetJobById(int JobId)
+        {
+
+            // Query to retrieve the job details
+            var jobModel = await _context.Jobs
+                .Include(a => a.Employer)
+                    .ThenInclude(b => b.Company)
+                .Include(job => job.JobSkills)
+                    .ThenInclude(jobSkill => jobSkill.Skill)
+                    .Include(j => j.Address)
+                .Select(job => new JobDto
+                {
+                    Id = job.Id,
+                    Title = job.Title,
+                    Description = job.Description,
+                    Requirements = job.Requirements,
+                    Benefits = job.Benefits,
+                    Salary = job.Salary,
+                    ExpiredDate = job.ExpiredDate,
+                    CreateOn = job.CreateOn,
+                    UpdatedOn = job.UpdatedOn,
+                    Employer = new GetEmployerDto
+                    {
+                        Id = job.Employer.Id,
+                        Company = job.Employer.Company.ToCompanyDto(),
+
+                    },
+                    JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                    JobType = EnumHelper.GetEnumDescription(job.JobType),
+                    JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                    IsShow = job.IsShow,
+                    Location =
+                               job.Address.Province + ", " +
+                               job.Address.District + ", " +
+                               job.Address.Ward,
+                    LocationShort = job.Address.Street,
+                    Skills = job.JobSkills.Select(js => new SkillDto
+                    {
+                        Id = js.Skill.Id,
+                        Name = js.Skill.Name
+                        // Include other properties of Skill as needed
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            return jobModel;
         }
 
         // Skill
