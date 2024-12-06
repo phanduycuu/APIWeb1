@@ -14,5 +14,7 @@ namespace APIWeb1.Interfaces
         Task<AdminAccountUser> GetById(string Id);
         Task<PaginationGetAllCompany> GetAllCompany(CompanyQueryObj query);
         Task<PaginationGetAllBlog> GetAllBlog(BlogQueryObject query);
+        Task<PaginationGetAllJob> GetAllJob(JobQueryObject query);
+        Task<PaginationGetAllSkill> GetAllSkill(SkillQuery query);
     }
 }

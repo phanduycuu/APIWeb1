@@ -1,12 +1,14 @@
 ﻿using APIWeb1.Dtos.AppUsers;
 using APIWeb1.Dtos.Blogs;
 using APIWeb1.Dtos.Companys;
+using APIWeb1.Dtos.SkillDtos;
 using APIWeb1.Dtos.Statisticals;
 using APIWeb1.Extensions;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Mappers;
 using APIWeb1.Models;
+using APIWeb1.Models.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -210,25 +212,28 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok();
         }
 
-        [HttpPost("Delete-Company")]
-        public async Task<IActionResult> Hidden(int id)
+        [HttpPost("Update-Status-Company")]
+        public async Task<IActionResult> Hidden(int id,bool status)
         {
             if (id == 0 || id == null)
             {
                 return BadRequest();
             } 
             Company company = _unitOfWork.CompanyRepo.Get(x => x.Id == id);
-            company.Status = false;
-            var users = await _userManager.Users.Where(user => user.CompanyId == id).ToListAsync();
-            foreach (var user in users)
+            company.Status = status;
+            if (status == false)
             {
-                user.Status = 0;
-                await _userManager.UpdateAsync(user);
+                var users = await _userManager.Users.Where(user => user.CompanyId == id).ToListAsync();
+                foreach (var user in users)
+                {
+                    user.Status = 0;
+                    await _userManager.UpdateAsync(user);
+                }
             }
             _unitOfWork.CompanyRepo.Update(company);
             _unitOfWork.Save();
 
-            return Ok("Delete successfully");
+            return Ok("Update successfully");
         }
 
         // blog
@@ -360,5 +365,60 @@ namespace APIWeb1.Controllers.ApiControllers
             );
         }
 
+        //job
+        [HttpGet("Get-All-Job")]
+        //[Authorize]
+        public async Task<IActionResult> GetAllJob([FromQuery] JobQueryObject query)
+        {
+            var blog = await _unitOfWork.AccoutAdminRepo.GetAllJob(query);
+
+            return Ok(blog);
+        }
+
+        [HttpPost("Update-Status-Job")]
+        public IActionResult UpdateStatus(int Id,string Status)
+        {
+            var status = EnumHelper.GetEnumValueFromDescription<JobStatus>(Status);
+            _unitOfWork.JobRepo.UpdateStatusJob(Id, status);
+            return Ok("update successfully");
+        }
+
+        //Skill
+        [HttpGet("Get-All-Skill")]
+        //[Authorize]
+        public async Task<IActionResult> GetAllSkill([FromQuery] SkillQuery query)
+        {
+            var skill = await _unitOfWork.AccoutAdminRepo.GetAllSkill(query);
+
+            return Ok(skill);
+        }
+
+        [HttpPost("Add-Skill")]
+        public IActionResult Create(CreateSkill skill)
+        {
+                Skill skillmodel= new Skill()
+                {
+                    Name = skill.Name,
+                    IsDeleted= false
+                };
+                _unitOfWork.SkillRepo.Add(skillmodel);
+                _unitOfWork.Save();
+                return Ok("Add skill successfully");
+        }
+
+
+        [HttpPost("Update-Or-Delete-Skill")]
+        public IActionResult Update(SkillDto skill)
+        {
+            Skill skillmodel = new Skill()
+            {
+                Id = skill.Id,
+                Name = skill.Name,
+                IsDeleted = skill.IsDelete
+            };
+            _unitOfWork.SkillRepo.Update(skillmodel);
+            _unitOfWork.Save();
+            return Ok("Update successfully");
+        }
     }
 }

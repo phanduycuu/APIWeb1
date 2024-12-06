@@ -2,11 +2,15 @@
 using APIWeb1.Dtos.Admin;
 using APIWeb1.Dtos.AppUsers;
 using APIWeb1.Dtos.Blogs;
+using APIWeb1.Dtos.Companys;
+using APIWeb1.Dtos.Job;
+using APIWeb1.Dtos.SkillDtos;
 using APIWeb1.Helpers;
 using APIWeb1.Interfaces;
 using APIWeb1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Numerics;
 
 namespace APIWeb1.Repository
@@ -274,6 +278,103 @@ namespace APIWeb1.Repository
             return new PaginationGetAllBlog
             {
                 Blogs = blogmodel,
+                Total = Total.Count(),
+
+            };
+        }
+
+        //job
+        public async Task<PaginationGetAllJob> GetAllJob(JobQueryObject query)
+        {
+            var job = _context.Jobs.Include(a => a.Employer).ThenInclude(b => b.Company).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Title))
+            {
+                job = job.Where(s => s.Title.Contains(query.Title));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("CreateOn", StringComparison.OrdinalIgnoreCase))
+                {
+                    job = query.IsDecsending ? job.OrderByDescending(s => s.CreateOn) : job.OrderBy(s => s.CreateOn);
+                }
+            }
+            var Total = await job.ToListAsync();
+            if (query.PageSize != 0 && query.PageNumber != 0)
+            {
+                var skipNumber = (query.PageNumber - 1) * query.PageSize;
+                job = job.Skip(skipNumber).Take(query.PageSize);
+            }
+
+            var jobmodel = await job.Select(job => new GetAllJobDto
+            {
+                Id = job.Id,
+                Title = job.Title,
+                Salary = job.Salary,
+                CreateOn = job.CreateOn,
+                Employer = new GetEmployer
+                {
+                    Id = job.Employer.Id,
+                    Company = new GetCompany
+                    {
+                        Name = job.Employer.Company.Name,
+                        logo = job.Employer.Company.Logo
+                    },
+                },
+                JobLevel = EnumHelper.GetEnumDescription(job.JobLevel),
+                JobType = EnumHelper.GetEnumDescription(job.JobType),
+                JobStatus = EnumHelper.GetEnumDescription(job.JobStatus),
+                IsShow = job.IsShow,
+                LocationShort = job.Address.Province + ", " + job.Address.District,
+                Skills = job.JobSkills.Select(js => new SkillDto
+                {
+                    Id = js.Skill.Id,
+                    Name = js.Skill.Name
+                    // Include other properties of Skill as needed
+
+                }).ToList()
+            }).ToListAsync();
+            return new PaginationGetAllJob
+            {
+                Jobs = jobmodel,
+                Total = Total.Count(),
+
+            };
+        }
+
+        // Skill
+
+        public async Task<PaginationGetAllSkill> GetAllSkill(SkillQuery query)
+        {
+            var skills = _context.Skills.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                skills = skills.Where(s => s.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    skills = query.IsDecsending ? skills.OrderByDescending(s => s.Name) : skills.OrderBy(s => s.Name);
+                }
+            }
+            var Total = await skills.ToListAsync();
+            if (query.PageSize != 0 && query.PageNumber != 0)
+            {
+                var skipNumber = (query.PageNumber - 1) * query.PageSize;
+                skills = skills.Skip(skipNumber).Take(query.PageSize);
+            }
+
+            var skillmodel = await skills.Select(u => new SkillDto
+            {
+                Id = u.Id,
+                Name = u.Name,
+                IsDelete = u.IsDeleted
+            }).ToListAsync();
+            return new PaginationGetAllSkill
+            {
+                Skills = skillmodel,
                 Total = Total.Count(),
 
             };
