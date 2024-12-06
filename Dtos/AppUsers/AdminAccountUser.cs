@@ -15,5 +15,6 @@ namespace APIWeb1.Dtos.AppUsers
         public DateTime? Birthdate { get; set; }
         public Address? Address { get; set; }
         public string Role { get; set; }
+        public int Status { get; set; }
     }
 }

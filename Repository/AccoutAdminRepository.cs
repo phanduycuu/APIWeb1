@@ -98,7 +98,8 @@ namespace APIWeb1.Repository
                     Sex = user.Sex,
                     Birthdate = user.Birthdate,
                     Address = user.Address,
-                    Role = roles.FirstOrDefault() // Lấy role đầu tiên nếu có
+                    Role = roles.FirstOrDefault() ,// Lấy role đầu tiên nếu có
+                    Status = user.Status
                 });
             }
 
@@ -161,7 +162,8 @@ namespace APIWeb1.Repository
                     Sex = user.Sex,
                     Birthdate = user.Birthdate,
                     Address = user.Address,
-                    Role = roles.FirstOrDefault() // Lấy role đầu tiên nếu có
+                    Role = roles.FirstOrDefault(), // Lấy role đầu tiên nếu có
+                     Status = user.Status
                 });
             }
 
@@ -192,7 +194,8 @@ namespace APIWeb1.Repository
                 Sex = user.Sex,
                 Birthdate = user.Birthdate,
                 Address = user.Address,
-                Role = roles.FirstOrDefault() // Lấy role đầu tiên nếu có
+                Role = roles.FirstOrDefault(), // Lấy role đầu tiên nếu có
+                Status = user.Status
             };
 
 

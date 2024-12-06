@@ -9,7 +9,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
-    [Authorize(Roles = "Admin")]
+
     public class JobController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

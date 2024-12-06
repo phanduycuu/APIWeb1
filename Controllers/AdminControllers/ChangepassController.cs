@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
-    [Authorize(Roles = "Admin")]
+  
     public class ChangepassController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

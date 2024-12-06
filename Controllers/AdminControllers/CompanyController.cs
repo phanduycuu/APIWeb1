@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIWeb1.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Admin")]
+
     public class CompanyController : Controller
     {
 		private readonly IUnitOfWork _unitOfWork;

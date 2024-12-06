@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
-    [Authorize(Roles = "Admin")]
+  
     public class SkillController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

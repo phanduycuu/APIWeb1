@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
-    [Authorize(Roles = "Admin")]
+
     public class StatisticalController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

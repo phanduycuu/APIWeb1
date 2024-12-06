@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace APIWeb1.Controllers.AdminControllers
 {
-    [Authorize(Roles = "Admin")]
+
     public class BlogController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
