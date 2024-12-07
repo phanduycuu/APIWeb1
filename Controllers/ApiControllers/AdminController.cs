@@ -253,6 +253,14 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(blog);
         }
 
+
+        [HttpGet("GetBlogById")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetBlogById(int blogId)
+        {
+            var blog = await _unitOfWork.BlogRepo.GetByIdForAll(blogId);
+            return Ok(blog);
+        }
         [HttpPost("Add-Blogs")]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromForm] CreateBlogDto blogDto)
