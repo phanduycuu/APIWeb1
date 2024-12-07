@@ -70,20 +70,27 @@ namespace APIWeb1.Controllers.ApiControllers
         public async Task<IActionResult> AcceptEmployer(string id)
         {
             bool isUpdated = await _unitOfWork.AccoutAdminRepo.UpdateAsync(id, 1);
-            if (isUpdated)
+            var empolyer= await _userManager.Users.Include(u=>u.Company).Where(u=>u.Id==id).FirstOrDefaultAsync();
+            var company = _unitOfWork.CompanyRepo.Get(u=>u.Id==empolyer.Company.Id);
+            if(company.Status==true)
             {
-                var user = await _userManager.FindByIdAsync(id);
-                string subject = "Web Job Update Notification";
-                string htmlMessage = "<p>Your account has been authenticed successfully.</p>";
+                if (isUpdated)
+                {
+                    var user = await _userManager.FindByIdAsync(id);
+                    string subject = "Web Job Update Notification";
+                    string htmlMessage = "<p>Your account has been authenticed successfully.</p>";
 
-                await _emailSender.SendEmailAsync(user.Email, subject, htmlMessage);
-                return Ok("Update successfully");
-            }
-            else
-            {
+                    await _emailSender.SendEmailAsync(user.Email, subject, htmlMessage);
+                    return Ok("Update successfully");
+                }
+                else
+                {
 
-                return Ok("Update fail");
+                    return Ok("Update fail");
+                }
             }
+
+            return BadRequest("This employee's company has been locked");
         }
         [HttpPost("Refuse-Account-Employer")]
         public async Task<IActionResult> RefuseEmployer(string id)
