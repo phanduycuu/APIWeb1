@@ -11,6 +11,7 @@ namespace APIWeb1.Dtos.AppUsers
         public string Username { get; set; }
         public string Email { get; set; }
         public string? Companyname { get; set; }
+        public bool? StatusCompany { get; set; }
         public string? Sex { get; set; }
         public DateTime? Birthdate { get; set; }
         public Address? Address { get; set; }
