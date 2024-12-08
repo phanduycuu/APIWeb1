@@ -177,47 +177,113 @@ namespace APIWeb1.Controllers.ApiControllers
             return Ok(company);
         }
 
+        //[HttpPost("Upsert-Company")]
+        //public async Task<IActionResult> Upsert([FromForm] AdminAddCompany dto)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        string filePath = "";
+
+        //        filePath = Path.Combine(@"wwwroot\admin\img\Company\", $"{dto.Img.FileName}");
+
+        //        // Lưu file vào hệ thống file
+        //        using (var stream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            await dto.Img.CopyToAsync(stream);
+        //        }
+
+        //        if (dto.Id == 0 || dto.Id == null)
+        //        {
+        //            Company company = dto.ToCompanyFromAdminAddCompany();
+        //            company.Create = DateTime.Now;
+        //            company.Logo = @"\admin\img\Company\" + $"{dto.Img.FileName}";
+        //            _unitOfWork.CompanyRepo.Add(company);
+        //            _unitOfWork.Save();
+        //        }
+        //        else
+        //        {
+        //            Company companymodel = _unitOfWork.CompanyRepo.Get(x => x.Id == dto.Id);
+        //            companymodel.Name = dto.Name;
+        //            companymodel.Description = dto.Description;
+        //            companymodel.Phone = dto.Phone;
+        //            companymodel.Email = dto.Email;
+        //            companymodel.Website = dto.Website;
+        //            companymodel.Industry = dto.Industry;
+        //            companymodel.Update = DateTime.Now;
+        //            //companymodel.Logo = @"\admin\img\Company\" + $"{dto.Img.FileName}";
+        //            // Nếu có ảnh mới thì cập nhật ảnh, nếu không có ảnh mới, giữ lại ảnh cũ
+        //            if (dto.Img != null && dto.Img.Length > 0)
+        //            {
+        //                companymodel.Logo = @"\admin\img\Company\" + $"{dto.Img.FileName}";
+        //            }
+        //            _unitOfWork.CompanyRepo.Update(companymodel);
+        //            _unitOfWork.Save();
+        //        }
+
+        //    }
+        //    return Ok();
+
+
+
+        //}
+
         [HttpPost("Upsert-Company")]
         public async Task<IActionResult> Upsert([FromForm] AdminAddCompany dto)
         {
-            if (ModelState.IsValid)
+            // Kiểm tra nếu dữ liệu không hợp lệ
+            if (!ModelState.IsValid)
             {
-                string filePath = "";
-
-                    filePath = Path.Combine(@"wwwroot\admin\img\Company\", $"{dto.Img.FileName}");
-
-                    // Lưu file vào hệ thống file
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await dto.Img.CopyToAsync(stream);
-                    }
-
-                if (dto.Id == 0 || dto.Id == null)
-                {
-                    Company company = dto.ToCompanyFromAdminAddCompany();
-                    company.Create = DateTime.Now;
-                    company.Logo = @"\admin\img\Company\"+ $"{dto.Img.FileName}";
-                    _unitOfWork.CompanyRepo.Add(company);
-                    _unitOfWork.Save();
-                }
-                else
-                {
-                    Company companymodel = _unitOfWork.CompanyRepo.Get(x => x.Id == dto.Id);
-                    companymodel.Name = dto.Name;
-                    companymodel.Description = dto.Description;
-                    companymodel.Phone = dto.Phone;
-                    companymodel.Email = dto.Email;
-                    companymodel.Website = dto.Website;
-                    companymodel.Industry = dto.Industry;
-                    companymodel.Update = DateTime.Now;
-                    companymodel.Logo = @"\admin\img\Company\" + $"{dto.Img.FileName}";
-                    _unitOfWork.CompanyRepo.Update(companymodel);
-                    _unitOfWork.Save();
-                }
-                
+                return BadRequest(ModelState);
             }
+
+            string filePath = "";
+
+            // Kiểm tra nếu có ảnh mới thì mới lưu ảnh
+            if (dto.Img != null && dto.Img.Length > 0)
+            {
+                filePath = Path.Combine(@"wwwroot\admin\img\Company\", $"{dto.Img.FileName}");
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.Img.CopyToAsync(stream);
+                }
+            }
+
+            if (dto.Id == 0 || dto.Id == null) // Nếu không có ID, là tạo mới
+            {
+                Company company = dto.ToCompanyFromAdminAddCompany();
+                company.Create = DateTime.Now;
+
+                // Nếu có ảnh mới thì lưu ảnh, nếu không thì để Logo là null
+                company.Logo = dto.Img != null ? @"\admin\img\Company\" + $"{dto.Img.FileName}" : null;
+
+                _unitOfWork.CompanyRepo.Add(company);
+                _unitOfWork.Save();
+            }
+            else // Nếu có ID, là cập nhật
+            {
+                Company companymodel = _unitOfWork.CompanyRepo.Get(x => x.Id == dto.Id);
+                companymodel.Name = dto.Name;
+                companymodel.Description = dto.Description;
+                companymodel.Phone = dto.Phone;
+                companymodel.Email = dto.Email;
+                companymodel.Website = dto.Website;
+                companymodel.Industry = dto.Industry;
+                companymodel.Update = DateTime.Now;
+
+                // Cập nhật ảnh nếu có ảnh mới
+                if (dto.Img != null && dto.Img.Length > 0)
+                {
+                    companymodel.Logo = @"\admin\img\Company\" + $"{dto.Img.FileName}";
+                }
+
+                _unitOfWork.CompanyRepo.Update(companymodel);
+                _unitOfWork.Save();
+            }
+
             return Ok();
         }
+
+
 
         [HttpPost("Update-Status-Company")]
         public async Task<IActionResult> Hidden(int id,bool status)

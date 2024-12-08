@@ -292,7 +292,7 @@ namespace APIWeb1.Migrations
                         new
                         {
                             Id = 1,
-                            Create = new DateTime(2024, 11, 26, 16, 6, 3, 514, DateTimeKind.Local).AddTicks(224),
+                            Create = new DateTime(2024, 12, 8, 4, 19, 18, 922, DateTimeKind.Local).AddTicks(5160),
                             Description = "Công ti về công nghệ hàng đầu thế giới",
                             Email = "FPT@gmail.com",
                             Industry = "Information technology",
@@ -300,13 +300,13 @@ namespace APIWeb1.Migrations
                             Name = "FPT",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 26, 16, 6, 3, 514, DateTimeKind.Local).AddTicks(242),
+                            Update = new DateTime(2024, 12, 8, 4, 19, 18, 922, DateTimeKind.Local).AddTicks(5178),
                             Website = "FPT.com"
                         },
                         new
                         {
                             Id = 2,
-                            Create = new DateTime(2024, 11, 26, 16, 6, 3, 514, DateTimeKind.Local).AddTicks(245),
+                            Create = new DateTime(2024, 12, 8, 4, 19, 18, 922, DateTimeKind.Local).AddTicks(5181),
                             Description = "Đa lĩnh vực",
                             Email = "BOSCH@gmail.com",
                             Industry = "Information technology",
@@ -314,7 +314,7 @@ namespace APIWeb1.Migrations
                             Name = "BOSCH",
                             Phone = "0368166471",
                             Status = true,
-                            Update = new DateTime(2024, 11, 26, 16, 6, 3, 514, DateTimeKind.Local).AddTicks(245),
+                            Update = new DateTime(2024, 12, 8, 4, 19, 18, 922, DateTimeKind.Local).AddTicks(5182),
                             Website = "BOSCH.com"
                         });
                 });
@@ -479,19 +479,19 @@ namespace APIWeb1.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ea92b0f5-fccf-40fc-8160-aec628d13518",
+                            Id = "0dc2d014-f00a-4403-aeb5-83bf1c3a8c78",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "10d4c887-23e0-4994-9375-54a6642aef34",
+                            Id = "9fafdccd-f892-4492-b3f2-105cb92d8da5",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "1bdbc6bd-4c7c-4621-b0e5-39abba44b76a",
+                            Id = "72f59648-cfea-453d-b15b-ba7c03ec33db",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         });

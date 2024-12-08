@@ -22,8 +22,8 @@ namespace APIWeb1.Dtos.Companys
 
         [Required]
         public string Phone { get; set; }
-        [Required]
-        public IFormFile Img { get; set; }
+        
+        public IFormFile? Img { get; set; }
 
     }
 }

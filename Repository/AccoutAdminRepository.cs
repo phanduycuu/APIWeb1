@@ -353,6 +353,7 @@ namespace APIWeb1.Repository
 
             // Query to retrieve the job details
             var jobModel = await _context.Jobs
+                .Where(job => job.Id == JobId)
                 .Include(a => a.Employer)
                     .ThenInclude(b => b.Company)
                 .Include(job => job.JobSkills)
