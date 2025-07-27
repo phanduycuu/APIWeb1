@@ -1,0 +1,96 @@
+﻿@model AppUser
+<div class="container-fluid pt-4 px-0">
+    <div class="row g-4">
+        <div class="col-lg-9">
+            <div class="bg-light rounded h-100 p-4">
+                <h3 class="mb-4 fw-bold text-primary">Detail Employer</h3>
+                <form method="post" class="row">
+                    <input asp-for="Id" hidden />
+                    <input asp-for="Img" hidden />
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input readonly asp-for="Fullname" type="text" class="form-control" id="floatingInput" placeholder="">
+                        <label asp-for="Fullname" for="floatingInput"></label>
+                        <span asp-validation-for="Fullname" class="text-danger m-2"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input readonly asp-for="Email" type="text" class="form-control" id="floatingInputIndustry" placeholder="">
+                        <label asp-for="Email" for="floatingInputIndustry"></label>
+                        <span asp-validation-for="Email" class="text-danger m-2"></span>
+                    </div>
+
+                  @*   <div class="form-floating mb-3">
+                        <input readonly asp-for="Logo" type="text" class="form-control" id="floatingInputLogo" placeholder="" value="@Model.Logo">
+                        <label asp-for="Logo" for="floatingInputLogo"></label>
+                        <span asp-validation-for="Logo" class="text-danger m-2"></span>
+                    </div> *@
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input readonly asp-for="PhoneNumber" type="text" class="form-control" id="floatingInputWebsite" placeholder="">
+                        <label asp-for="PhoneNumber" for="floatingInputWebsite"></label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger m-2"></span>
+                    </div>
+
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input readonly asp-for="Birthdate" type="tel" class="form-control" id="floatingInputPhone" placeholder="">
+                        <label asp-for="Birthdate" for="floatingInputPhone"></label>
+                        <span asp-validation-for="Birthdate" class="text-danger m-2"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input readonly asp-for="Sex" type="datetime" class="form-control" id="floatingInputCreate" placeholder="">
+                        <label asp-for="Sex" for="floatingInputCreate"></label>
+                        <span asp-validation-for="Sex" class="text-danger m-2"></span>
+                    </div>
+
+
+                    <div>
+                        <input asp-for="Status" type="hidden" />
+                    </div>
+
+
+                    @* <button type="submit" class="btn btn-primary">Create</button> *@
+                    <div>
+                        <a asp-controller="Account" asp-action="Employer" class="btn btn-danger">Back To List</a>
+                        <a asp-controller="Account" asp-action="AcceptEmployer" asp-route-id="@Model.Id" class="btn btn-primary">Accept job</a>
+                        <a asp-controller="Account" asp-action="RefuseEmployer" asp-route-id="@Model.Id" class="btn btn-warning">Refuse job</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="bg-light rounded h-100 p-4">
+                <h3 class="mb-4 fw-bold text-primary">Imge</h3>
+                <div class="card">
+                    <img src="@Model.Img" class="card-img-top" alt="...">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            // Lắng nghe sự kiện 'blur' của TinyMCE
+            setup: function (editor) {
+                editor.on('blur', function () {
+                    checkDes();
+                });
+            }
+
+        });
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+

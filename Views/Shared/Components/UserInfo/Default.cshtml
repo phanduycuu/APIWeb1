@@ -1,0 +1,14 @@
+﻿@model APIWeb1.Models.AppUser
+
+@if (Model != null)
+{
+    <div>
+        <h4>Welcome, @Model.Fullname!</h4>
+        <p>Company: @Model.Company?.Name</p>
+        <p>Address: @Model.Address?.Street</p>
+    </div>
+}
+else
+{
+    <p>Loading user info...</p>
+}

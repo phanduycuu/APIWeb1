@@ -1,0 +1,313 @@
+﻿@model Company
+<div class="container-fluid pt-4 px-0">
+    <div class="row g-4">
+        <div class="@(Model.Id != 0 ? "col-lg-9" : "col-lg-12")">
+            <div class="bg-light rounded h-100 p-4">
+                <h3 class="mb-4 fw-bold text-primary">
+                    @(Model.Id != 0 ? "Update" : "Create") Company
+                </h3>
+                <form method="post" enctype="multipart/form-data" class="row">
+                    <input asp-for="@Model.Id" hidden />
+                    <input asp-for="@Model.Logo" hidden />
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="Name" type="text" class="form-control" id="floatingInput" placeholder="">
+                        <label asp-for="Name" for="floatingInput"></label>
+                        <span asp-validation-for="Name" class="text-danger m-2"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="Industry" type="text" class="form-control" id="floatingInputIndustry" placeholder="">
+                        <label asp-for="Industry" for="floatingInputIndustry"></label>
+                        <span asp-validation-for="Industry" class="text-danger m-2"></span>
+                    </div>
+                        
+                   
+
+                    @if(Model.Id != 0)
+                    {
+                         <div class="form-floating mb-3 col-lg-6 invisible d-none">
+                            <input name="file" value="@Model.Logo" type="file" class="form-control" id="floatingInputLogo" placeholder="" hidden>
+                            <label asp-for="Logo" for="floatingInputLogo"></label>
+           @*                  <span class="text-danger m-2">@ViewBag.ErrorMessage</span> *@
+                        </div> 
+                    }
+                    else
+                    {
+                        <div class="form-floating mb-3 col-lg-6">
+                            <input name="file" type="file" class="form-control" id="floatingInputLogo" placeholder="">
+                            <label asp-for="Logo" for="floatingInputLogo"></label>
+  @*                           <span class="text-danger m-2">@ViewBag.ErrorMessage</span> *@
+                            <div style="position: relative;">
+                                <span asp-validation-for="Logo" class="text-danger m-2"></span>
+                                <span id="img-error" class="text-danger m-2" style="position: absolute; top: 0; left: 0;"></span>
+                            </div>
+                        </div>
+                    }
+
+                  
+
+                  
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="Website" type="text" class="form-control" id="floatingInputWebsite" placeholder="">
+                        <label asp-for="Website" for="floatingInputWebsite"></label>
+                        <span asp-validation-for="Website" class="text-danger m-2"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="Email" type="email" class="form-control" id="floatingInputEmail" placeholder="">
+                        <label asp-for="Email" for="floatingInputEmail"></label>
+                        <div style="position: relative;">
+                            <span asp-validation-for="Email" class="text-danger m-2"></span>
+                            <span id="email-error" class="text-danger m-2" style="position: absolute; top: 0; left: 0;"></span>
+                        </div>
+                        
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="Phone" type="text" class="form-control" id="floatingInputPhone" placeholder="">
+                        <label asp-for="Phone" for="floatingInputPhone"></label>
+                        
+                        <div style="position: relative;">
+                            <span asp-validation-for="Phone" class="text-danger m-2"></span>
+                            <span id="phone-error" class="text-danger m-2" style="position: absolute; top: 0; left: 0;"></span>
+                        </div>
+                    </div>
+
+                    @if (Model.Id != 0)
+                    {
+                        <div class="form-floating mb-3 col-lg-6">
+                            <input readonly asp-for="Create" type="datetime" class="form-control" id="floatingInputCreate" />
+                            <label asp-for="Create" for="floatingInputCreate"></label>
+                            <span asp-validation-for="Create" class="text-danger m-2"></span>
+                            <input asp-for="Status" type="hidden" value="true" />
+                        </div>
+
+                        @* <div>
+                            <input asp-for="Update" type="" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+                            <input asp-for="Status" type="hidden" value="true" />
+                        </div> *@
+                    }
+                    else
+                    {
+                        <div>
+                            @* <input asp-for="Create" type="" value="@DateTime.Now.ToString("dd/MM/yyyy")" /> *@
+                            <input asp-for="Update" type="hidden" value="" />
+                            <input asp-for="Status" type="hidden" value="true" />
+                        </div>
+                    }
+                    
+                    <div class="mb-3">
+                        <label asp-for="Description" class="ms-2 text-muted"></label>
+                        <textarea asp-for="Description" class="form-control" id="floatingInputDescription" placeholder=""></textarea>
+                        <div style="position: relative;">
+                            <span asp-validation-for="Description" class="text-danger m-2"></span>
+                            <span id="des-error" class="text-danger m-2" style="position: absolute; top: 0; left: 0;"></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            @(Model.Id != 0 ? "Update" : "Create")
+                        </button>
+                        <a  asp-controller="Company" asp-action="Index" class="btn btn-danger">Back To List</a>
+                    </div>
+
+                   
+                </form>
+            </div>
+        </div>
+
+        @if (Model.Id != 0)
+        {
+            <div class="col-lg-3">
+                <div class="bg-light rounded h-100 p-4">
+                    <h3 class="mb-4 fw-bold text-primary">Logo</h3>
+                    <div class="card">
+                        <img id="logoPreview" src="@Model.Logo" class="card-img-top" alt="@Model.Name" />
+                    </div>
+                    <div class="mt-2 d-flex">
+                        <button id="changeImgButton" type="button" class="btn btn-info w-100">Change Img</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            // Lắng nghe sự kiện 'blur' của TinyMCE
+            setup: function (editor) {
+                editor.on('blur', function () {
+                    checkDes();
+                });
+            }
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Lấy các phần tử cần thiết
+            var changeImgButton = $('#changeImgButton');
+            var fileInput = $('#floatingInputLogo');
+            var logoPreview = $('#logoPreview');
+            var isEmptyLogo = false;
+
+            // Khi nhấn nút "Change Img", kích hoạt input file ẩn
+            changeImgButton.on('click', function () {
+                fileInput.click(); // Kích hoạt input file
+            });
+
+            // Khi người dùng chọn file, thay đổi ảnh preview
+            fileInput.on('change', function () {
+                var file = fileInput[0].files[0]; // Lấy file từ input
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        logoPreview.attr('src', e.target.result);  // Cập nhật ảnh preview
+                    }
+                    reader.readAsDataURL(file);  // Đọc file
+                }
+            });
+
+            // Hàm kiểm tra input img
+            function checkImg(){
+                var img = $('#floatingInputLogo');
+                var imgErrorMessage = $('#img-error');
+                if (img.hasAttribute('hidden')) {
+                    // đang view update mặc định là không rỗng
+                    isEmptyLogo = false;
+                } else {
+                    // đang view create 
+                    if (img.val() === "" || img.val() === undefined) {
+                        imgErrorMessage.text('The Logo field is required').css('color', 'red');
+                        isEmptyLogo = true;
+                    } else {
+                        imgErrorMessage.text('');
+                        isEmptyLogo = false;
+                    }
+                }
+             
+            }
+
+            var phoneExists = false; // Biến để theo dõi trạng thái của username
+            var emailExists = false; // Biến để theo dõi trạng thái của email
+            var isEmptyDes = false;
+
+            // Lưu giá trị ban đầu của phone và email khi form được tải
+            var initialPhone = $('#floatingInputPhone').val();
+            var initialEmail = $('#floatingInputEmail').val();
+            var initialLogo = $('#floatingInputLogo').val();
+
+            // Hàm kiểm tra phone
+            function checkPhone() {
+                var phone = $('#floatingInputPhone').val();
+                var phoneErrorMessage = $('#phone-error');
+
+                if (phone !== initialPhone && phone) { // Chỉ kiểm tra nếu phone thay đổi
+                    $.ajax({
+                        url: '/company/IsPhoneAndEmailAvailable',
+                        type: 'GET',
+                        data: { phone: phone, email: '' }, // Gửi email rỗng để chỉ kiểm tra username
+                        success: function (result) {
+                            if (result.isPhoneTaken) {
+                                phoneErrorMessage.text('Phone already exists').css('color', 'red');
+                                phoneExists = true; // Cập nhật biến nếu username đã tồn tại
+                            } else {
+                                phoneErrorMessage.text('');
+                                phoneExists = false; // Reset nếu username không tồn tại
+                            }
+                        },
+                        error: function () {
+                            usernameErrorMessage.text('Error checking phone').css('color', 'red');
+                            phoneExists = true; // Trong trường hợp lỗi, ngăn submit
+                        }
+                    });
+                }
+            }
+
+            // Hàm kiểm tra email
+            function checkEmail() {
+                var email = $('#floatingInputEmail').val();
+                var emailErrorMessage = $('#email-error');
+
+                if (email !== initialEmail && email) { // Chỉ kiểm tra nếu email thay đổi
+                    $.ajax({
+                        url: '/company/IsPhoneAndEmailAvailable',
+                        type: 'GET',
+                        data: { phone: '', email: email }, // Gửi username rỗng để chỉ kiểm tra email
+                        success: function (result) {
+                            if (result.isEmailTaken) {
+                                emailErrorMessage.text('Email already exists').css('color', 'red');
+                                emailExists = true; // Cập nhật biến nếu email đã tồn tại
+                            } else {
+                                emailErrorMessage.text('');
+                                emailExists = false; // Reset nếu email không tồn tại
+                            }
+                        },
+                        error: function () {
+                            emailErrorMessage.text('Error checking email').css('color', 'red');
+                            emailExists = true; // Trong trường hợp lỗi, ngăn submit
+                        }
+                    });
+                }
+            }
+
+            //Hàm check Des
+
+            function checkDes(){
+                var des = tinymce.get("floatingInputDescription")
+                var desErrorMessage = $('#des-error');
+                if (des.getContent() === "" || des.getContent() === null) {
+                    isEmptyDes = true;
+                    desErrorMessage.text('The Description field is required').css('color', 'red');
+                    des.focus();
+
+                }else {
+                    isEmptyDes = false;
+                    desErrorMessage.text('');
+                }
+          
+            }
+
+            // Gọi hàm kiểm tra khi phone hoặc email bị thay đổi
+            $('#floatingInputPhone').on('blur', checkPhone);
+            $('#floatingInputEmail').on('blur', checkEmail);
+            $('#floatingInputLogo').on('blur', checkImg);
+
+            // Kiểm tra trạng thái của phone và email trước khi submit form
+            $('form').on('submit', function (e) {
+                checkDes();
+                checkImg();
+                if (isEmptyDes || isEmptyLogo) {
+                    e.preventDefault();   
+                }
+                if (phoneExists || emailExists) {
+                    e.preventDefault(); // Ngăn không cho submit form
+                   
+                    if (emailExists) {
+                        $('#floatingInputEmail').focus(); // Focus vào ô email nếu trùng
+                    }
+                    else if (phoneExists) {
+                        $('#floatingInputPhone').focus(); // Focus vào ô phone nếu trùng
+                    }
+                } 
+            
+               
+              
+                
+            });
+        });
+
+        
+    </script>
+
+
+    <partial name="_ValidationScriptsPartial" />
+}

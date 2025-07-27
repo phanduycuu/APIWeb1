@@ -1,0 +1,44 @@
+﻿@using APIWeb1.Dtos.Account
+@model ChangePassAdmin
+
+<div class="container-fluid pt-4 px-0">
+    <div class="row bg-light rounded mx-0">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h4 class="mb-0 fw-bold text-primary">Change Password</h4>
+                </div>
+
+                <form method="post" class="row">
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="CurentPass" type="text" class="form-control" id="currentpass" placeholder="">
+                        <label asp-for="CurentPass" >Current Password</label>
+                        <span asp-validation-for="CurentPass" class="text-danger m-2" id="errorcurrentpass"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="NewPass" type="password" class="form-control" id="newpass" placeholder="">
+                        <label asp-for="NewPass" >New Password</label>
+                        <span asp-validation-for="NewPass" class="text-danger m-2" id="errornewpass"></span>
+                    </div>
+
+                    @* <div class="form-floating mb-3 col-lg-6">
+                        <input asp-for="RePass" name="RePass" type="password" class="form-control" id="repass" placeholder="">
+                        <label asp-for="RePass" for="repass">Confirm New Password</label>
+                        <span asp-validation-for="RePass" class="text-danger m-2" id="errorrepass" ></span>
+                    </div> *@
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            Update
+                        </button>
+
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-danger">Back To List</a>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

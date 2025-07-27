@@ -1,0 +1,75 @@
+﻿@model Blog
+<div class="container-fluid pt-4 px-0">
+    <div class="row g-4">
+        <div class="col-lg-9">
+            <div class="bg-light rounded h-100 p-4">
+                <h3 class="mb-4 fw-bold text-primary">Detail Blog</h3>
+                <form method="post" class="row">
+                    <input asp-for="Id" hidden />
+                    <input asp-for="Img" hidden />
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input readonly asp-for="Title" type="text" class="form-control" id="floatingInput" placeholder="">
+                        <label asp-for="Title" for="floatingInput"></label>
+                        <span asp-validation-for="Title" class="text-danger m-2"></span>
+                    </div>
+
+                    <div class=" mb-3 col-lg-12">
+                        <label asp-for="Content" class="ms-2 text-muted"></label>
+                        <textarea disabled asp-for="Content" class="form-control" id="floatingInputDescription" placeholder=""></textarea>
+                        <span asp-validation-for="Content" class="text-danger m-2"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 col-lg-6">
+                        <input readonly asp-for="CreateAt" type="datetime" class="form-control" id="floatingInputCreate" placeholder="">
+                        <label asp-for="CreateAt" for="floatingInputCreate"></label>
+                        <span asp-validation-for="CreateAt" class="text-danger m-2"></span>
+                    </div>
+
+                    @* <button type="submit" class="btn btn-primary">Create</button> *@
+                    <div>
+                        <a asp-controller="Blog" asp-action="Index" class="btn btn-danger">Back To List</a>
+                        <a asp-controller="Blog" asp-action="Accept" asp-route-id="@Model.Id" class="btn btn-primary">Accept Blog</a>
+                        <a asp-controller="Blog" asp-action="Refuse" asp-route-id="@Model.Id" class="btn btn-warning">Refuse Blog</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="bg-light rounded h-100 p-4">
+                <h3 class="mb-4 fw-bold text-primary">Logo</h3>
+                <div class="card">
+                    <img src="@Model.Img" class="card-img-top" alt="...">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts {
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            // Lắng nghe sự kiện 'blur' của TinyMCE
+            readonly: document.querySelector('textarea[disabled]') ? true : false,
+            setup: function (editor) {
+                editor.on('blur', function () {
+                    checkDes();
+                });
+            }
+
+        });
+            
+    </script>
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
